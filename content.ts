@@ -8,10 +8,10 @@ export const profile = {
   intro:
     "Computer science student and former Junior DevSecOps Engineer at EDC. Trying to be 1% better than yesterday.",
   availability: "Open to DevOps, platform and cloud roles",
-  email: "you@example.com", // TODO: your email address
+  email: "nevanvu@gmail.com",
   resume: "/resume.pdf", // TODO: add resume.pdf to the public/ folder
   github: "https://github.com/nevanvu",
-  linkedin: "https://www.linkedin.com/in/your-handle", // TODO: your LinkedIn URL
+  linkedin: "https://www.linkedin.com/in/nevan-vu-95863632b",
 };
 
 export const about = [
