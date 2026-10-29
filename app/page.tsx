@@ -39,6 +39,7 @@ function GitHubIcon() {
 
 export default function Home() {
   const year = new Date().getFullYear();
+  const resumeHref = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${profile.resume}`;
 
   return (
     <>
@@ -93,7 +94,7 @@ export default function Home() {
               <a className="button button-primary" href={`mailto:${profile.email}`}>
                 Email me
               </a>
-              <a className="button" href={profile.resume} download>
+              <a className="button" href={resumeHref} download>
                 Download resume
               </a>
             </div>
@@ -186,7 +187,7 @@ export default function Home() {
             <a className="button button-primary" href={`mailto:${profile.email}`}>
               Email me
             </a>
-            <a className="button" href={profile.resume} download>
+            <a className="button" href={resumeHref} download>
               Download resume
             </a>
           </div>
