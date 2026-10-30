@@ -588,7 +588,7 @@ a {
   height: auto;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 50%;
   /* matches the studio backdrop so the slot reads as the photo while it loads */
   background: #74777b;
 }
