@@ -37,6 +37,30 @@ function GitHubIcon() {
   );
 }
 
+// Square headshot in AVIF, WebP and JPEG at 320px and 640px; the browser picks
+// the smallest file that stays sharp. Regenerate these when the photo changes.
+function Headshot() {
+  const base = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/headshot`;
+  const set = (ext: string) => `${base}-320.${ext} 320w, ${base}-640.${ext} 640w`;
+  const sizes = "(min-width: 960px) 17rem, 7rem";
+  return (
+    <picture className="hero-photo">
+      <source type="image/avif" srcSet={set("avif")} sizes={sizes} />
+      <source type="image/webp" srcSet={set("webp")} sizes={sizes} />
+      <img
+        src={`${base}-640.jpg`}
+        srcSet={set("jpg")}
+        sizes={sizes}
+        width={640}
+        height={640}
+        alt={`Portrait of ${profile.name}`}
+        fetchPriority="high"
+        decoding="async"
+      />
+    </picture>
+  );
+}
+
 export default function Home() {
   const year = new Date().getFullYear();
   const resumeHref = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${profile.resume}`;
@@ -85,18 +109,21 @@ export default function Home() {
           </span>
           <p className="hero-availability stage-title">{profile.availability}</p>
           <div className="stage-body">
-            <h1 id="hero-title" className="hero-name reveal">
-              {profile.name}
-            </h1>
-            <p className="hero-headline reveal">{profile.headline}</p>
-            <p className="hero-intro reveal">{profile.intro}</p>
-            <div className="actions reveal">
-              <a className="button button-primary" href={`mailto:${profile.email}`}>
-                Email me
-              </a>
-              <a className="button" href={resumeHref} download>
-                Download resume
-              </a>
+            <Headshot />
+            <div className="hero-text">
+              <h1 id="hero-title" className="hero-name reveal">
+                {profile.name}
+              </h1>
+              <p className="hero-headline reveal">{profile.headline}</p>
+              <p className="hero-intro reveal">{profile.intro}</p>
+              <div className="actions reveal">
+                <a className="button button-primary" href={`mailto:${profile.email}`}>
+                  Email me
+                </a>
+                <a className="button" href={resumeHref} download>
+                  Download resume
+                </a>
+              </div>
             </div>
           </div>
         </section>

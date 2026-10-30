@@ -574,7 +574,43 @@ a {
 }
 
 .hero .stage-body {
-  max-width: 52rem;
+  max-width: none;
+}
+
+.hero-photo {
+  display: block;
+  width: 7rem;
+}
+
+.hero-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 14px;
+  /* matches the studio backdrop so the slot reads as the photo while it loads */
+  background: #74777b;
+}
+
+@media (min-width: 960px) {
+  .hero {
+    grid-template-columns: var(--meta-col) var(--node-col) minmax(0, 1fr);
+  }
+  .hero .stage-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(10rem, 18vw, 17rem);
+    column-gap: var(--space-7);
+    align-items: start;
+  }
+  .hero-photo {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+  }
+  .stage-body > .hero-text {
+    margin-top: 0;
+  }
 }
 
 .hero-name {
@@ -593,7 +629,7 @@ a {
   max-width: 24ch;
 }
 
-.stage-body > .hero-headline {
+.hero-text > .hero-headline {
   margin-top: var(--space-5);
 }
 
@@ -602,11 +638,12 @@ a {
   color: var(--ink-2);
 }
 
-.stage-body > .hero-intro {
+.hero-text > .hero-intro {
   margin-top: var(--space-4);
 }
 
-.stage-body > .actions {
+.stage-body > .actions,
+.hero-text > .actions {
   margin-top: var(--space-6);
 }
 
@@ -623,6 +660,10 @@ a {
   }
   .reveal:nth-child(4) {
     animation-delay: 270ms;
+  }
+  /* the photo settles in alongside the headline */
+  .hero-photo {
+    animation: settle 900ms var(--ease-out) 120ms both;
   }
 }
 
