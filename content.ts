@@ -78,12 +78,29 @@ export const projects: Project[] = [
   },
 ];
 
-export const offCourt = {
-  sport: "Badminton",
-  since: "2023 – present",
-  results: [
-    { result: "Winner", event: "Birdies Open, singles", year: "2025" },
-    { result: "2× champion", event: "Super Series, doubles", year: "" },
+export type Interest = {
+  id: "food" | "raptors"; // picks the icon
+  name: string;
+  meta: string;
+  text: string;
+};
+
+// The Off court section.
+export const offCourt: { lead: string; interests: Interest[] } = {
+  lead: "What I'm up to when I'm not shipping.",
+  interests: [
+    {
+      id: "food",
+      name: "Food and culture",
+      meta: "Always exploring",
+      text: "I enjoy exploring different cultures, and trying their food is my favourite way in.",
+    },
+    {
+      id: "raptors",
+      name: "Toronto Raptors",
+      meta: "Fan",
+      text: "Cheering on the Raptors from home in Toronto.",
+    },
   ],
 };
 
@@ -91,6 +108,3 @@ export const offCourt = {
 export const contact = {
   lead: "The last stage needs a manual approval. Open to opportunities, new ideas, and good conversation. Let’s connect!",
 };
-
-
-// I enjoy exploring different cultures and trying their food. I'm also a fan of the Toronto Raptors.

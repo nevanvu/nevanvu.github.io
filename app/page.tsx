@@ -1,7 +1,7 @@
 import { PipelineController } from "@/components/PipelineController";
 import { StageIcon } from "@/components/StageIcon";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { about, contact, experience, focus, offCourt, profile, projects } from "@/content";
+import { about, contact, experience, focus, offCourt, profile, projects, type Interest } from "@/content";
 
 const stages = [
   { id: "about", label: "About" },
@@ -39,9 +39,30 @@ function GitHubIcon() {
 
 function PinIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" className="pin-icon">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" className="line-icon">
       <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
       <circle cx="12" cy="9.5" r="2.5" />
+    </svg>
+  );
+}
+
+// Line icons for the Off court interests, drawn to match the pin.
+function InterestIcon({ id }: { id: Interest["id"] }) {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" focusable="false" className="line-icon">
+      {id === "food" && (
+        <>
+          <path d="M3.5 12h17a8.5 8.5 0 0 1-17 0Z" />
+          <path d="M13 9.5 16.5 3M16 9.5l4.5-5" />
+        </>
+      )}
+      {id === "raptors" && (
+        <>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M12 3.5v17M3.5 12h17" />
+          <path d="M6 6a9 9 0 0 1 0 12M18 6a9 9 0 0 0 0 12" />
+        </>
+      )}
     </svg>
   );
 }
@@ -220,16 +241,20 @@ export default function Home() {
         </Stage>
 
         <Stage id="off-court">
-          <p className="prose">
-            {offCourt.sport}, {offCourt.since}. The same habit as the day job: show up, review what went
-            wrong, run it again.
-          </p>
-          <ul className="results">
-            {offCourt.results.map((r) => (
-              <li key={r.event}>
-                <span className="result">{r.result}</span>
-                <span className="event">{r.event}</span>
-                {r.year && <span className="year">{r.year}</span>}
+          <p className="prose">{offCourt.lead}</p>
+          <ul className="interests">
+            {offCourt.interests.map((interest) => (
+              <li key={interest.id} className="interest" data-interest={interest.id}>
+                <div className="interest-head">
+                  <span className="interest-icon" aria-hidden="true">
+                    <InterestIcon id={interest.id} />
+                  </span>
+                  <div>
+                    <h3 className="interest-name">{interest.name}</h3>
+                    <p className="interest-meta">{interest.meta}</p>
+                  </div>
+                </div>
+                <p className="interest-text">{interest.text}</p>
               </li>
             ))}
           </ul>
