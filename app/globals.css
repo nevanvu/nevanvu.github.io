@@ -375,6 +375,67 @@ a {
   }
 }
 
+/* Content stages: a sticky head row (node, title, status) over a block body.
+   Grid items can only stick inside their own grid row, so the section itself
+   is a plain block and the head carries the grid. */
+.stage[data-stage] {
+  display: block;
+}
+
+.stage-head {
+  position: sticky;
+  top: calc(var(--header-h) + var(--stick-gap));
+  z-index: 2;
+  display: grid;
+  grid-template-columns: var(--node-col) minmax(0, 1fr) auto;
+  grid-template-areas: "node title status";
+  column-gap: var(--space-3);
+  align-items: center;
+  --stick-gap: var(--space-3);
+}
+
+/* The title and status mask the body as it scrolls beneath them; the node
+   column stays clear so the rail shows through. */
+.stage-head > .stage-title,
+.stage-head > .stage-status {
+  background: var(--paper);
+  box-shadow: 0 0 0 var(--stick-gap) var(--paper);
+}
+
+/* A short fade under the mask so text slides away instead of being cut off.
+   It sits in the gap above the body, so it never covers content at rest. */
+.stage-head::after {
+  content: "";
+  position: absolute;
+  top: calc(100% + var(--stick-gap));
+  left: var(--body-inset);
+  right: 0;
+  height: var(--space-4);
+  background: linear-gradient(var(--paper), transparent);
+  pointer-events: none;
+}
+
+.stage[data-stage] {
+  --body-inset: calc(var(--node-col) + var(--space-3));
+}
+
+.stage[data-stage] > .stage-body {
+  margin-top: var(--space-6);
+  margin-left: var(--body-inset);
+}
+
+@media (min-width: 960px) {
+  .stage-head {
+    grid-template-columns: var(--meta-col) var(--node-col) minmax(0, 44rem);
+    grid-template-areas: "status node title";
+    column-gap: var(--space-4);
+    --stick-gap: var(--space-4);
+  }
+  .stage[data-stage] {
+    --body-inset: calc(var(--meta-col) + var(--node-col) + 2 * var(--space-4));
+  }
+}
+
 .stage-node {
   grid-area: node;
   position: relative;

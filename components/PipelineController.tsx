@@ -25,10 +25,14 @@ export function PipelineController() {
     let centers: number[] = [];
     let frame = 0;
 
+    // A stage's node lives in its sticky head, so measure it from the top of
+    // its section (which never moves) rather than from wherever it is stuck.
     const nodeCenter = (el: HTMLElement, mainTop: number) => {
       const node = el.querySelector<HTMLElement>(".stage-node")!;
+      const head = el.querySelector<HTMLElement>(".stage-head");
       const r = node.getBoundingClientRect();
-      return { y: r.top + window.scrollY - mainTop + r.height / 2, x: r.left + r.width / 2 };
+      const top = head ? el.getBoundingClientRect().top + (r.top - head.getBoundingClientRect().top) : r.top;
+      return { y: top + window.scrollY - mainTop + r.height / 2, x: r.left + r.width / 2 };
     };
 
     const measure = () => {

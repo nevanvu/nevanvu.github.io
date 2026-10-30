@@ -17,13 +17,16 @@ function Stage({ id, gate, children }: { id: StageId; gate?: boolean; children: 
   const label = stages.find((s) => s.id === id)!.label;
   return (
     <section id={id} className="stage" data-stage data-gate={gate || undefined} aria-labelledby={`${id}-title`}>
-      <span className="stage-node" aria-hidden="true">
-        <StageIcon />
-      </span>
-      <span className="stage-status" aria-hidden="true" />
-      <h2 id={`${id}-title`} className="stage-title">
-        {label}
-      </h2>
+      {/* Sticks under the site header while the stage is on screen, so you can watch it pass. */}
+      <div className="stage-head">
+        <span className="stage-node" aria-hidden="true">
+          <StageIcon />
+        </span>
+        <span className="stage-status" aria-hidden="true" />
+        <h2 id={`${id}-title`} className="stage-title">
+          {label}
+        </h2>
+      </div>
       <div className="stage-body">{children}</div>
     </section>
   );
