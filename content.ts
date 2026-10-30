@@ -4,10 +4,10 @@
 export const profile = {
   name: "Nevan Vu",
   role: "DevOps and cloud infrastructure",
-  headline: "I build and automate cloud infrastructure.",
+  headline: "I build, test, and automate software solutions.",
   intro:
-    "Computer science student and former Junior DevSecOps Engineer at EDC. Trying to be 1% better than yesterday.",
-  availability: "Open to DevOps, platform and cloud roles",
+    "Computer science student at University of Ottawa. Trying to be 1% better than yesterday.",
+  availability: "Open to DevOps, QA, platform and cloud roles",
   email: "nevanvu@gmail.com",
   resume: "/resume.pdf", // TODO: add resume.pdf to the public/ folder
   github: "https://github.com/nevanvu",
@@ -15,11 +15,11 @@ export const profile = {
 };
 
 export const about = [
-  "I'm a computer science student who likes the parts of software most people never see: the pipelines, tests and infrastructure that let a team ship without holding its breath.",
+  "I enjoy building solutions where thoughtful design leads to functional results.",
   "Right now I'm building personal projects with AI as a pair programmer, and sharpening the skills I picked up writing automated tests and CI/CD for production applications.",
 ];
 
-export const focus = ["CI/CD pipelines", "Automated testing", "Cloud infrastructure", "DevSecOps"];
+export const focus = ["CI/CD pipelines", "Test automation", "Cloud infrastructure", "DevSecOps"];
 
 export type Role = {
   title: string;
@@ -36,11 +36,11 @@ export const experience: Role[] = [
     points: ["Building personal projects with AI."],
   },
   {
-    title: "Junior DevSecOps Engineer",
-    org: "EDC",
+    title: "Jr. Associate QA Engineer",
+    org: "Export Development Canada",
     dates: "Jul 2025 – Aug 2026",
     points: [
-      "Built and integrated automated tests for applications, including repository setup and CI/CD pipeline execution.",
+      "Worked within the DevSecOps Platform team to build test automation and maintain CI/CD pipelines across multiple production applications at EDC.",
     ],
   },
 ];
@@ -86,3 +86,6 @@ export const offCourt = {
     { result: "2× champion", event: "Super Series, doubles", year: "" },
   ],
 };
+
+
+// I enjoy exploring different cultures and trying their food. I'm also a fan of the Toronto Raptors.
