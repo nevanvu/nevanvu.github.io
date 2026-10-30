@@ -87,5 +87,10 @@ export const offCourt = {
   ],
 };
 
+// The Contact section, the pipeline's last stage. Its status reads "waiting on you".
+export const contact = {
+  lead: "The last stage needs a manual approval. Open to opportunities, new ideas, and good conversation. Let’s connect!",
+};
+
 
 // I enjoy exploring different cultures and trying their food. I'm also a fan of the Toronto Raptors.
