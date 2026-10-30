@@ -885,6 +885,8 @@ a {
 }
 
 .interest {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   padding: var(--space-5);
@@ -922,6 +924,21 @@ a {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--ink-2);
+}
+
+/* Toronto skyline along the foot of the Food and culture card */
+.interest[data-interest="food"] {
+  padding-bottom: calc(var(--skyline-h) + var(--space-4));
+  --skyline-h: 6rem;
+}
+
+.skyline {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: var(--skyline-h);
+  fill: var(--ink-2);
+  opacity: 0.18;
 }
 
 /* Team colours for the Raptors card */

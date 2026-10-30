@@ -67,6 +67,32 @@ function InterestIcon({ id }: { id: Interest["id"] }) {
   );
 }
 
+// Toronto skyline silhouette for the Food and culture card, seen from the lake.
+// The CN Tower is drawn to its real proportions (553 m, main pod at 346 m,
+// SkyPod at 447 m) and sits at the centre so narrow cards only crop the edges.
+function TorontoSkyline() {
+  return (
+    <svg
+      className="skyline"
+      viewBox="0 0 480 120"
+      preserveAspectRatio="xMidYMax slice"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {/* condos to the west */}
+      <path d="M0 120V96h14v24ZM16 120V84h10v36ZM28 120V94h4v-4h8v30ZM42 120V78h10v42ZM54 120V88h14v32ZM70 120V72h10v48Z" />
+      <path d="M82 120V86h4v-4h10v38ZM98 120V92h12v28ZM112 120V80h12v40ZM126 120V86h12v34ZM140 120V76h10v44ZM152 120V90h12v30ZM166 120V98h10v22Z" />
+      {/* Rogers Centre */}
+      <path d="M178 120v-12c4-7 14-10 26-10s22 3 26 10v12Z" />
+      {/* CN Tower */}
+      <path d="M246.3 120L245.3 113L244.5 105.9L243.8 98.9L243.2 91.8L242.7 84.8L242.3 77.8L242 70.7L241.8 63.7L241.7 56.6L241.7 49.6L241.8 48.7L247 46.2L247.3 46L247.3 43.6L245.4 42.3L245.8 41.9L245.8 40.8L242.2 39.3L241.2 38.5L241.1 25.7L242.3 24.6L242.3 22.9L240.9 22.1L240.8 13.3L240.6 12.7L240.4 4.8L240.2 2L239.8 2L239.6 4.8L239.4 12.7L239.2 13.3L239.1 22.1L237.7 22.9L237.7 24.6L238.9 25.7L238.8 38.5L237.8 39.3L234.2 40.8L234.2 41.9L234.6 42.3L232.7 43.6L232.7 46L233 46.2L238.2 48.7L238.3 49.6L238.3 56.6L238.2 63.7L238 70.7L237.7 77.8L237.3 84.8L236.8 91.8L236.2 98.9L235.5 105.9L234.7 113L233.7 120Z" />
+      {/* financial district to the east */}
+      <path d="M250 120v-10h22v10ZM274 120V74h12v46ZM288 120V66l7-4 7 4v54ZM304 120V56h14v64ZM310.5 56v-6h1v6ZM320 120V70h12v50ZM334 120V64h4v-2h8v58Z" />
+      <path d="M348 120V76h12v44ZM362 120V68h12v52ZM376 120V82h14v38ZM392 120V74h10v46ZM404 120V88h14v32ZM420 120V80h10v40ZM432 120V94h14v26ZM448 120V86h12v34ZM462 120v-18h18v18Z" />
+    </svg>
+  );
+}
+
 // Links to other sites open in a new tab so the portfolio stays open behind them.
 // Screen readers hear that the link opens a new tab.
 function ExternalLink({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
@@ -255,6 +281,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="interest-text">{interest.text}</p>
+                {interest.id === "food" && <TorontoSkyline />}
               </li>
             ))}
           </ul>
