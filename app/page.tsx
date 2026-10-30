@@ -37,6 +37,15 @@ function GitHubIcon() {
   );
 }
 
+function PinIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" className="pin-icon">
+      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </svg>
+  );
+}
+
 // Links to other sites open in a new tab so the portfolio stays open behind them.
 // Screen readers hear that the link opens a new tab.
 function ExternalLink({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
@@ -133,6 +142,10 @@ export default function Home() {
               </h1>
               <p className="hero-headline reveal">{profile.headline}</p>
               <p className="hero-intro reveal">{profile.intro}</p>
+              <p className="hero-location reveal">
+                <PinIcon />
+                {profile.location}
+              </p>
               <div className="actions reveal">
                 <a className="button button-primary" href={`mailto:${profile.email}`}>
                   Email me

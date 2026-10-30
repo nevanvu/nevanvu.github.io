@@ -6,6 +6,7 @@ export const profile = {
   role: "DevOps and cloud infrastructure",
   headline: "I build, test, and automate software solutions.",
   intro: "Computer science student at University of Ottawa.",
+  location: "Toronto, Canada",
   availability: "Open to DevOps, QA, Platform and Cloud roles",
   email: "nevanvu@gmail.com",
   resume: "/resume.pdf", // TODO: add resume.pdf to the public/ folder

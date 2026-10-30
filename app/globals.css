@@ -655,12 +655,33 @@ a {
   margin-top: var(--space-4);
 }
 
+.hero-location {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+.hero-text > .hero-location {
+  margin-top: var(--space-3);
+}
+
+.pin-icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .stage-body > .actions,
 .hero-text > .actions {
   margin-top: var(--space-6);
 }
 
-/* The page-load sequence: four lines settle in, once. */
+/* The page-load sequence: five lines settle in, once. */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     animation: settle 720ms var(--ease-out) both;
@@ -673,6 +694,9 @@ a {
   }
   .reveal:nth-child(4) {
     animation-delay: 270ms;
+  }
+  .reveal:nth-child(5) {
+    animation-delay: 360ms;
   }
   /* the photo settles in alongside the headline */
   .hero-photo {
