@@ -40,7 +40,7 @@ export const experience: Role[] = [
     org: "Export Development Canada",
     dates: "Jul 2025 – Aug 2026",
     points: [
-      "Worked within the DevSecOps Platform team to build test automation and maintain CI/CD pipelines across multiple production applications at EDC.",
+      "Worked within the DevSecOps Platform team to build test automation and maintain CI/CD pipelines across 5 production applications at EDC.",
     ],
   },
 ];
