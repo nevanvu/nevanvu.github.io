@@ -5,7 +5,7 @@ export const profile = {
   name: "Nevan Vu",
   role: "DevOps and cloud infrastructure",
   headline: "I build, test, and automate software solutions.",
-  intro: "Computer science student at University of Ottawa.",
+  intro: "Computer Science student at University of Ottawa.",
   location: "Toronto, Canada",
   availability: "Open to DevOps, QA, Platform and Cloud roles",
   email: "nevanvu@gmail.com",
