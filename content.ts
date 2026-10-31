@@ -19,7 +19,7 @@ export const about = [
   "Right now I'm picking up new tools and technologies by building personal projects, and sharpening the skills I picked up writing automated tests and CI/CD for production applications.",
 ];
 
-export const focus = ["CI/CD pipelines", "Test automation", "Cloud infrastructure", "DevSecOps"];
+export const focus = ["Test Automation", "CI/CD pipelines", "Cloud Infrastructure", "DevSecOps"];
 
 export type Role = {
   title: string;
