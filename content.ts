@@ -16,7 +16,7 @@ export const profile = {
 
 export const about = [
   "I enjoy building solutions where thoughtful design leads to functional results.",
-  "Right now I'm building personal projects with AI as a pair programmer, and sharpening the skills I picked up writing automated tests and CI/CD for production applications.",
+  "Right now I'm picking up new tools and technologies by building personal projects, and sharpening the skills I picked up writing automated tests and CI/CD for production applications.",
 ];
 
 export const focus = ["CI/CD pipelines", "Test automation", "Cloud infrastructure", "DevSecOps"];
