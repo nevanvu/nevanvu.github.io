@@ -297,7 +297,11 @@ export default function Home() {
               <li key={interest.id} className="interest" data-interest={interest.id}>
                 <div className="interest-head">
                   <span className="interest-icon" aria-hidden="true">
-                    <InterestIcon id={interest.id} />
+                    {interest.id === "raptors" ? (
+                      <img className="team-logo" src={`${base}/raptors-logo.png`} width={160} height={160} alt="" />
+                    ) : (
+                      <InterestIcon id={interest.id} />
+                    )}
                   </span>
                   <div>
                     <h3 className="interest-name">{interest.name}</h3>
