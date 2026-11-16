@@ -1,17 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Bodoni_Moda, Geist, Martian_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import { profile } from "@/content";
 import "./globals.css";
 
-const sans = Geist({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const display = Bodoni_Moda({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-  weight: "variable",
-  axes: ["opsz"],
-});
-const mono = Martian_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
+// Apple devices render in SF Pro via the system stack; Geist is the close
+// stand-in everywhere else.
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
 
 export const metadata: Metadata = {
   title: `${profile.name}, ${profile.role}`,
@@ -19,8 +13,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0e0b09",
+  themeColor: "#14161a",
   colorScheme: "dark",
+  viewportFit: "cover",
 };
 
 // Runs before paint: flags that JS is available, so the pipeline can start
@@ -29,7 +24,7 @@ const bootScript = `document.documentElement.classList.add('js');`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={geist.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { PipelineController } from "@/components/PipelineController";
 import { StageIcon } from "@/components/StageIcon";
 import { about, contact, experience, focus, offCourt, profile, projects, type Interest } from "@/content";
@@ -12,29 +13,96 @@ const stages = [
 
 type StageId = (typeof stages)[number]["id"];
 
+const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 function Stage({ id, gate, children }: { id: StageId; gate?: boolean; children: React.ReactNode }) {
   const label = stages.find((s) => s.id === id)!.label;
   return (
     <section id={id} className="stage" data-stage data-gate={gate || undefined} aria-labelledby={`${id}-title`}>
-      {/* Sticks under the site header while the stage is on screen, so you can watch it pass. */}
       <div className="stage-head">
         <span className="stage-node" aria-hidden="true">
           <StageIcon />
         </span>
-        <span className="stage-status" aria-hidden="true" />
         <h2 id={`${id}-title`} className="stage-title">
           {label}
         </h2>
+        <span className="stage-status" aria-hidden="true" />
       </div>
       <div className="stage-body">{children}</div>
     </section>
   );
 }
 
+// Line icons, 24px grid, drawn to one stroke weight.
+function NavIcon({ id }: { id: StageId }) {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" className="line-icon">
+      {id === "about" && (
+        <>
+          <circle cx="12" cy="8" r="3.75" />
+          <path d="M4.5 20c1.4-3.7 4.2-5.5 7.5-5.5s6.1 1.8 7.5 5.5" />
+        </>
+      )}
+      {id === "experience" && (
+        <>
+          <rect x="3.5" y="7" width="17" height="12.5" rx="2.5" />
+          <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3.5 12.5h17" />
+        </>
+      )}
+      {id === "projects" && (
+        <>
+          <rect x="4" y="4" width="6.5" height="6.5" rx="1.75" />
+          <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.75" />
+          <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.75" />
+          <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.75" />
+        </>
+      )}
+      {id === "off-court" && (
+        <>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M12 3.5v17M3.5 12h17M6 6a9 9 0 0 1 0 12M18 6a9 9 0 0 0 0 12" />
+        </>
+      )}
+      {id === "contact" && (
+        <>
+          <rect x="3.5" y="5.5" width="17" height="13" rx="2.5" />
+          <path d="m4 7.5 8 5.5 8-5.5" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 function GitHubIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" className="brand-icon">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" className="brand-icon">
       <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.38 7.86 10.9.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z" />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" className="brand-icon">
+      <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4v-11Z" />
+    </svg>
+  );
+}
+
+function DocIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" className="line-icon">
+      <path d="M7 3.5h6.5L18 8v11a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V5a1.5 1.5 0 0 1 1-1.5Z" />
+      <path d="M13 3.5V8h5M9 12.5h6M9 16h6" />
+    </svg>
+  );
+}
+
+function MailIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" className="line-icon">
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2.5" />
+      <path d="m4 7.5 8 5.5 8-5.5" />
     </svg>
   );
 }
@@ -109,15 +177,15 @@ function ExternalLink({ href, className, children }: { href: string; className?:
 // Square headshot in AVIF, WebP and JPEG at 320px and 640px; the browser picks
 // the smallest file that stays sharp. Regenerate these when the photo changes.
 function Headshot() {
-  const base = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/headshot`;
-  const set = (ext: string) => `${base}-320.${ext} 320w, ${base}-640.${ext} 640w`;
-  const sizes = "(min-width: 960px) 17rem, 7rem";
+  const src = `${base}/headshot`;
+  const set = (ext: string) => `${src}-320.${ext} 320w, ${src}-640.${ext} 640w`;
+  const sizes = "(min-width: 640px) 4.5rem, 3.5rem";
   return (
     <picture className="hero-photo">
       <source type="image/avif" srcSet={set("avif")} sizes={sizes} />
       <source type="image/webp" srcSet={set("webp")} sizes={sizes} />
       <img
-        src={`${base}-640.jpg`}
+        src={`${src}-640.jpg`}
         srcSet={set("jpg")}
         sizes={sizes}
         width={640}
@@ -132,58 +200,51 @@ function Headshot() {
 
 export default function Home() {
   const year = new Date().getFullYear();
-  const resumeHref = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${profile.resume}`;
+  const resumeHref = `${base}${profile.resume}`;
+  // The room behind the glass. Drop a photo at public/room.jpg; until then
+  // the CSS-drawn room underneath shows instead.
+  const roomStyle = { "--room": `url("${base}/room.jpg")` } as CSSProperties;
 
   return (
     <>
+      <div className="room" style={roomStyle} aria-hidden="true" />
+
       <a className="skip-link" href="#about">
         Skip to content
       </a>
 
-      <header className="site-header">
-        <div className="header-inner">
-          <a className="wordmark" href="#top">
-            {profile.name}
-          </a>
-          <nav className="stage-nav" aria-label="Sections">
-            <ol>
-              {stages.map((s) => (
-                <li key={s.id}>
-                  <a href={`#${s.id}`} data-nav-for={s.id}>
-                    <span className="nav-dot" aria-hidden="true" />
-                    {s.label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-          <div className="header-actions">
-            <a
-              className="icon-button header-github"
-              href={profile.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub profile (opens in a new tab)"
-            >
-              <GitHubIcon />
-            </a>
+      <div className="scene">
+        {/* The tab bar ornament: a vertical glass strip beside the window on
+            wide screens, a bar along the bottom on phones. */}
+        <nav className="ornament glass" aria-label="Sections">
+          <ol>
+            {stages.map((s) => (
+              <li key={s.id}>
+                <a href={`#${s.id}`} data-nav-for={s.id}>
+                  <NavIcon id={s.id} />
+                  <span className="ornament-label">{s.label}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <main id="top" className="window main-window glass pipeline" data-pipeline>
+          <div className="rail" aria-hidden="true">
+            <span className="rail-fill" />
           </div>
-        </div>
-        <span className="page-progress" data-page-progress aria-hidden="true" />
-      </header>
 
-      <main id="top" className="pipeline" data-pipeline>
-        <div className="rail" aria-hidden="true">
-          <span className="rail-fill" />
-        </div>
+          <div className="toolbar">
+            <p className="availability">
+              <span className="availability-dot" aria-hidden="true" />
+              {profile.availability}
+            </p>
+          </div>
 
-        <section className="hero stage" data-trigger aria-labelledby="hero-title">
-          <span className="stage-node" aria-hidden="true">
-            <StageIcon />
-          </span>
-          <p className="hero-availability stage-title">{profile.availability}</p>
-          <div className="stage-body">
-            <Headshot />
+          <section className="hero stage" data-trigger aria-labelledby="hero-title">
+            <span className="stage-node hero-node">
+              <Headshot />
+            </span>
             <div className="hero-text">
               <h1 id="hero-title" className="hero-name reveal">
                 {profile.name}
@@ -203,122 +264,171 @@ export default function Home() {
                 </a>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <Stage id="about">
-          {about.map((p) => (
-            <p key={p} className="prose">
-              {p}
-            </p>
-          ))}
+          <Stage id="about">
+            {about.map((p) => (
+              <p key={p} className="prose">
+                {p}
+              </p>
+            ))}
+          </Stage>
+
+          <Stage id="experience">
+            <ol className="jobs">
+              {experience.map((role) => (
+                <li key={`${role.title}-${role.org}`} className="job">
+                  <div className="job-head">
+                    <h3 className="job-title">
+                      {role.title}
+                      <span className="job-org">{role.org}</span>
+                    </h3>
+                    <p className="job-meta">{role.dates}</p>
+                  </div>
+                  <ul className="job-points">
+                    {role.points.map((p) => (
+                      <li key={p}>{p}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ol>
+          </Stage>
+
+          <Stage id="projects">
+            <ul className="jobs">
+              {projects.map((project, i) => (
+                <li key={i} className="job" data-placeholder={project.placeholder || undefined}>
+                  <div className="job-head">
+                    <h3 className="job-title">
+                      {project.name}
+                      {project.placeholder && <span className="tag">Placeholder</span>}
+                    </h3>
+                    {(project.repo || project.live) && (
+                      <p className="job-links">
+                        {project.repo && <ExternalLink href={project.repo}>Code</ExternalLink>}
+                        {project.live && <ExternalLink href={project.live}>Live site</ExternalLink>}
+                      </p>
+                    )}
+                  </div>
+                  <p className="job-summary">{project.summary}</p>
+                  <ul className="stack" aria-label="Built with">
+                    {project.stack.map((tool, j) => (
+                      <li key={j}>{tool}</li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </Stage>
+
+          <Stage id="off-court">
+            <p className="prose">{offCourt.lead}</p>
+            <ul className="interests">
+              {offCourt.interests.map((interest) => (
+                <li key={interest.id} className="interest" data-interest={interest.id}>
+                  <div className="interest-head">
+                    <span className="interest-icon" aria-hidden="true">
+                      <InterestIcon id={interest.id} />
+                    </span>
+                    <div>
+                      <h3 className="interest-name">{interest.name}</h3>
+                      <p className="interest-meta">{interest.meta}</p>
+                    </div>
+                  </div>
+                  <p className="interest-text">{interest.text}</p>
+                  {interest.id === "food" && <TorontoSkyline />}
+                </li>
+              ))}
+            </ul>
+          </Stage>
+
+          <Stage id="contact" gate>
+            <p className="contact-lead">{contact.lead}</p>
+            <div className="actions">
+              <a className="button button-primary" href={`mailto:${profile.email}`}>
+                Email me
+              </a>
+              <ExternalLink className="button" href={profile.linkedin}>
+                Connect on LinkedIn
+              </ExternalLink>
+            </div>
+          </Stage>
+        </main>
+
+        {/* The side window: what I focus on and where to find me. */}
+        <aside className="window side-window glass" aria-labelledby="side-title">
+          <div className="side-head">
+            <h2 id="side-title" className="side-name">
+              {profile.name}
+            </h2>
+            <p className="side-role">{profile.role}</p>
+          </div>
+
+          <h3 className="side-heading">Focus</h3>
           <ul className="focus-list" aria-label="Focus areas">
             {focus.map((f) => (
               <li key={f}>{f}</li>
             ))}
           </ul>
-        </Stage>
 
-        <Stage id="experience">
-          <ol className="jobs">
-            {experience.map((role) => (
-              <li key={`${role.title}-${role.org}`} className="job">
-                <div className="job-head">
-                  <h3 className="job-title">
-                    {role.title}
-                    <span className="job-org">{role.org}</span>
-                  </h3>
-                  <p className="job-meta">{role.dates}</p>
-                </div>
-                <ul className="job-points">
-                  {role.points.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ol>
-        </Stage>
-
-        <Stage id="projects">
-          <ul className="jobs">
-            {projects.map((project, i) => (
-              <li key={i} className="job" data-placeholder={project.placeholder || undefined}>
-                <div className="job-head">
-                  <h3 className="job-title">
-                    {project.name}
-                    {project.placeholder && <span className="tag">Placeholder</span>}
-                  </h3>
-                  {(project.repo || project.live) && (
-                    <p className="job-links">
-                      {project.repo && <ExternalLink href={project.repo}>Code</ExternalLink>}
-                      {project.live && <ExternalLink href={project.live}>Live site</ExternalLink>}
-                    </p>
-                  )}
-                </div>
-                <p className="job-summary">{project.summary}</p>
-                <ul className="stack" aria-label="Built with">
-                  {project.stack.map((tool, j) => (
-                    <li key={j}>{tool}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </Stage>
-
-        <Stage id="off-court">
-          <p className="prose">{offCourt.lead}</p>
-          <ul className="interests">
-            {offCourt.interests.map((interest) => (
-              <li key={interest.id} className="interest" data-interest={interest.id}>
-                <div className="interest-head">
-                  <span className="interest-icon" aria-hidden="true">
-                    <InterestIcon id={interest.id} />
-                  </span>
-                  <div>
-                    <h3 className="interest-name">{interest.name}</h3>
-                    <p className="interest-meta">{interest.meta}</p>
-                  </div>
-                </div>
-                <p className="interest-text">{interest.text}</p>
-                {interest.id === "food" && <TorontoSkyline />}
-              </li>
-            ))}
-          </ul>
-        </Stage>
-
-        <Stage id="contact" gate>
-          <p className="contact-lead">{contact.lead}</p>
-          <div className="actions">
-            <a className="button button-primary" href={`mailto:${profile.email}`}>
-              Email me
-            </a>
-            <ExternalLink className="button" href={profile.linkedin}>
-              Connect on LinkedIn
-            </ExternalLink>
-          </div>
-          <ul className="contact-links">
+          <h3 className="side-heading">Find me</h3>
+          <ul className="link-rows">
             <li>
-              <ExternalLink href={profile.github}>GitHub</ExternalLink>
+              <span className="row-icon" aria-hidden="true">
+                <GitHubIcon />
+              </span>
+              <span className="row-text">
+                <span className="row-title">GitHub</span>
+                <span className="row-sub">{profile.github.replace("https://", "")}</span>
+              </span>
+              <ExternalLink className="row-action" href={profile.github}>
+                Open<span className="sr-only"> GitHub</span>
+              </ExternalLink>
             </li>
             <li>
-              <a href={resumeHref} download>
-                Resume
+              <span className="row-icon" aria-hidden="true">
+                <LinkedInIcon />
+              </span>
+              <span className="row-text">
+                <span className="row-title">LinkedIn</span>
+                <span className="row-sub">Nevan Vu</span>
+              </span>
+              <ExternalLink className="row-action" href={profile.linkedin}>
+                Open<span className="sr-only"> LinkedIn</span>
+              </ExternalLink>
+            </li>
+            <li>
+              <span className="row-icon" aria-hidden="true">
+                <DocIcon />
+              </span>
+              <span className="row-text">
+                <span className="row-title">Resume</span>
+                <span className="row-sub">PDF</span>
+              </span>
+              <a className="row-action" href={resumeHref} download>
+                Get<span className="sr-only"> resume</span>
               </a>
             </li>
             <li>
-              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              <span className="row-icon" aria-hidden="true">
+                <MailIcon />
+              </span>
+              <span className="row-text">
+                <span className="row-title">Email</span>
+                <span className="row-sub">{profile.email}</span>
+              </span>
+              <a className="row-action" href={`mailto:${profile.email}`}>
+                Write<span className="sr-only"> an email</span>
+              </a>
             </li>
           </ul>
-        </Stage>
-      </main>
 
-      <footer className="site-footer">
-        <p>
-          © {year} {profile.name}
-        </p>
-      </footer>
+          <p className="side-footer">
+            © {year} {profile.name}
+          </p>
+        </aside>
+      </div>
 
       <PipelineController />
     </>
