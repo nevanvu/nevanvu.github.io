@@ -1,41 +1,51 @@
 /* ---------- Tokens ---------- */
-/* visionOS: grey frosted windows floating in a real room. */
+/* visionOS: grey frosted glass floating in front of a room photo. */
 :root {
   color-scheme: dark;
 
-  --ink: #ffffff;
-  --ink-2: rgb(255 255 255 / 0.72);
-  --ink-3: rgb(255 255 255 / 0.5);
-  --rule: rgb(255 255 255 / 0.12);
-  --track: rgb(255 255 255 / 0.16);
-  --fill-1: rgb(255 255 255 / 0.08);
-  --fill-2: rgb(255 255 255 / 0.14);
-  --fill-3: rgb(255 255 255 / 0.22);
-  --recess: rgb(0 0 0 / 0.16);
+  --espresso: #1c1d21; /* deepest surface, node rings */
+  --walnut: #2c2e33; /* solid fallback for glass */
+  --champagne: #ffffff;
+  --taupe: rgb(255 255 255 / 0.72);
+  --brass: rgb(255 255 255 / 0.55); /* neutral accent */
+  --brass-2: rgb(255 255 255 / 0.85);
+  --filament: #ffffff;
 
-  /* Apple system colours, dark variants */
+  /* semantic */
+  --paper: var(--espresso);
+  --ink: var(--champagne);
+  --ink-2: var(--taupe);
+  --rule: rgb(255 255 255 / 0.12);
+  --track: rgb(255 255 255 / 0.22);
   --pass: #30d158;
   --run: #ff9f0a;
-  --queued: rgb(255 255 255 / 0.4);
+  --queued: rgb(255 255 255 / 0.5);
   --focus: #64d2ff;
   --raptors: #ff5a76;
 
   /* glass */
-  --glass-bg: rgb(52 54 60 / 0.42);
+  --glass-fill: linear-gradient(160deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03));
+  --glass-tint: rgb(52 54 60 / 0.42);
+  --glass-edge: rgb(255 255 255 / 0.12);
+  --glass-shine: inset 0 1px 0 rgb(255 255 255 / 0.16);
+  --glass-drop: 0 30px 60px -24px rgb(0 0 0 / 0.55);
   --glass-blur: blur(40px) saturate(1.7);
-  --glass-edge: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 0 0 1px rgb(255 255 255 / 0.07);
-  --glass-drop: 0 40px 80px -24px rgb(0 0 0 / 0.55);
+  --tile-fill: rgb(0 0 0 / 0.16);
+  --radius-panel: 18px;
+  --radius-bar: 14px;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-geist), system-ui, sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-sans);
 
-  --fs-xs: 0.8125rem;
+  /* Type scale, ratio ~1.25 */
+  --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-base: 1.0625rem;
-  --fs-md: 1.1875rem;
-  --fs-lg: 1.375rem;
-  --fs-xl: 1.75rem;
-  --fs-hero: clamp(2.75rem, 1.6rem + 4.6vw, 4.5rem);
+  --fs-md: 1.25rem;
+  --fs-lg: 1.5rem;
+  --fs-xl: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  --fs-hero: clamp(3.25rem, 1.4rem + 8vw, 8rem);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -45,22 +55,32 @@
   --space-6: 2rem;
   --space-7: 3rem;
   --space-8: 4rem;
+  --space-9: 6rem;
 
   --gutter: 1rem;
-  --win-pad: var(--space-5);
-  --node: 1.5rem;
-  --node-col: 3.5rem;
-  --col-gap: var(--space-4);
-  --body-inset: calc(var(--node-col) + var(--col-gap));
+  --node: 1.25rem;
+  --node-col: 1.75rem;
+  --meta-col: 0rem;
+  --panel-pad: var(--space-5);
+  --panel-max: 40rem;
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --header-top: var(--space-3);
+  --header-h: 3.5rem;
+  --header-total: calc(var(--header-top) + var(--header-h));
 }
 
 @media (min-width: 640px) {
   :root {
     --gutter: 2rem;
-    --win-pad: var(--space-7);
-    --node-col: 4.5rem;
-    --col-gap: var(--space-5);
+    --panel-pad: var(--space-6);
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --gutter: 3rem;
+    --meta-col: 6.5rem;
+    --node-col: 2.5rem;
   }
 }
 
@@ -78,8 +98,8 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: var(--space-7);
-  background: #14161a;
+  scroll-padding-top: calc(var(--header-total) + var(--space-7));
+  background: var(--espresso);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -93,11 +113,56 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: var(--fs-base);
-  line-height: 1.55;
-  letter-spacing: -0.005em;
+  line-height: 1.6;
   font-kerning: normal;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+}
+
+/* ---------- The room ---------- */
+/* The photo behind the glass (public/room.jpg), with a light scrim so white
+   text holds; a dark gradient shows if the photo is missing. */
+.room {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.42)),
+    var(--room, none) center / cover no-repeat,
+    linear-gradient(180deg, #2a2c31, #141518);
+}
+
+/* Shared smoked-glass surface. */
+.site-header .header-inner,
+.stage-head::before,
+.stage[data-stage] > .stage-body,
+.hero > .stage-body,
+.hero-availability,
+.skip-link {
+  background: var(--glass-fill), var(--glass-tint);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-shine), var(--glass-drop);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+@media (max-width: 639px) {
+  :root {
+    --glass-blur: blur(24px) saturate(1.5);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header .header-inner,
+  .stage-head::before,
+  .stage[data-stage] > .stage-body,
+  .hero > .stage-body,
+  .hero-availability,
+  .skip-link {
+    background: var(--walnut);
+  }
 }
 
 ul,
@@ -108,17 +173,20 @@ ol {
 a {
   color: inherit;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
+  text-underline-offset: 0.22em;
+  text-decoration-color: rgb(255 255 255 / 0.5);
+  transition: color 150ms ease, text-decoration-color 150ms ease;
 }
 
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
-  border-radius: 10px;
+  border-radius: 6px;
 }
 
 ::selection {
-  background: rgb(100 210 255 / 0.35);
+  background: rgb(255 255 255 / 0.35);
+  color: var(--champagne);
 }
 
 .skip-link {
@@ -127,15 +195,15 @@ a {
   top: -100px;
   z-index: 20;
   padding: var(--space-2) var(--space-4);
+  color: var(--ink);
   border-radius: 999px;
-  background: #fff;
-  color: #000;
 }
 
 .skip-link:focus {
   top: var(--space-2);
 }
 
+/* Read by screen readers, hidden on screen */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -148,308 +216,259 @@ a {
   border: 0;
 }
 
-.line-icon {
-  flex: none;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.brand-icon {
-  flex: none;
-  fill: currentColor;
-}
-
-/* ---------- The room ---------- */
-/* Your photo (public/room.jpg) sits on top. Underneath, a CSS-drawn night
-   penthouse shows until the photo exists: warm cove-lit ceiling, a glass wall
-   with a city glittering below the hills, and a dark stone floor. */
-.room {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    /* recessed ceiling spots */
-    radial-gradient(circle at 18% 9%, rgb(255 214 160 / 0.9) 0 2px, rgb(255 190 120 / 0.25) 3px, transparent 28px),
-    radial-gradient(circle at 38% 9%, rgb(255 214 160 / 0.9) 0 2px, rgb(255 190 120 / 0.25) 3px, transparent 28px),
-    radial-gradient(circle at 58% 9%, rgb(255 214 160 / 0.9) 0 2px, rgb(255 190 120 / 0.25) 3px, transparent 28px),
-    radial-gradient(circle at 78% 9%, rgb(255 214 160 / 0.9) 0 2px, rgb(255 190 120 / 0.25) 3px, transparent 28px),
-    /* fireplace glow, lower left */
-    radial-gradient(ellipse 30% 14% at 8% 66%, rgb(255 140 50 / 0.55), transparent 70%),
-    /* warm wash spilling from the cove onto the ceiling */
-    radial-gradient(ellipse 70% 30% at 40% 24%, rgb(214 150 80 / 0.28), transparent 70%),
-    /* cove light line where ceiling meets the glass */
-    linear-gradient(180deg, transparent 0 25.6%, rgb(255 200 130 / 0.75) 25.8%, rgb(255 180 100 / 0.2) 26.4%, transparent 27.5%),
-    /* hills on the horizon */
-    radial-gradient(ellipse 40% 9% at 30% 46%, #141a24 0 98%, transparent 100%),
-    radial-gradient(ellipse 45% 11% at 82% 45%, #121822 0 98%, transparent 100%),
-    /* ceiling / night sky through glass / city band / stone floor */
-    linear-gradient(
-      180deg,
-      #1d1a17 0%,
-      #2a2420 25.7%,
-      #1a2436 26%,
-      #2b3a58 40%,
-      #3b4766 45%,
-      #1b202b 48%,
-      #241f1a 62%,
-      #191714 68%,
-      #2a2724 82%,
-      #12110f 100%
-    );
-}
-
-/* the city: two grids of warm points, kept to a band below the hills */
-.room::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 47%;
-  height: 15%;
-  background:
-    radial-gradient(circle, rgb(255 210 140 / 0.95) 0 1px, transparent 1.6px) 0 0 / 13px 9px,
-    radial-gradient(circle, rgb(255 236 200 / 0.8) 0 0.8px, transparent 1.4px) 5px 4px / 19px 7px,
-    radial-gradient(circle, rgb(180 210 255 / 0.6) 0 0.8px, transparent 1.4px) 9px 2px / 23px 11px;
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 25%, rgb(0 0 0 / 0.6) 75%, transparent);
-  mask-image: linear-gradient(180deg, transparent, #000 25%, rgb(0 0 0 / 0.6) 75%, transparent);
-  opacity: 0.85;
-}
-
-/* the photo, with a light scrim so white text holds on the glass */
-.room::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.28)),
-    var(--room, none) center / cover no-repeat;
-}
-
-/* ---------- Glass ---------- */
-.glass {
-  background: var(--glass-bg);
-  box-shadow: var(--glass-edge), var(--glass-drop);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-}
-
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass {
-    background: rgb(44 46 52 / 0.94);
-  }
-}
-
-/* ---------- Scene layout ---------- */
-/* Phones: one window, then the side window, with the tab bar along the bottom.
-   Tablets: window and side window side by side.
-   Wide: tab bar ornament | window | side window, like a visionOS app. */
-.scene {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "main"
-    "side";
-  gap: var(--space-5);
-  max-width: 82rem;
-  margin: 0 auto;
-  padding: var(--space-5) var(--gutter) calc(6.5rem + env(safe-area-inset-bottom));
-}
-
-.window {
-  position: relative;
-  min-width: 0;
-}
-
-.main-window {
-  grid-area: main;
-  padding: var(--space-4) var(--win-pad) var(--win-pad);
-  border-radius: 36px;
-}
-
-.side-window {
-  grid-area: side;
-  padding: var(--space-5);
-  border-radius: 32px;
-}
-
-@media (min-width: 640px) {
-  .scene {
-    padding-top: var(--space-7);
-  }
-  .main-window {
-    border-radius: 44px;
-  }
-}
-
-@media (min-width: 900px) {
-  .scene {
-    grid-template-columns: minmax(0, 1fr) minmax(17rem, 20rem);
-    grid-template-areas: "main side";
-    align-items: start;
-  }
-  .side-window {
-    position: sticky;
-    top: var(--space-7);
-  }
-}
-
-@media (min-width: 1180px) {
-  .scene {
-    grid-template-columns: 11.5rem minmax(0, 46rem) minmax(17rem, 20rem);
-    grid-template-areas: "nav main side";
-    justify-content: center;
-    padding-bottom: var(--space-8);
-  }
-}
-
-/* ---------- Ornament (tab bar) ---------- */
-.ornament {
-  position: fixed;
+/* ---------- Header ---------- */
+/* A floating glass bar, inset from the edges like a visionOS window. */
+.site-header {
+  position: sticky;
+  top: 0;
   z-index: 10;
-  left: 50%;
-  bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
-  padding: var(--space-1);
-  border-radius: 28px;
+  padding: var(--header-top) var(--gutter) 0;
+  pointer-events: none;
 }
 
-.ornament ol {
+.header-inner {
+  position: relative;
   display: flex;
-}
-
-.ornament a {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
-  min-width: 58px;
-  min-height: 52px;
-  padding: var(--space-1) var(--space-2);
-  white-space: nowrap;
-  border-radius: 22px;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  color: var(--ink-2);
+  gap: var(--space-4);
+  max-width: calc(72rem - 2 * var(--gutter));
+  height: var(--header-h);
+  margin: 0 auto;
+  padding: 0 var(--space-2) 0 var(--space-5);
+  border-radius: var(--radius-panel);
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.015em;
   text-decoration: none;
-  transition: background-color 180ms ease, color 180ms ease;
+  margin-right: auto;
+  padding: var(--space-2) 0;
 }
 
-.ornament a:hover {
-  background: var(--fill-1);
-  color: var(--ink);
+.stage-nav {
+  display: none;
 }
 
-.ornament a[aria-current] {
-  background: var(--fill-2);
-  color: var(--ink);
-}
-
-.ornament a[data-state="passed"] {
-  color: var(--ink);
-}
-
-@media (min-width: 1180px) {
-  .ornament {
-    grid-area: nav;
-    position: sticky;
-    top: 30vh;
-    left: auto;
-    bottom: auto;
-    transform: none;
-    align-self: start;
-    padding: var(--space-2);
-  }
-  .ornament ol {
-    flex-direction: column;
-    gap: 2px;
-  }
-  .ornament a {
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: var(--space-3);
-    min-height: 44px;
-    padding: 0 var(--space-3);
-    border-radius: 16px;
-    font-size: var(--fs-sm);
-  }
-}
-
-/* ---------- Toolbar ---------- */
-.toolbar {
+.stage-nav ol {
   display: flex;
-  justify-content: center;
-  margin-bottom: var(--space-6);
+  align-items: center;
 }
 
-.availability {
-  display: inline-flex;
+.stage-nav a {
+  display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 40px;
-  padding: var(--space-2) var(--space-4);
-  border-radius: 999px;
-  background: var(--recess);
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.2), inset 0 -1px 0 rgb(255 255 255 / 0.06);
+  min-height: 44px;
+  padding: 0 var(--space-3);
   font-size: var(--fs-sm);
   color: var(--ink-2);
-  text-align: center;
-  line-height: 1.35;
+  text-decoration: none;
+  transition: color 150ms ease;
 }
 
-.availability-dot {
-  flex: none;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: var(--pass);
-  box-shadow: 0 0 8px rgb(48 209 88 / 0.7);
+.stage-nav a:hover,
+.stage-nav a[aria-current] {
+  color: var(--ink);
 }
 
-/* ---------- Pipeline: the thread between posts ---------- */
-.stage {
-  position: relative;
-}
-
-.hero {
-  display: grid;
-  grid-template-columns: var(--node-col) minmax(0, 1fr);
-  column-gap: var(--col-gap);
-  align-items: start;
-  padding-bottom: var(--space-7);
-}
-
-.stage[data-stage] {
-  padding: var(--space-6) 0;
-}
-
-/* hairline between posts, starting past the thread */
-.stage[data-stage]::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: var(--body-inset);
-  right: 0;
-  height: 1px;
-  background: var(--rule);
-}
-
-.stage[data-gate] {
-  padding-bottom: 0;
-}
-
-.stage-head {
-  display: grid;
-  grid-template-columns: var(--node-col) minmax(0, 1fr) auto;
-  column-gap: var(--col-gap);
+.stage-nav li {
+  display: flex;
   align-items: center;
 }
 
+.stage-nav li + li::before {
+  /* the short connector between nav dots */
+  content: "";
+  width: 0.75rem;
+  height: 1px;
+  background: var(--track);
+}
+
+.nav-dot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  border: 1px solid var(--queued);
+  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease,
+    transform 200ms var(--ease-out);
+}
+
+[data-state="running"] > .nav-dot,
+[data-state="waiting"] > .nav-dot {
+  border-color: var(--run);
+  background: var(--run);
+  box-shadow: 0 0 10px rgb(255 159 10 / 0.7);
+  transform: scale(1.25);
+}
+
+[data-state="passed"] > .nav-dot {
+  border-color: var(--pass);
+  background: var(--pass);
+  box-shadow: 0 0 8px rgb(48 209 88 / 0.45);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.icon-button:hover {
+  color: var(--ink);
+  background: rgb(255 255 255 / 0.07);
+}
+
+.icon-button .brand-icon {
+  fill: currentColor;
+  stroke: none;
+}
+
+.header-github {
+  display: none;
+}
+
+/* The lit filament along the foot of the bar (phones, where the nav is hidden). */
+.page-progress {
+  position: absolute;
+  left: calc(var(--gutter) + var(--space-6));
+  right: calc(var(--gutter) + var(--space-6));
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--brass), var(--filament));
+  box-shadow: 0 0 8px rgb(255 255 255 / 0.6);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@media (min-width: 960px) {
+  .stage-nav {
+    display: block;
+  }
+  .header-github {
+    display: inline-grid;
+  }
+  .page-progress {
+    display: none;
+  }
+}
+
+/* ---------- Pipeline layout ---------- */
+.pipeline {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--space-9) var(--gutter) var(--space-9);
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: var(--node-col) minmax(0, 1fr) auto;
+  grid-template-areas:
+    "node title status"
+    ".    body  body";
+  column-gap: var(--space-3);
+  row-gap: var(--space-5);
+  align-items: center;
+  padding-bottom: var(--space-9);
+}
+
+@media (min-width: 960px) {
+  .stage {
+    grid-template-columns: var(--meta-col) var(--node-col) minmax(0, 44rem);
+    grid-template-areas:
+      "status node title"
+      ".      .    body";
+    column-gap: var(--space-4);
+  }
+}
+
+/* Content stages: a sticky head row (node, title, status) over a glass body.
+   Grid items can only stick inside their own grid row, so the section itself
+   is a plain block and the head carries the grid. */
+.stage[data-stage] {
+  display: block;
+  --stick-gap: var(--space-3);
+  --body-inset: calc(var(--node-col) + var(--space-3));
+}
+
+/* The head is a glass title bar that rides above its panel. Its blur hides
+   the panel's text as it scrolls beneath, and the node column stays clear so
+   the rail shows through. */
+.stage-head {
+  position: sticky;
+  top: calc(var(--header-total) + var(--space-4) + var(--stick-gap));
+  z-index: 2;
+  display: grid;
+  grid-template-columns: var(--node-col) minmax(0, 1fr) auto;
+  grid-template-areas: "node title status";
+  column-gap: var(--space-3);
+  align-items: center;
+  max-width: calc(var(--body-inset) + var(--panel-max));
+}
+
+.stage-head::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: calc(var(--stick-gap) * -1);
+  bottom: calc(var(--stick-gap) * -1);
+  left: var(--body-inset);
+  right: 0;
+  border-radius: var(--radius-bar);
+}
+
+.stage-head > .stage-title {
+  padding-left: var(--panel-pad);
+}
+
+.stage-head > .stage-status {
+  padding-right: var(--panel-pad);
+}
+
+.stage[data-stage] > .stage-body {
+  max-width: var(--panel-max);
+  margin-top: calc(var(--stick-gap) + var(--space-3));
+  margin-left: var(--body-inset);
+  padding: var(--panel-pad);
+  border-radius: var(--radius-panel);
+}
+
+@media (min-width: 960px) {
+  .stage[data-stage] {
+    --stick-gap: var(--space-4);
+    --body-inset: calc(var(--meta-col) + var(--node-col) + 2 * var(--space-4));
+  }
+  .stage-head {
+    grid-template-columns: var(--meta-col) var(--node-col) minmax(0, 1fr);
+    grid-template-areas: "status node title";
+    column-gap: var(--space-4);
+  }
+  .stage-head > .stage-status {
+    padding-right: 0;
+  }
+}
+
+/* A brass sconce on the rail: dark until its stage runs, then lit. */
 .stage-node {
+  grid-area: node;
   position: relative;
   z-index: 1;
   display: grid;
@@ -458,57 +477,71 @@ a {
   height: var(--node);
   justify-self: center;
   border-radius: 50%;
-  background: #45474e;
-  box-shadow: 0 0 0 3px rgb(52 54 60 / 0.9);
+  background: var(--walnut);
+  box-shadow: 0 0 0 3px var(--espresso), 0 0 0 4px rgb(255 255 255 / 0.28);
+  transition: box-shadow 300ms ease;
 }
 
-.hero-node {
-  width: var(--node-col);
-  height: var(--node-col);
-  background: none;
-  box-shadow: none;
+[data-state="running"] .stage-node,
+[data-state="waiting"] .stage-node {
+  box-shadow: 0 0 0 3px var(--espresso), 0 0 0 4px rgb(255 159 10 / 0.5), 0 0 22px rgb(255 159 10 / 0.45);
+}
+
+[data-state="passed"] .stage-node,
+:root:not(.js) .stage-node {
+  box-shadow: 0 0 0 3px var(--espresso), 0 0 0 4px rgb(255 255 255 / 0.45), 0 0 18px rgb(255 255 255 / 0.3);
 }
 
 .stage-title {
+  grid-area: title;
   font-family: var(--font-display);
   font-size: var(--fs-xl);
   font-weight: 700;
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
-.stage-status {
-  font-size: var(--fs-xs);
-  color: var(--queued);
-  white-space: nowrap;
-  transition: color 200ms ease;
-}
-
-.stage[data-stage] > .stage-body {
-  margin-top: var(--space-4);
-  margin-left: var(--body-inset);
+.stage-body {
+  grid-area: body;
+  max-width: 40rem;
 }
 
 .stage-body > * + * {
   margin-top: var(--space-5);
 }
 
+.stage-status {
+  grid-area: status;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  color: var(--queued);
+  white-space: nowrap;
+  transition: color 200ms ease;
+}
+
+@media (min-width: 960px) {
+  .stage-status {
+    text-align: right;
+  }
+}
+
 /* Status words follow the stage state; without JS everything reads as passed. */
 .stage-status::after {
-  content: "Passed";
+  content: "passed";
 }
 
 .js .stage:not([data-state]) .stage-status::after,
 [data-state="queued"] .stage-status::after {
-  content: "Queued";
+  content: "queued";
 }
 
 [data-state="running"] .stage-status::after {
-  content: "Running";
+  content: "running";
 }
 
 [data-state="waiting"] .stage-status::after {
-  content: "Waiting on you";
+  content: "waiting on you";
 }
 
 [data-state="passed"] .stage-status,
@@ -522,12 +555,12 @@ a {
 }
 
 /* ---------- Rail ---------- */
+/* Cove lighting: an unlit brass groove that glows as you read down it. */
 .rail {
   display: none;
   position: absolute;
-  width: 2px;
-  margin-left: -1px;
-  border-radius: 1px;
+  width: 1px;
+  margin-left: -0.5px;
   background: var(--track);
   pointer-events: none;
 }
@@ -538,9 +571,9 @@ a {
 
 .rail-fill {
   position: absolute;
-  inset: 0;
-  border-radius: 1px;
-  background: rgb(255 255 255 / 0.75);
+  inset: 0 -0.5px;
+  background: linear-gradient(180deg, var(--brass) 0%, var(--filament) 100%);
+  box-shadow: 0 0 6px rgb(255 255 255 / 0.9), 0 0 18px rgb(255 255 255 / 0.45), 0 0 42px rgb(0 0 0 / 0.3);
   transform: scaleY(0);
   transform-origin: top;
   will-change: transform;
@@ -579,7 +612,7 @@ a {
 
 .i-check {
   fill: none;
-  stroke: #062b12;
+  stroke: var(--espresso);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -622,6 +655,7 @@ a {
   stroke-dashoffset: 100;
 }
 
+/* running */
 [data-state="running"] .i-ring {
   opacity: 0.35;
   stroke: var(--run);
@@ -632,6 +666,7 @@ a {
   animation: spin 1s linear infinite;
 }
 
+/* waiting on approval */
 [data-state="waiting"] .i-ring {
   opacity: 1;
   stroke: var(--run);
@@ -648,9 +683,38 @@ a {
 }
 
 /* ---------- Hero ---------- */
+.hero {
+  padding-bottom: var(--space-9);
+}
+
+.hero-availability {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+.hero .stage-body {
+  max-width: none;
+}
+
+/* The hero is a glass window too, so the name holds over a bright photo. */
+.hero > .stage-body {
+  padding: var(--panel-pad);
+  border-radius: var(--radius-panel);
+}
+
+.hero-availability {
+  justify-self: start;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 10px;
+}
+
 .hero-photo {
   display: block;
-  width: 100%;
+  width: 7rem;
 }
 
 .hero-photo img {
@@ -660,28 +724,53 @@ a {
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 50%;
+  /* matches the studio backdrop so the slot reads as the photo while it loads */
   background: #74777b;
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.18), 0 10px 24px -8px rgb(0 0 0 / 0.5);
+  /* a frosted glass bezel */
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25), 0 0 0 8px rgb(255 255 255 / 0.08), 0 0 0 9px rgb(255 255 255 / 0.14),
+    0 30px 60px -16px rgb(0 0 0 / 0.6);
+}
+
+@media (min-width: 960px) {
+  .hero {
+    grid-template-columns: var(--meta-col) var(--node-col) minmax(0, 1fr);
+  }
+  .hero .stage-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(10rem, 18vw, 17rem);
+    column-gap: var(--space-7);
+    align-items: center;
+  }
+  .hero-photo {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+  }
+  .stage-body > .hero-text {
+    margin-top: 0;
+  }
 }
 
 .hero-name {
   font-family: var(--font-display);
   font-size: var(--fs-hero);
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.035em;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  margin-left: -0.04em;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 0.35);
 }
 
 .hero-headline {
   font-size: var(--fs-lg);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.015em;
-  max-width: 28ch;
+  max-width: 26ch;
 }
 
 .hero-text > .hero-headline {
-  margin-top: var(--space-4);
+  margin-top: var(--space-6);
 }
 
 .hero-intro {
@@ -690,7 +779,7 @@ a {
 }
 
 .hero-text > .hero-intro {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 .hero-location {
@@ -701,53 +790,56 @@ a {
   color: var(--ink-2);
 }
 
+.hero-location .line-icon {
+  color: var(--brass);
+}
+
 .hero-text > .hero-location {
   margin-top: var(--space-2);
 }
 
+.line-icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .stage-body > .actions,
 .hero-text > .actions {
-  margin-top: var(--space-5);
+  margin-top: var(--space-6);
 }
 
 /* The page-load sequence: five lines settle in, once. */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
-    animation: settle 700ms var(--ease-out) both;
+    animation: settle 900ms var(--ease-out) both;
   }
   .reveal:nth-child(2) {
-    animation-delay: 80ms;
+    animation-delay: 110ms;
   }
   .reveal:nth-child(3) {
-    animation-delay: 160ms;
+    animation-delay: 220ms;
   }
   .reveal:nth-child(4) {
-    animation-delay: 240ms;
+    animation-delay: 330ms;
   }
   .reveal:nth-child(5) {
-    animation-delay: 320ms;
+    animation-delay: 440ms;
   }
-  .window {
-    animation: float-in 800ms var(--ease-out) both;
-  }
-  .side-window {
-    animation-delay: 120ms;
+  /* the photo settles in alongside the headline */
+  .hero-photo {
+    animation: settle 1100ms var(--ease-out) 160ms both;
   }
 }
 
 @keyframes settle {
   from {
     opacity: 0;
-    transform: translateY(0.5rem);
-  }
-}
-
-@keyframes float-in {
-  from {
-    opacity: 0;
-    /* translate only: the rail is measured relative to the window, so a
-       scale here would skew it */
-    transform: translateY(1rem);
+    transform: translateY(0.75rem);
+    filter: blur(6px);
   }
 }
 
@@ -761,45 +853,51 @@ a {
 .button {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 48px;
   padding: 0 var(--space-5);
+  border: 1px solid rgb(255 255 255 / 0.16);
   border-radius: 999px;
   font-size: var(--fs-base);
   font-weight: 600;
   text-decoration: none;
   color: var(--ink);
-  background: var(--fill-2);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+  background: rgb(255 255 255 / 0.12);
+  box-shadow: var(--glass-shine);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   cursor: pointer;
-  transition: background-color 180ms ease, transform 150ms var(--ease-out);
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease,
+    transform 150ms var(--ease-out);
 }
 
 .button:hover {
-  background: var(--fill-3);
+  background-color: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.26);
 }
 
 .button:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .button-primary {
-  background: #fff;
+  border-color: transparent;
   color: #1c1c1e;
-  box-shadow: 0 8px 24px -10px rgb(0 0 0 / 0.5);
+  font-weight: 600;
+  background: #fff;
+  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6);
 }
 
 .button-primary:hover {
   background: rgb(255 255 255 / 0.86);
+  border-color: transparent;
 }
 
 /* ---------- Content ---------- */
 .prose {
   max-width: 62ch;
-  color: var(--ink-2);
 }
 
-.focus-list,
-.stack {
+.focus-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
@@ -808,31 +906,30 @@ a {
 .focus-list li,
 .stack li {
   padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--glass-edge);
   border-radius: 999px;
   font-size: var(--fs-sm);
-  background: var(--fill-1);
-}
-
-.stack li {
-  font-size: var(--fs-xs);
-  color: var(--ink-2);
-}
-
-/* Each role or project sits on a recessed platter inside the window. */
-.jobs {
-  display: grid;
-  gap: var(--space-3);
+  color: var(--ink);
+  background: var(--tile-fill);
+  box-shadow: var(--glass-shine);
 }
 
 .job {
-  padding: var(--space-4) var(--space-5);
-  border-radius: 22px;
-  background: var(--recess);
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.15), inset 0 -1px 0 rgb(255 255 255 / 0.05);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.job:first-child {
+  padding-top: 0;
+}
+
+.job:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
 .job > * + * {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 .job-head {
@@ -851,7 +948,7 @@ a {
   font-size: var(--fs-md);
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
 }
 
 .job-org {
@@ -861,8 +958,9 @@ a {
 }
 
 .job-meta {
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--ink-3);
+  color: var(--brass-2);
   font-variant-numeric: tabular-nums;
 }
 
@@ -872,41 +970,60 @@ a {
   color: var(--ink-2);
 }
 
+.job-points li {
+  position: relative;
+  padding-left: var(--space-4);
+}
+
+.job-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.78em;
+  width: 0.375rem;
+  height: 1px;
+  background: var(--brass);
+}
+
 .job-links {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-4);
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .job-links a {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  padding: 0 var(--space-3);
-  border-radius: 999px;
-  background: var(--fill-1);
-  text-decoration: none;
-  transition: background-color 180ms ease;
+  min-height: 44px;
 }
 
-.job-links a:hover {
-  background: var(--fill-2);
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.stack li {
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+  box-shadow: none;
 }
 
 .tag {
   padding: 0.125rem var(--space-2);
-  border-radius: 999px;
+  border: 1px dashed var(--run);
+  border-radius: 6px;
+  font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0;
   color: var(--run);
-  background: rgb(255 159 10 / 0.14);
 }
 
 .interests {
   display: grid;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
 @media (min-width: 640px) {
@@ -921,9 +1038,10 @@ a {
   display: flex;
   flex-direction: column;
   padding: var(--space-4) var(--space-5) var(--space-5);
-  border-radius: 22px;
-  background: var(--recess);
-  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.15), inset 0 -1px 0 rgb(255 255 255 / 0.05);
+  border: 1px solid var(--glass-edge);
+  border-radius: 12px;
+  background: var(--tile-fill);
+  box-shadow: var(--glass-shine);
 }
 
 .interest-head {
@@ -938,22 +1056,26 @@ a {
   flex: none;
   width: 2.75rem;
   height: 2.75rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
   border-radius: 50%;
-  background: var(--fill-1);
+  color: var(--brass-2);
+  background: rgb(20 21 24 / 0.45);
 }
 
 .interest-name {
   font-size: var(--fs-md);
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
 }
 
 .interest-meta {
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 
+/* Toronto skyline along the foot of the Food and culture card */
 .interest[data-interest="food"] {
   padding-bottom: calc(var(--skyline-h) + var(--space-2));
   --skyline-h: 5rem;
@@ -964,13 +1086,20 @@ a {
   inset: auto 0 0;
   width: 100%;
   height: var(--skyline-h);
-  fill: #fff;
-  opacity: 0.12;
+  fill: var(--brass);
+  opacity: 0.16;
+}
+
+/* Team colours for the Raptors card */
+.interest[data-interest="raptors"] {
+  border-color: color-mix(in srgb, var(--raptors) 30%, transparent);
+  box-shadow: inset 0 2px 0 var(--raptors), 0 18px 40px -24px rgb(240 80 106 / 0.35);
 }
 
 .interest[data-interest="raptors"] .interest-icon {
+  border-color: color-mix(in srgb, var(--raptors) 45%, transparent);
   color: var(--raptors);
-  background: rgb(255 90 118 / 0.14);
+  background: color-mix(in srgb, var(--raptors) 10%, transparent);
 }
 
 .interest[data-interest="raptors"] .interest-meta {
@@ -984,118 +1113,59 @@ a {
 }
 
 .contact-lead {
+  font-family: var(--font-display);
   font-size: var(--fs-lg);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.35;
   letter-spacing: -0.015em;
   max-width: 34ch;
 }
 
-/* ---------- Side window ---------- */
-.side-name {
-  font-size: var(--fs-md);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-}
-
-.side-role {
-  font-size: var(--fs-sm);
-  color: var(--ink-2);
-}
-
-.side-heading {
-  margin: var(--space-6) 0 var(--space-3);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--ink-2);
-}
-
-.focus-list li {
-  font-size: var(--fs-xs);
-}
-
-.link-rows {
-  display: grid;
-  gap: var(--space-1);
-  margin: 0 calc(var(--space-2) * -1);
-}
-
-.link-rows li {
+.contact-links {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2);
-  border-radius: 16px;
-  transition: background-color 180ms ease;
-}
-
-.link-rows li:hover {
-  background: var(--fill-1);
-}
-
-.row-icon {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  background: var(--fill-2);
-}
-
-.row-text {
-  display: grid;
-  min-width: 0;
-  flex: 1;
-  line-height: 1.3;
-}
-
-.row-title {
+  flex-wrap: wrap;
+  gap: 0 var(--space-5);
   font-size: var(--fs-sm);
-  font-weight: 600;
+  color: var(--ink-2);
 }
 
-.row-sub {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: var(--fs-xs);
-  color: var(--ink-3);
-}
-
-.row-action {
-  flex: none;
+.contact-links a {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  padding: 0 var(--space-3);
-  border-radius: 999px;
-  background: var(--fill-2);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color 180ms ease;
+  min-height: 44px;
 }
 
-/* stretch each row's action over the whole row so the row is the target */
-.row-action::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+.contact-links a:hover,
+.job-links a:hover {
+  color: var(--filament);
+  text-decoration-color: var(--filament);
 }
 
-.link-rows li {
-  position: relative;
+.stage[data-gate] {
+  padding-bottom: var(--space-7);
 }
 
-.link-rows li:hover .row-action {
-  background: var(--fill-3);
+/* ---------- Footer ---------- */
+.site-footer {
+  max-width: calc(72rem - 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--space-6) 0 var(--space-7);
+  border-top: 1px solid var(--rule);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
 }
 
-.side-footer {
-  margin-top: var(--space-6);
-  font-size: var(--fs-xs);
-  color: var(--ink-3);
+@media (max-width: 72rem) {
+  .site-footer {
+    margin: 0 var(--gutter);
+  }
+}
+
+@media (min-width: 960px) {
+  .site-footer p {
+    /* line up with the content column, past the status and node columns */
+    padding-left: calc(var(--meta-col) + var(--node-col) + 2 * var(--space-4));
+  }
 }
 
 /* ---------- Reduced motion ---------- */
