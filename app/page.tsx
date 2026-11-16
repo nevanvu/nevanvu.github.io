@@ -96,6 +96,20 @@ function TorontoSkyline() {
   );
 }
 
+// The uOttawa emblem. The source is black on light grey; the filter turns
+// darkness into white ink and lightness into transparency, so it sits
+// cleanly on the glass. Decorative: the text beside it names the university.
+function UOttawaMark({ src }: { src: string }) {
+  return (
+    <svg className="school-mark" viewBox="0 0 141 160" width="141" height="160" aria-hidden="true" focusable="false">
+      <filter id="uottawa-ink" colorInterpolationFilters="sRGB">
+        <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -0.36 -0.36 -0.36 0 1.03" />
+      </filter>
+      <image href={src} width="141" height="160" filter="url(#uottawa-ink)" />
+    </svg>
+  );
+}
+
 // Links to other sites open in a new tab so the portfolio stays open behind them.
 // Screen readers hear that the link opens a new tab.
 function ExternalLink({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
@@ -195,7 +209,10 @@ export default function Home() {
                 {profile.name}
               </h1>
               <p className="hero-headline reveal">{profile.headline}</p>
-              <p className="hero-intro reveal">{profile.intro}</p>
+              <p className="hero-intro reveal">
+                <UOttawaMark src={`${base}/uottawa-mark.png`} />
+                {profile.intro}
+              </p>
               <p className="hero-location reveal">
                 <PinIcon />
                 {profile.location}

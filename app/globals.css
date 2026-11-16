@@ -783,8 +783,18 @@ a {
 }
 
 .hero-intro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   max-width: 52ch;
   color: var(--ink-2);
+}
+
+/* uOttawa emblem, recoloured to white ink by an SVG filter (see page.tsx) */
+.school-mark {
+  flex: none;
+  width: auto;
+  height: 2.25rem;
 }
 
 .hero-text > .hero-intro {
