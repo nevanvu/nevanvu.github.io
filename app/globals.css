@@ -726,9 +726,8 @@ a {
   border-radius: 50%;
   /* matches the studio backdrop so the slot reads as the photo while it loads */
   background: #74777b;
-  /* a frosted glass bezel */
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25), 0 0 0 8px rgb(255 255 255 / 0.08), 0 0 0 9px rgb(255 255 255 / 0.14),
-    0 30px 60px -16px rgb(0 0 0 / 0.6);
+  /* no outline, just a soft shadow to lift it off the glass */
+  box-shadow: 0 30px 60px -16px rgb(0 0 0 / 0.6);
 }
 
 @media (min-width: 960px) {
