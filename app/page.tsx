@@ -1,6 +1,5 @@
 import { PipelineController } from "@/components/PipelineController";
 import { StageIcon } from "@/components/StageIcon";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { about, contact, experience, focus, offCourt, profile, projects, type Interest } from "@/content";
 
 const stages = [
@@ -168,7 +167,6 @@ export default function Home() {
             >
               <GitHubIcon />
             </a>
-            <ThemeToggle />
           </div>
         </div>
         <span className="page-progress" data-page-progress aria-hidden="true" />
