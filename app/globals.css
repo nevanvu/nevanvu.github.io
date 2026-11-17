@@ -1737,11 +1737,6 @@ a {
     margin-top: auto;
     padding-top: var(--space-2);
   }
-
-  /* Contact: a larger closing line. */
-  .contact-lead {
-    max-width: 40ch;
-  }
 }
 
 /* ---------- Experience tiles ---------- */
@@ -1878,8 +1873,96 @@ a {
   .hero > .stage-body {
     align-content: center;
   }
-  .interest {
-    min-height: 14rem;
+}
+
+/* ---------- Off court and Contact on desktop ---------- */
+/* Both open with a large headline like About. Off court's two cards
+   stretch to fill the rest of the panel; Contact centres its call to
+   action and pins the plain links to the foot. */
+@media (min-width: 960px) {
+  #off-court > .stage-body > .prose,
+  #contact > .stage-body > .contact-lead {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1rem + 1.6vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+  }
+
+  #off-court > .stage-body > * + * {
+    margin-top: var(--space-7);
+  }
+
+  #off-court .interests {
+    flex: 1;
+    grid-auto-rows: 1fr;
+  }
+
+  #off-court .interest {
+    padding: var(--space-6);
+    border-radius: 22px;
+  }
+
+  #off-court .interest[data-interest="food"] {
+    --skyline-h: 7rem;
+    padding-bottom: calc(var(--skyline-h) + var(--space-4));
+  }
+
+  #off-court .interest-head {
+    gap: var(--space-4);
+  }
+
+  #off-court .interest-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  #off-court .interest-icon .line-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  #off-court .interest-name {
+    font-size: clamp(1.5rem, 1rem + 0.8vw, 1.875rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  #off-court .interest-meta {
+    margin-top: var(--space-1);
+    font-size: var(--fs-sm);
+  }
+
+  /* The description sits right under the title, so both cards' text lines
+     up at the same height whatever is drawn along the foot. */
+  #off-court .interest-text {
+    margin-top: var(--space-5);
+    font-size: var(--fs-md);
+    line-height: 1.5;
+  }
+
+  #contact > .stage-body > .contact-lead {
+    max-width: 24ch;
+    margin-top: auto;
+  }
+
+  #contact > .stage-body > .actions {
+    margin-top: var(--space-7);
+  }
+
+  #contact .actions .button {
+    min-height: 3.5rem;
+    padding: 0 var(--space-6);
+    font-size: var(--fs-md);
+  }
+
+  #contact > .stage-body > .contact-links {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--rule);
+    font-size: var(--fs-base);
   }
 }
 
