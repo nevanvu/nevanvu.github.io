@@ -60,7 +60,7 @@
   --space-9: 6rem;
 
   --gutter: 1rem;
-  --node: 1.25rem;
+  --node: 1.5rem;
   --node-col: 1.75rem;
   --meta-col: 0rem;
   --panel-pad: var(--space-5);
@@ -305,14 +305,12 @@ a {
 [data-state="waiting"] > .nav-dot {
   border-color: var(--run);
   background: var(--run);
-  box-shadow: 0 0 10px rgb(255 159 10 / 0.7);
   transform: scale(1.25);
 }
 
 [data-state="passed"] > .nav-dot {
   border-color: var(--pass);
   background: var(--pass);
-  box-shadow: 0 0 8px rgb(48 209 88 / 0.45);
 }
 
 .header-actions {
@@ -476,7 +474,7 @@ a {
   }
 }
 
-/* A brass sconce on the rail: dark until its stage runs, then lit. */
+/* A small glass button on the rail holding an SF Symbols-style status glyph. */
 .stage-node {
   grid-area: node;
   position: relative;
@@ -487,19 +485,11 @@ a {
   height: var(--node);
   justify-self: center;
   border-radius: 50%;
-  background: var(--walnut);
-  box-shadow: 0 0 0 3px var(--espresso), 0 0 0 4px rgb(255 255 255 / 0.28);
-  transition: box-shadow 300ms ease;
-}
-
-[data-state="running"] .stage-node,
-[data-state="waiting"] .stage-node {
-  box-shadow: 0 0 0 3px var(--espresso), 0 0 0 4px rgb(255 159 10 / 0.5), 0 0 22px rgb(255 159 10 / 0.45);
-}
-
-[data-state="passed"] .stage-node,
-:root:not(.js) .stage-node {
-  box-shadow: 0 0 0 3px var(--espresso), 0 0 0 4px rgb(255 255 255 / 0.45), 0 0 18px rgb(255 255 255 / 0.3);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.06)), rgb(36 37 42 / 0.6);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6);
+  backdrop-filter: blur(12px) saturate(1.6);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.25),
+    0 4px 12px rgb(0 0 0 / 0.35);
 }
 
 .stage-title {
@@ -591,6 +581,9 @@ a {
 
 /* ---------- Status glyph ---------- */
 .stage-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
   overflow: visible;
 }
 
@@ -599,31 +592,24 @@ a {
   transition: opacity 200ms ease;
 }
 
-.i-ring,
-.i-arc {
-  fill: none;
-  stroke-width: 1.5;
-}
-
 .i-ring {
-  stroke: var(--queued);
+  fill: var(--queued);
 }
 
-.i-arc {
-  stroke: var(--run);
-  stroke-dasharray: 30 70;
-  stroke-linecap: round;
-  transform-origin: 10px 10px;
+.i-spin {
+  fill: var(--run);
+  transform-origin: 12px 12px;
 }
 
 .i-fill {
   fill: var(--pass);
+  transition: opacity 200ms ease, fill 200ms ease;
 }
 
 .i-check {
   fill: none;
-  stroke: var(--espresso);
-  stroke-width: 2;
+  stroke: #fff;
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 100;
@@ -632,10 +618,10 @@ a {
 }
 
 .i-pause {
-  fill: var(--run);
+  fill: #fff;
 }
 
-/* passed (default, also the no-JS state) */
+/* passed (default, also the no-JS state): checkmark.circle.fill */
 .i-fill,
 .i-check {
   opacity: 1;
@@ -645,7 +631,7 @@ a {
   stroke-dashoffset: 0;
 }
 
-/* queued */
+/* queued: a quiet dot inside the glass */
 .js .stage:not([data-state]) .i-ring,
 [data-state="queued"] .i-ring {
   opacity: 1;
@@ -654,7 +640,7 @@ a {
 .js .stage:not([data-state]) :is(.i-fill, .i-check),
 [data-state="queued"] :is(.i-fill, .i-check),
 [data-state="running"] :is(.i-fill, .i-check),
-[data-state="waiting"] :is(.i-fill, .i-check) {
+[data-state="waiting"] .i-check {
   opacity: 0;
 }
 
@@ -665,21 +651,21 @@ a {
   stroke-dashoffset: 100;
 }
 
-/* running */
-[data-state="running"] .i-ring {
-  opacity: 0.35;
-  stroke: var(--run);
+/* running: the system activity spinner, ticking spoke by spoke */
+[data-state="running"] .i-spin {
+  opacity: 1;
 }
 
-[data-state="running"] .i-arc {
-  opacity: 1;
-  animation: spin 1s linear infinite;
+@media (prefers-reduced-motion: no-preference) {
+  [data-state="running"] .i-spin {
+    animation: spin 1s steps(12) infinite;
+  }
 }
 
-/* waiting on approval */
-[data-state="waiting"] .i-ring {
+/* waiting on approval: pause.circle.fill */
+[data-state="waiting"] .i-fill {
   opacity: 1;
-  stroke: var(--run);
+  fill: var(--run);
 }
 
 [data-state="waiting"] .i-pause {
