@@ -100,6 +100,23 @@ export function PipelineController() {
       }
     }
 
+    // Panels rise into focus as they scroll in, once. Ones already on screen
+    // at load start revealed, so nothing vanishes when the pipeline goes live.
+    const reveal = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.setAttribute("data-revealed", "");
+          reveal.unobserve(entry.target);
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    stages.forEach((stage) => {
+      if (stage.getBoundingClientRect().top < window.innerHeight) stage.setAttribute("data-revealed", "");
+      else reveal.observe(stage);
+    });
+
     measure();
     update();
     main.classList.add("is-live");
@@ -119,6 +136,7 @@ export function PipelineController() {
 
     return () => {
       resize.disconnect();
+      reveal.disconnect();
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       cancelAnimationFrame(frame);
