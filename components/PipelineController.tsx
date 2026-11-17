@@ -12,6 +12,7 @@ export function PipelineController() {
     const main = document.querySelector<HTMLElement>("[data-pipeline]");
     const rail = main?.querySelector<HTMLElement>(".rail");
     const fill = rail?.querySelector<HTMLElement>(".rail-fill");
+    const railHead = rail?.querySelector<HTMLElement>(".rail-head");
     if (!main || !rail || !fill) return;
 
     const trigger = main.querySelector<HTMLElement>("[data-trigger]");
@@ -61,7 +62,14 @@ export function PipelineController() {
       // jumps past everything so short final sections still complete.
       const head = atEnd ? Infinity : window.scrollY + window.innerHeight * 0.6 - mainTop;
 
-      fill.style.transform = `scaleY(${Math.min(1, Math.max(0, (head - railTop) / railHeight))})`;
+      const progress = Math.min(1, Math.max(0, (head - railTop) / railHeight));
+      fill.style.transform = `scaleY(${progress})`;
+      // The glowing read head rides the tip of the fill; it fades out once
+      // it rests on the first or last node.
+      if (railHead) {
+        railHead.style.transform = `translateY(${progress * railHeight}px)`;
+        railHead.style.opacity = progress > 0.002 && progress < 0.998 ? "1" : "0";
+      }
       if (pageBar) pageBar.style.transform = `scaleX(${Math.min(1, window.scrollY / maxScroll)})`;
 
       stages.forEach((stage, i) => {

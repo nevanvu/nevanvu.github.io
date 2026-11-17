@@ -218,6 +218,7 @@ export default function Home() {
       <main id="top" className="pipeline" data-pipeline>
         <div className="rail" aria-hidden="true">
           <span className="rail-fill" />
+          <span className="rail-head" />
         </div>
 
         <section className="hero stage" data-trigger aria-labelledby="hero-title">

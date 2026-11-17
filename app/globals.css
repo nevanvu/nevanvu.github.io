@@ -512,6 +512,17 @@ a {
     border: 1px solid var(--glass-edge);
     -webkit-backdrop-filter: var(--glass-blur);
     backdrop-filter: var(--glass-blur);
+    transition: color 200ms ease, background-color 300ms ease, border-color 300ms ease;
+  }
+  /* Tinted capsules, like iOS status badges. */
+  .stage[data-state="running"] .stage-head > .stage-status,
+  .stage[data-state="waiting"] .stage-head > .stage-status {
+    background: rgb(255 159 10 / 0.16);
+    border-color: rgb(255 159 10 / 0.3);
+  }
+  .stage[data-state="passed"] .stage-head > .stage-status {
+    background: rgb(48 209 88 / 0.14);
+    border-color: rgb(48 209 88 / 0.26);
   }
 }
 
@@ -595,14 +606,38 @@ a {
   color: var(--run);
 }
 
+/* While a stage runs, a highlight sweeps across its status word. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-state="running"] .stage-status::after {
+    display: inline-block;
+    color: transparent;
+    background: linear-gradient(100deg, var(--run) 30%, #ffe2b0 50%, var(--run) 70%) 0 0 / 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shimmer 1.8s linear infinite;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+
 /* ---------- Rail ---------- */
-/* Cove lighting: an unlit brass groove that glows as you read down it. */
+/* A recessed 2px groove. The read part fills with a soft gradient that
+   brightens toward a glowing read head riding its tip. */
 .rail {
   display: none;
   position: absolute;
-  width: 1px;
-  margin-left: -0.5px;
-  background: var(--track);
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: rgb(255 255 255 / 0.14);
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.12);
   pointer-events: none;
 }
 
@@ -612,12 +647,50 @@ a {
 
 .rail-fill {
   position: absolute;
-  inset: 0 -0.5px;
-  background: linear-gradient(180deg, var(--brass) 0%, var(--filament) 100%);
-  box-shadow: 0 0 6px rgb(255 255 255 / 0.9), 0 0 18px rgb(255 255 255 / 0.45), 0 0 42px rgb(0 0 0 / 0.3);
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.25) 0%, rgb(255 255 255 / 0.95) 100%);
+  box-shadow: 0 0 10px rgb(255 255 255 / 0.35);
   transform: scaleY(0);
   transform-origin: top;
   will-change: transform;
+}
+
+/* The read head: a bright bead with a breathing halo. JS moves it with a
+   transform; it starts at the top of the rail and fades at either end. */
+.rail-head {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 35%, rgb(255 255 255 / 0.55) 36% 55%, transparent 56%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  will-change: transform;
+}
+
+.rail-head::before {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 255 255 / 0.4), transparent 65%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rail-head::before {
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.45;
+    transform: scale(0.75);
+  }
 }
 
 /* ---------- Status glyph ---------- */
@@ -634,17 +707,35 @@ a {
 }
 
 .i-ring {
-  fill: var(--queued);
+  fill: none;
+  stroke: var(--queued);
+  stroke-width: 1.75;
 }
 
 .i-spin {
-  fill: var(--run);
   transform-origin: 12px 12px;
 }
 
+.i-spin circle {
+  fill: none;
+  stroke: var(--run);
+  stroke-width: 2.5;
+}
+
+.i-track {
+  opacity: 0.22;
+}
+
+.i-arc {
+  stroke-linecap: round;
+  stroke-dasharray: 32 100;
+}
+
+/* The fill springs in from half size, with a little overshoot. */
 .i-fill {
   fill: var(--pass);
-  transition: opacity 200ms ease, fill 200ms ease;
+  transform-origin: 12px 12px;
+  transition: opacity 200ms ease, fill 200ms ease, transform 520ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .i-check {
@@ -685,6 +776,12 @@ a {
   opacity: 0;
 }
 
+.js .stage:not([data-state]) .i-fill,
+[data-state="queued"] .i-fill,
+[data-state="running"] .i-fill {
+  transform: scale(0.5);
+}
+
 .js .stage:not([data-state]) .i-check,
 [data-state="queued"] .i-check,
 [data-state="running"] .i-check,
@@ -692,14 +789,51 @@ a {
   stroke-dashoffset: 100;
 }
 
-/* running: the system activity spinner, ticking spoke by spoke */
+/* running: a progress arc sweeping round a faint track, while the node
+   gives off a slow orange pulse */
 [data-state="running"] .i-spin {
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   [data-state="running"] .i-spin {
-    animation: spin 1s steps(12) infinite;
+    animation: spin 900ms linear infinite;
+  }
+  [data-state="running"] .i-arc {
+    animation: sweep 1.8s ease-in-out infinite;
+  }
+  .stage-node::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+  }
+  [data-state="running"] > .stage-node::after,
+  [data-state="running"] > .stage-head > .stage-node::after {
+    animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes sweep {
+  0%,
+  100% {
+    stroke-dasharray: 18 100;
+  }
+  50% {
+    stroke-dasharray: 60 100;
+  }
+}
+
+@keyframes ping {
+  0% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 0 rgb(255 159 10 / 0.55);
+  }
+  100% {
+    opacity: 0;
+    box-shadow: 0 0 0 10px rgb(255 159 10 / 0);
   }
 }
 
