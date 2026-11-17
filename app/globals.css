@@ -1706,25 +1706,6 @@ a {
     font-size: clamp(1.5rem, 0.9rem + 1vw, 2rem);
   }
 
-  /* Experience: role, org and dates in a left column, highlights beside it,
-     like a resume. */
-  .job.job-marked .job-body {
-    display: grid;
-    grid-template-columns: minmax(14rem, 22rem) minmax(0, 1fr);
-    column-gap: var(--space-7);
-    align-items: start;
-  }
-
-  .job.job-marked .job-body > * + * {
-    margin-top: 0;
-  }
-
-  .job.job-marked .job-head {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-
   .job-points > * + * {
     margin-top: var(--space-2);
   }
@@ -1760,6 +1741,122 @@ a {
   /* Contact: a larger closing line. */
   .contact-lead {
     max-width: 40ch;
+  }
+}
+
+/* ---------- Experience tiles ---------- */
+/* A current role gets a green status dot, like an iOS "active" indicator. */
+.job-meta[data-current] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--pass);
+}
+
+.job-meta[data-current]::before {
+  content: "";
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* On desktop the roles stack as full-width glass tiles that share the
+   panel's height: the app-icon logo on the left, the role and highlights
+   in the middle, and the dates at the top right, like a list of widgets. */
+@media (min-width: 960px) {
+  #experience .jobs {
+    flex: 1;
+    display: grid;
+    grid-auto-rows: 1fr;
+    gap: var(--space-4);
+  }
+
+  #experience .job.job-marked {
+    --mark: 4.5rem;
+    display: grid;
+    grid-template-columns: var(--mark) minmax(0, 1fr);
+    column-gap: var(--space-6);
+    align-items: center;
+    padding: var(--space-6) var(--space-7);
+    border-radius: 22px;
+    background: var(--fill-3);
+    box-shadow: var(--glass-shine);
+  }
+
+  #experience .org-logo {
+    width: 3.375rem;
+  }
+
+  #experience .job-mark .line-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  /* Title and highlights on the left of the body, dates on the right. */
+  #experience .job-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-6);
+    row-gap: var(--space-4);
+    align-items: start;
+  }
+
+  #experience .job-body > * + * {
+    margin-top: 0;
+  }
+
+  #experience .job-head {
+    display: contents;
+  }
+
+  #experience .job-title {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: clamp(1.625rem, 1.1rem + 0.9vw, 2.125rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.021em;
+  }
+
+  #experience .job-org {
+    font-size: var(--fs-md);
+  }
+
+  #experience .job-points {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  #experience .job-points li {
+    max-width: 58ch;
+    font-size: var(--fs-md);
+    line-height: 1.5;
+  }
+
+  #experience .job-points li::before {
+    top: 0.7em;
+  }
+
+  #experience .job-meta {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    padding-top: 0.375rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  #experience .job-meta[data-current] {
+    color: var(--pass);
   }
 }
 

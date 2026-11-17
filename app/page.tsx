@@ -304,7 +304,9 @@ export default function Home() {
                       {role.title}
                       <span className="job-org">{role.org}</span>
                     </h3>
-                    <p className="job-meta">{role.dates}</p>
+                    <p className="job-meta" data-current={role.dates.includes("Present") || undefined}>
+                      {role.dates}
+                    </p>
                   </div>
                   <ul className="job-points">
                     {role.points.map((p) => (
