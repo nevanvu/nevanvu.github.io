@@ -172,6 +172,31 @@ function Headshot() {
   );
 }
 
+// A Raptors game at Scotiabank Arena, along the foot of the Raptors card the
+// way the skyline sits under Food and culture. AVIF, WebP and JPEG at 640px
+// and 1200px, made from the original with sharp; regenerate if it changes.
+function ArenaPhoto() {
+  const base = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/raptors-arena`;
+  const set = (ext: string) => `${base}-640.${ext} 640w, ${base}-1200.${ext} 1200w`;
+  const sizes = "(min-width: 960px) 27rem, 90vw";
+  return (
+    <picture className="arena-photo">
+      <source type="image/avif" srcSet={set("avif")} sizes={sizes} />
+      <source type="image/webp" srcSet={set("webp")} sizes={sizes} />
+      <img
+        src={`${base}-1200.jpg`}
+        srcSet={set("jpg")}
+        sizes={sizes}
+        width={1200}
+        height={903}
+        alt="A Raptors home game against Boston at Scotiabank Arena, seen from the upper bowl"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+  );
+}
+
 export default function Home() {
   const year = new Date().getFullYear();
   const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -366,6 +391,7 @@ export default function Home() {
                 </div>
                 <p className="interest-text">{interest.text}</p>
                 {interest.id === "food" && <TorontoSkyline />}
+                {interest.id === "raptors" && <ArenaPhoto />}
               </li>
             ))}
           </ul>
