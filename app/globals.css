@@ -706,19 +706,38 @@ a {
   transition: opacity 200ms ease;
 }
 
-/* queued: SF Symbols' circle.dotted, the "not started yet" mark */
-.i-ring {
-  fill: rgb(255 255 255 / 0.7);
+/* queued: a quiet grey disc with a still, three-segment white ring */
+.i-ring-disc {
+  fill: rgb(142 142 147 / 0.55); /* systemGray, softened for the glass */
 }
 
-/* Three white arcs with even gaps (each dash + gap is a third of the ring). */
-.i-spin {
+.i-ring-arcs {
   fill: none;
-  stroke: #fff;
+  stroke: rgb(255 255 255 / 0.9);
   stroke-width: 2.2;
   stroke-linecap: round;
-  stroke-dasharray: 19 14.33;
+  stroke-dasharray: 19 14.33; /* three equal arcs with even gaps */
+  transform: rotate(-90deg);
   transform-origin: 12px 12px;
+}
+
+.i-spin {
+  transform-origin: 12px 12px;
+}
+
+.i-spin circle {
+  fill: none;
+  stroke: var(--run);
+  stroke-width: 2.5;
+}
+
+.i-track {
+  opacity: 0.22;
+}
+
+.i-arc {
+  stroke-linecap: round;
+  stroke-dasharray: 32 100;
 }
 
 /* The fill springs in from half size, with a little overshoot. */
@@ -761,13 +780,14 @@ a {
 
 .js .stage:not([data-state]) :is(.i-fill, .i-check),
 [data-state="queued"] :is(.i-fill, .i-check),
-[data-state="running"] .i-check,
+[data-state="running"] :is(.i-fill, .i-check),
 [data-state="waiting"] .i-check {
   opacity: 0;
 }
 
 .js .stage:not([data-state]) .i-fill,
-[data-state="queued"] .i-fill {
+[data-state="queued"] .i-fill,
+[data-state="running"] .i-fill {
   transform: scale(0.5);
 }
 
@@ -778,20 +798,18 @@ a {
   stroke-dashoffset: 100;
 }
 
-/* running: an orange disc with the segmented ring turning on it, while the
-   node gives off a slow orange pulse. On passing, the disc turns green and
-   the check draws in. */
-[data-state="running"] .i-fill {
-  fill: var(--run);
-}
-
+/* running: a progress arc sweeping round a faint track, while the node
+   gives off a slow orange pulse */
 [data-state="running"] .i-spin {
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   [data-state="running"] .i-spin {
-    animation: spin 1.4s linear infinite;
+    animation: spin 900ms linear infinite;
+  }
+  [data-state="running"] .i-arc {
+    animation: sweep 1.8s ease-in-out infinite;
   }
   .stage-node::after {
     content: "";
@@ -804,6 +822,16 @@ a {
   [data-state="running"] > .stage-node::after,
   [data-state="running"] > .stage-head > .stage-node::after {
     animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes sweep {
+  0%,
+  100% {
+    stroke-dasharray: 18 100;
+  }
+  50% {
+    stroke-dasharray: 60 100;
   }
 }
 
