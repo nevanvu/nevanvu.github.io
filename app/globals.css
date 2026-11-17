@@ -963,8 +963,16 @@ a {
   margin-top: var(--space-3);
 }
 
+.hero-intro-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
 .hero-place {
-  white-space: nowrap;
+  margin-top: 0.125rem;
+  font-size: var(--fs-sm);
+  opacity: 0.85;
 }
 
 .line-icon {

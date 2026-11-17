@@ -226,11 +226,10 @@ export default function Home() {
               <p className="hero-headline reveal">{profile.headline}</p>
               <p className="hero-intro reveal">
                 <UOttawaMark src={`${base}/uottawa-mark.png`} />
-                {/* One span, so the text stays a single flex item beside the mark.
-                    The location clause never breaks, so a wrap can't strand the dot. */}
-                <span>
-                  {profile.intro.replace(/\.$/, "")}{" "}
-                  <span className="hero-place">· Based in {profile.location.split(",")[0]}</span>
+                {/* School on top, location beneath it, both beside the emblem. */}
+                <span className="hero-intro-text">
+                  <span>{profile.intro}</span>
+                  <span className="hero-place">{profile.location}</span>
                 </span>
               </p>
               <div className="actions reveal">
