@@ -258,11 +258,13 @@ export default function Home() {
         </section>
 
         <Stage id="about">
-          {about.map((p) => (
-            <p key={p} className="prose">
-              {p}
-            </p>
-          ))}
+          <div className="about-text">
+            {about.map((p) => (
+              <p key={p} className="prose">
+                {p}
+              </p>
+            ))}
+          </div>
           <ul className="focus-list" aria-label="Focus areas">
             {focus.map((f) => (
               <li key={f}>{f}</li>
