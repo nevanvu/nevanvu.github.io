@@ -40,7 +40,16 @@ function GitHubIcon() {
   );
 }
 
-// Line icons for the Off court interests.
+function PinIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" className="line-icon">
+      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </svg>
+  );
+}
+
+// Line icons for the Off court interests, drawn to match the pin.
 function InterestIcon({ id }: { id: Interest["id"] }) {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" focusable="false" className="line-icon">
@@ -224,14 +233,18 @@ export default function Home() {
                 {profile.name}
               </h1>
               <p className="hero-headline reveal">{profile.headline}</p>
-              <p className="hero-intro reveal">
-                <UOttawaMark src={`${base}/uottawa-mark.png`} />
-                {/* School on top, location beneath it, both beside the emblem. */}
-                <span className="hero-intro-text">
+              {/* Two facts, each with its icon in a shared column: the uOttawa
+                  emblem beside the school line, a pin beside the location. */}
+              <ul className="hero-facts reveal">
+                <li>
+                  <UOttawaMark src={`${base}/uottawa-mark.png`} />
                   <span>{profile.intro}</span>
-                  <span className="hero-place">{profile.location}</span>
-                </span>
-              </p>
+                </li>
+                <li className="hero-place">
+                  <PinIcon />
+                  <span>{profile.location}</span>
+                </li>
+              </ul>
               <div className="actions reveal">
                 <a className="button button-primary" href={`mailto:${profile.email}`}>
                   Email me
