@@ -1520,7 +1520,7 @@ a {
   color: var(--raptors);
 }
 
-/* A photo from a home game fills the foot of the Raptors card and fades up
+/* A photo of the arena on game night fills the foot of the Raptors card and fades up
    into the glass, the way the skyline sits under Food and culture. */
 .interest[data-interest="raptors"] {
   --photo-h: 11rem;
@@ -1542,9 +1542,8 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* keep the court and the Raptors logo at centre court in frame */
-  object-position: 50% 66%;
-  filter: brightness(0.92);
+  /* keep the lit court and the Raptors logo at centre court in frame */
+  object-position: 50% 68%;
   transition: transform 900ms var(--ease-out);
 }
 

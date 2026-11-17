@@ -172,7 +172,7 @@ function Headshot() {
   );
 }
 
-// A Raptors game at Scotiabank Arena, along the foot of the Raptors card the
+// Scotiabank Arena before a Raptors game, along the foot of the Raptors card the
 // way the skyline sits under Food and culture. AVIF, WebP and JPEG at 640px
 // and 1200px, made from the original with sharp; regenerate if it changes.
 function ArenaPhoto() {
@@ -188,8 +188,8 @@ function ArenaPhoto() {
         srcSet={set("jpg")}
         sizes={sizes}
         width={1200}
-        height={903}
-        alt="A Raptors home game against Boston at Scotiabank Arena, seen from the upper bowl"
+        height={675}
+        alt="Scotiabank Arena lit red for the anthem before a Raptors game, the Canadian flag on the scoreboard"
         loading="lazy"
         decoding="async"
       />
