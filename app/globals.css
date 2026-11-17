@@ -1254,14 +1254,7 @@ a {
   max-width: 62ch;
 }
 
-.focus-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
 /* Apple-style tokens: a soft system fill, no outline. */
-.focus-list li,
 .stack li {
   padding: 0.3125rem var(--space-3);
   border-radius: 999px;
@@ -1600,6 +1593,83 @@ a {
   margin-top: var(--space-5);
 }
 
+/* About: a headline statement, then the story beside numbered focus tiles.
+   Sized up on desktop so the content fills its tall panel. */
+.about-lead {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.022em;
+}
+
+.about-row {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.about-label {
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.focus-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.focus-grid li {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 5.5rem;
+  padding: var(--space-4);
+  border-radius: var(--radius-tile);
+  background: var(--fill-3);
+  box-shadow: var(--glass-shine);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.focus-num {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--brass-2);
+}
+
+@media (min-width: 960px) {
+  #about > .stage-body > * + * {
+    margin-top: var(--space-7);
+  }
+  .about-lead {
+    font-size: clamp(2rem, 1rem + 1.6vw, 2.75rem);
+  }
+  .about-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-7);
+    align-items: start;
+    padding-top: var(--space-7);
+    border-top: 1px solid var(--rule);
+  }
+  .about-text .prose {
+    font-size: var(--fs-md);
+    line-height: 1.55;
+  }
+  .focus-grid li {
+    min-height: 7rem;
+    padding: var(--space-5);
+    font-size: var(--fs-md);
+  }
+}
+
 /* ---------- Wide screens ---------- */
 /* Past 1200px the panels widen to 60rem and the whole column, rail
    included, is centred so the page stays balanced. Text keeps its readable
@@ -1634,28 +1704,6 @@ a {
 
   .hero-headline {
     font-size: clamp(1.5rem, 0.9rem + 1vw, 2rem);
-  }
-
-  /* About: the story on the left, focus areas as a column on the right. */
-  #about > .stage-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
-    column-gap: var(--space-7);
-    align-items: start;
-    align-content: center;
-  }
-
-  #about > .stage-body > .focus-list {
-    margin-top: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-left: var(--space-6);
-    border-left: 1px solid var(--rule);
-  }
-
-  #about .prose {
-    font-size: var(--fs-md);
-    line-height: 1.5;
   }
 
   /* Experience: role, org and dates in a left column, highlights beside it,

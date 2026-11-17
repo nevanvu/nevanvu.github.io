@@ -262,18 +262,33 @@ export default function Home() {
         </section>
 
         <Stage id="about">
-          <div className="about-text">
-            {about.map((p) => (
-              <p key={p} className="prose">
-                {p}
-              </p>
-            ))}
+          {/* The first line is the headline statement; the rest of the story
+              sits beside the focus areas below it. */}
+          <p className="about-lead">{about[0]}</p>
+          <div className="about-row">
+            <div className="about-text">
+              {about.slice(1).map((p) => (
+                <p key={p} className="prose">
+                  {p}
+                </p>
+              ))}
+            </div>
+            <div className="about-focus">
+              <h3 id="focus-title" className="about-label">
+                Focus areas
+              </h3>
+              <ul className="focus-grid" aria-labelledby="focus-title">
+                {focus.map((f, i) => (
+                  <li key={f}>
+                    <span className="focus-num" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <ul className="focus-list" aria-label="Focus areas">
-            {focus.map((f) => (
-              <li key={f}>{f}</li>
-            ))}
-          </ul>
         </Stage>
 
         <Stage id="experience">
