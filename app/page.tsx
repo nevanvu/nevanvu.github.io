@@ -123,6 +123,16 @@ function OrgLogo({ src }: { src: string }) {
   );
 }
 
+// Stands in for a company logo on roles without one, such as self-directed
+// building, so every role's tile lines up.
+function BuildIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="22" height="22" focusable="false" className="line-icon">
+      <path d="M8 7.5 3.5 12 8 16.5M16 7.5l4.5 4.5-4.5 4.5M13.5 5.5l-3 13" />
+    </svg>
+  );
+}
+
 // Links to other sites open in a new tab so the portfolio stays open behind them.
 // Screen readers hear that the link opens a new tab.
 function ExternalLink({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
@@ -258,22 +268,24 @@ export default function Home() {
         <Stage id="experience">
           <ol className="jobs">
             {experience.map((role) => (
-              <li key={`${role.title}-${role.org}`} className="job">
-                <div className="job-head">
-                  <h3 className="job-title">
-                    {role.title}
-                    <span className="job-org">
-                      {role.logo && <OrgLogo src={`${base}${role.logo}`} />}
-                      {role.org}
-                    </span>
-                  </h3>
-                  <p className="job-meta">{role.dates}</p>
+              <li key={`${role.title}-${role.org}`} className="job job-marked">
+                <span className="job-mark" aria-hidden="true">
+                  {role.logo ? <OrgLogo src={`${base}${role.logo}`} /> : <BuildIcon />}
+                </span>
+                <div className="job-body">
+                  <div className="job-head">
+                    <h3 className="job-title">
+                      {role.title}
+                      <span className="job-org">{role.org}</span>
+                    </h3>
+                    <p className="job-meta">{role.dates}</p>
+                  </div>
+                  <ul className="job-points">
+                    {role.points.map((p) => (
+                      <li key={p}>{p}</li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="job-points">
-                  {role.points.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
               </li>
             ))}
           </ol>
