@@ -26,6 +26,8 @@ export type Role = {
   org: string;
   dates: string;
   points: string[];
+  /** White-on-blue company logo in /public, shown beside the org name. */
+  logo?: string;
 };
 
 export const experience: Role[] = [
@@ -39,6 +41,7 @@ export const experience: Role[] = [
     title: "Jr. Associate QA Engineer",
     org: "Export Development Canada",
     dates: "Jul 2025 – Aug 2026",
+    logo: "/edc-logo.png",
     points: [
       "Worked within the DevSecOps Platform team to build test automation and maintain CI/CD pipelines across 5 production applications at EDC.",
     ],

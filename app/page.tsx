@@ -110,6 +110,19 @@ function UOttawaMark({ src }: { src: string }) {
   );
 }
 
+// The EDC logo is white on brand blue; keying alpha off the red channel keeps
+// the white and drops the blue. Decorative: the org name sits beside it.
+function OrgLogo({ src }: { src: string }) {
+  return (
+    <svg className="org-logo" viewBox="0 0 236 100" width="236" height="100" aria-hidden="true" focusable="false">
+      <filter id="org-ink" colorInterpolationFilters="sRGB">
+        <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.45 0 0 0 -0.4" />
+      </filter>
+      <image href={src} width="236" height="100" filter="url(#org-ink)" />
+    </svg>
+  );
+}
+
 // Links to other sites open in a new tab so the portfolio stays open behind them.
 // Screen readers hear that the link opens a new tab.
 function ExternalLink({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
@@ -249,7 +262,10 @@ export default function Home() {
                 <div className="job-head">
                   <h3 className="job-title">
                     {role.title}
-                    <span className="job-org">{role.org}</span>
+                    <span className="job-org">
+                      {role.logo && <OrgLogo src={`${base}${role.logo}`} />}
+                      {role.org}
+                    </span>
                   </h3>
                   <p className="job-meta">{role.dates}</p>
                 </div>
