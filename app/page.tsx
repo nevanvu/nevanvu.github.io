@@ -40,16 +40,7 @@ function GitHubIcon() {
   );
 }
 
-function PinIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" className="line-icon">
-      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
-      <circle cx="12" cy="9.5" r="2.5" />
-    </svg>
-  );
-}
-
-// Line icons for the Off court interests, drawn to match the pin.
+// Line icons for the Off court interests.
 function InterestIcon({ id }: { id: Interest["id"] }) {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" focusable="false" className="line-icon">
@@ -235,11 +226,12 @@ export default function Home() {
               <p className="hero-headline reveal">{profile.headline}</p>
               <p className="hero-intro reveal">
                 <UOttawaMark src={`${base}/uottawa-mark.png`} />
-                {profile.intro}
-              </p>
-              <p className="hero-location reveal">
-                <PinIcon />
-                {profile.location}
+                {/* One span, so the text stays a single flex item beside the mark.
+                    The location clause never breaks, so a wrap can't strand the dot. */}
+                <span>
+                  {profile.intro.replace(/\.$/, "")}{" "}
+                  <span className="hero-place">· Based in {profile.location.split(",")[0]}</span>
+                </span>
               </p>
               <div className="actions reveal">
                 <a className="button button-primary" href={`mailto:${profile.email}`}>

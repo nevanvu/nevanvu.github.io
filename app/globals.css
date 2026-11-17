@@ -963,20 +963,8 @@ a {
   margin-top: var(--space-3);
 }
 
-.hero-location {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-sm);
-  color: var(--ink-2);
-}
-
-.hero-location .line-icon {
-  color: var(--brass);
-}
-
-.hero-text > .hero-location {
-  margin-top: var(--space-2);
+.hero-place {
+  white-space: nowrap;
 }
 
 .line-icon {
