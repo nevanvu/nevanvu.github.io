@@ -1054,6 +1054,136 @@ a {
   }
 }
 
+/* ---------- First-visit intro ---------- */
+/* About 1.8s, once per browser session (see the boot script in layout.tsx):
+   the room pulls into focus, the header drops in, the hero node boots and
+   a light runs down the rail, the hero window opens, then the text settles.
+   Nothing blocks scrolling or clicks while it plays. */
+@media (prefers-reduced-motion: no-preference) {
+  .intro .room {
+    animation: focus-pull 1700ms var(--ease-out) both;
+  }
+
+  .intro .header-inner {
+    animation: drop-in 800ms cubic-bezier(0.22, 1.2, 0.36, 1) 150ms both;
+  }
+
+  .intro .hero > .stage-node {
+    animation: node-boot 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 250ms both;
+  }
+
+  .intro .hero-availability {
+    animation: rise 600ms var(--ease-out) 400ms both;
+  }
+
+  .intro .rail {
+    animation: fade-in 600ms ease 300ms both;
+  }
+
+  /* a comet of light that runs down the rail once */
+  .intro .rail::after {
+    content: "";
+    position: absolute;
+    left: -1px;
+    width: 4px;
+    height: 7rem;
+    border-radius: 2px;
+    background: linear-gradient(180deg, transparent, rgb(255 255 255 / 0.95));
+    box-shadow: 0 0 12px rgb(255 255 255 / 0.6);
+    animation: comet 1300ms cubic-bezier(0.45, 0, 0.2, 1) 350ms both;
+  }
+
+  .intro .hero > .stage-body {
+    animation: window-open 900ms var(--ease-out) 400ms both;
+  }
+
+  .intro .hero-photo {
+    animation-delay: 750ms;
+  }
+
+  .intro .reveal {
+    animation-delay: 650ms;
+  }
+  .intro .reveal:nth-child(2) {
+    animation-delay: 760ms;
+  }
+  .intro .reveal:nth-child(3) {
+    animation-delay: 870ms;
+  }
+  .intro .reveal:nth-child(4) {
+    animation-delay: 980ms;
+  }
+  .intro .reveal:nth-child(5) {
+    animation-delay: 1090ms;
+  }
+
+  /* the panels below arrive last; opacity only, so sticky heads keep working */
+  .intro .stage[data-stage] {
+    animation: fade-in 800ms ease 1000ms both;
+  }
+}
+
+@keyframes focus-pull {
+  from {
+    opacity: 0;
+    filter: blur(24px) saturate(0.8);
+    transform: scale(1.08);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0) saturate(1);
+    transform: none;
+  }
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-130%) scale(0.96);
+  }
+}
+
+@keyframes node-boot {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@keyframes window-open {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem) scale(0.94);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes comet {
+  from {
+    top: -7rem;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    top: min(100%, 80vh);
+    opacity: 0;
+  }
+}
+
 /* ---------- Buttons ---------- */
 .actions {
   display: flex;
