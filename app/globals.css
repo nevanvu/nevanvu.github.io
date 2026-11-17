@@ -6,33 +6,38 @@
   --espresso: #1c1d21; /* deepest surface, node rings */
   --walnut: #2c2e33; /* solid fallback for glass */
   --champagne: #ffffff;
-  --taupe: rgb(255 255 255 / 0.72);
-  --brass: rgb(255 255 255 / 0.55); /* neutral accent */
-  --brass-2: rgb(255 255 255 / 0.85);
+  --taupe: rgb(235 235 245 / 0.7); /* Apple secondaryLabel (dark) */
+  --brass: rgb(235 235 245 / 0.45); /* tertiaryLabel, a little brighter for glass */
+  --brass-2: rgb(235 235 245 / 0.85);
   --filament: #ffffff;
 
   /* semantic */
   --paper: var(--espresso);
   --ink: var(--champagne);
   --ink-2: var(--taupe);
-  --rule: rgb(255 255 255 / 0.12);
+  --rule: rgb(84 84 88 / 0.55); /* Apple separator (dark) */
   --track: rgb(255 255 255 / 0.22);
   --pass: #30d158;
   --run: #ff9f0a;
-  --queued: rgb(255 255 255 / 0.5);
-  --focus: #64d2ff;
+  --queued: rgb(235 235 245 / 0.5);
+  --focus: #0a84ff;
+  --link: #4da6ff; /* systemBlue, lifted for small text on glass */
   --raptors: #ff5a76;
+  --fill-2: rgb(118 118 128 / 0.24); /* Apple tertiarySystemFill (dark) */
+  --fill-3: rgb(118 118 128 / 0.16);
 
-  /* glass */
-  --glass-fill: linear-gradient(160deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03));
-  --glass-tint: rgb(52 54 60 / 0.42);
-  --glass-edge: rgb(255 255 255 / 0.12);
-  --glass-shine: inset 0 1px 0 rgb(255 255 255 / 0.16);
-  --glass-drop: 0 30px 60px -24px rgb(0 0 0 / 0.55);
-  --glass-blur: blur(40px) saturate(1.7);
+  /* glass: visionOS window material, with a specular rim that catches light
+     on the top edge and fades down the sides */
+  --glass-fill: linear-gradient(160deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.03));
+  --glass-tint: rgb(50 52 58 / 0.45);
+  --glass-edge: rgb(255 255 255 / 0.1);
+  --glass-shine: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 0 0 0.5px rgb(255 255 255 / 0.06);
+  --glass-drop: 0 1px 2px rgb(0 0 0 / 0.12), 0 30px 60px -24px rgb(0 0 0 / 0.55);
+  --glass-blur: blur(50px) saturate(1.8);
   --tile-fill: rgb(0 0 0 / 0.16);
-  --radius-panel: 18px;
-  --radius-bar: 14px;
+  --radius-panel: 28px;
+  --radius-bar: 20px;
+  --radius-tile: 16px;
 
   /* SF Pro on Apple devices (the system font); Inter, its closest free
      cousin, everywhere else. SF can't be self-hosted under Apple's licence. */
@@ -154,6 +159,26 @@ body {
 @media (max-width: 639px) {
   :root {
     --glass-blur: blur(24px) saturate(1.5);
+    --radius-panel: 24px;
+    --radius-bar: 18px;
+  }
+}
+
+/* Apple's continuous corners: where the browser can draw a squircle, every
+   rounded surface uses one, with a larger radius so the curve reads the same. */
+@supports (corner-shape: squircle) {
+  :root {
+    --radius-panel: 40px;
+    --radius-bar: 28px;
+    --radius-tile: 22px;
+  }
+  .header-inner,
+  .stage-head::before,
+  .stage[data-stage] > .stage-body,
+  .hero > .stage-body,
+  .job-mark,
+  .interest {
+    corner-shape: squircle;
   }
 }
 
@@ -188,7 +213,7 @@ a {
 }
 
 ::selection {
-  background: rgb(255 255 255 / 0.35);
+  background: rgb(10 132 255 / 0.45);
   color: var(--champagne);
 }
 
@@ -220,7 +245,7 @@ a {
 }
 
 /* ---------- Header ---------- */
-/* A floating glass bar, inset from the edges like a visionOS window. */
+/* A floating glass capsule, inset from the edges like a visionOS ornament. */
 .site-header {
   position: sticky;
   top: 0;
@@ -238,16 +263,23 @@ a {
   height: var(--header-h);
   margin: 0 auto;
   padding: 0 var(--space-2) 0 var(--space-5);
-  border-radius: var(--radius-panel);
+  border-radius: 999px;
   pointer-events: auto;
   overflow: hidden;
 }
 
+/* A capsule is already continuous; no squircle here. */
+@supports (corner-shape: squircle) {
+  .header-inner {
+    corner-shape: round;
+  }
+}
+
 .wordmark {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.125rem;
-  letter-spacing: -0.015em;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  letter-spacing: -0.022em;
   text-decoration: none;
   margin-right: auto;
   padding: var(--space-2) 0;
@@ -257,26 +289,42 @@ a {
   display: none;
 }
 
+/* A segmented control: a recessed track with a raised glass pill on the
+   section you're reading. */
 .stage-nav ol {
   display: flex;
   align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--fill-3);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.18);
 }
 
 .stage-nav a {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 44px;
-  padding: 0 var(--space-3);
-  font-size: var(--fs-sm);
+  min-height: 34px;
+  padding: 0 var(--space-4) 0 var(--space-3);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.008em;
   color: var(--ink-2);
   text-decoration: none;
-  transition: color 150ms ease;
+  transition: color 200ms ease, background-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out);
 }
 
-.stage-nav a:hover,
+.stage-nav a:hover {
+  color: var(--ink);
+  background: rgb(255 255 255 / 0.06);
+}
+
 .stage-nav a[aria-current] {
   color: var(--ink);
+  background: rgb(255 255 255 / 0.16);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 2px 8px rgb(0 0 0 / 0.22);
 }
 
 .stage-nav li {
@@ -284,17 +332,9 @@ a {
   align-items: center;
 }
 
-.stage-nav li + li::before {
-  /* the short connector between nav dots */
-  content: "";
-  width: 0.75rem;
-  height: 1px;
-  background: var(--track);
-}
-
 .nav-dot {
-  width: 0.4375rem;
-  height: 0.4375rem;
+  width: 0.375rem;
+  height: 0.375rem;
   border-radius: 50%;
   border: 1px solid var(--queued);
   transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease,
@@ -305,7 +345,7 @@ a {
 [data-state="waiting"] > .nav-dot {
   border-color: var(--run);
   background: var(--run);
-  transform: scale(1.25);
+  box-shadow: 0 0 6px rgb(255 159 10 / 0.7);
 }
 
 [data-state="passed"] > .nav-dot {
@@ -465,8 +505,9 @@ a {
   /* Beside the rail the status sits on the photo, so it gets a glass label. */
   .stage-head > .stage-status {
     justify-self: end;
-    padding: 0.125rem var(--space-2);
-    border-radius: 8px;
+    padding: 0.1875rem var(--space-3);
+    border-radius: 999px;
+    font-weight: 500;
     background: var(--glass-fill), var(--glass-tint);
     border: 1px solid var(--glass-edge);
     -webkit-backdrop-filter: var(--glass-blur);
@@ -497,8 +538,8 @@ a {
   font-family: var(--font-display);
   font-size: var(--fs-xl);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.12;
+  letter-spacing: -0.021em;
 }
 
 .stage-body {
@@ -704,8 +745,9 @@ a {
 
 .hero-availability {
   justify-self: start;
-  padding: var(--space-1) var(--space-3);
-  border-radius: 10px;
+  padding: var(--space-1) var(--space-4);
+  border-radius: 999px;
+  font-size: 0.8125rem;
 }
 
 .hero-photo {
@@ -751,7 +793,7 @@ a {
   font-size: var(--fs-hero);
   font-weight: 700;
   line-height: 1.02;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
   margin-left: -0.04em;
   text-shadow: 0 2px 30px rgb(0 0 0 / 0.35);
 }
@@ -759,8 +801,8 @@ a {
 .hero-headline {
   font-size: var(--fs-lg);
   font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  line-height: 1.22;
+  letter-spacing: -0.019em;
   max-width: 26ch;
 }
 
@@ -860,28 +902,29 @@ a {
   align-items: center;
   min-height: 48px;
   padding: 0 var(--space-5);
-  border: 1px solid rgb(255 255 255 / 0.16);
+  border: 0;
   border-radius: 999px;
   font-size: var(--fs-base);
   font-weight: 600;
+  letter-spacing: -0.022em;
   text-decoration: none;
   color: var(--ink);
-  background: rgb(255 255 255 / 0.12);
+  background: rgb(255 255 255 / 0.14);
   box-shadow: var(--glass-shine);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6);
+  backdrop-filter: blur(12px) saturate(1.6);
   cursor: pointer;
-  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease,
-    transform 150ms var(--ease-out);
+  transition: background-color 200ms ease, box-shadow 200ms ease, transform 200ms var(--ease-out);
 }
 
+/* visionOS hover: the control brightens and lifts a touch toward you. */
 .button:hover {
-  background-color: rgb(255 255 255 / 0.1);
-  border-color: rgb(255 255 255 / 0.26);
+  background-color: rgb(255 255 255 / 0.22);
+  transform: scale(1.02);
 }
 
 .button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .button-primary {
@@ -893,8 +936,8 @@ a {
 }
 
 .button-primary:hover {
-  background: rgb(255 255 255 / 0.86);
-  border-color: transparent;
+  background: #fff;
+  box-shadow: 0 14px 34px -12px rgb(0 0 0 / 0.65);
 }
 
 /* ---------- Content ---------- */
@@ -908,15 +951,17 @@ a {
   gap: var(--space-2);
 }
 
+/* Apple-style tokens: a soft system fill, no outline. */
 .focus-list li,
 .stack li {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--glass-edge);
+  padding: 0.3125rem var(--space-3);
   border-radius: 999px;
   font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--ink);
-  background: var(--tile-fill);
-  box-shadow: var(--glass-shine);
+  background: var(--fill-2);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
 }
 
 .job {
@@ -962,12 +1007,21 @@ a {
   color: var(--ink-2);
 }
 
-/* Experience: a logo tile to the left of each role, LinkedIn-style. */
+/* Experience: an app-icon tile beside each role, with the separator inset
+   to the text column like an iOS list. */
 .job.job-marked {
+  --mark: 3.25rem;
+  --mark-gap: var(--space-4);
   display: grid;
-  grid-template-columns: 3.25rem minmax(0, 1fr);
+  grid-template-columns: var(--mark) minmax(0, 1fr);
   align-items: start;
-  column-gap: var(--space-4);
+  column-gap: var(--mark-gap);
+  border-bottom: 0;
+}
+
+.job.job-marked:not(:last-child) {
+  background: linear-gradient(var(--rule), var(--rule)) right bottom / calc(100% - var(--mark) - var(--mark-gap)) 1px
+    no-repeat;
 }
 
 .job.job-marked > * + * {
@@ -981,13 +1035,12 @@ a {
 .job-mark {
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  border: 1px solid var(--glass-edge);
-  border-radius: 12px;
+  width: var(--mark);
+  height: var(--mark);
+  border-radius: 23%; /* the iOS app-icon ratio */
   color: var(--brass-2);
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.04)), rgb(20 21 24 / 0.35);
-  box-shadow: var(--glass-shine);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04)), rgb(20 21 24 / 0.4);
+  box-shadow: var(--glass-shine), 0 4px 12px rgb(0 0 0 / 0.25);
 }
 
 .org-logo {
@@ -998,14 +1051,8 @@ a {
 
 @media (max-width: 639px) {
   .job.job-marked {
-    grid-template-columns: 2.75rem minmax(0, 1fr);
-    column-gap: var(--space-3);
-  }
-
-  .job-mark {
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: 10px;
+    --mark: 2.75rem;
+    --mark-gap: var(--space-3);
   }
 
   .org-logo {
@@ -1015,8 +1062,8 @@ a {
 
 .job-meta {
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--brass-2);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1034,10 +1081,11 @@ a {
 .job-points li::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0.78em;
-  width: 0.375rem;
-  height: 1px;
+  left: 0.125rem;
+  top: 0.68em;
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 50%;
   background: var(--brass);
 }
 
@@ -1068,8 +1116,8 @@ a {
 
 .tag {
   padding: 0.125rem var(--space-2);
-  border: 1px dashed var(--run);
-  border-radius: 6px;
+  border-radius: 999px;
+  background: rgb(255 159 10 / 0.18);
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: 500;
@@ -1093,10 +1141,10 @@ a {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: var(--space-4) var(--space-5) var(--space-5);
-  border: 1px solid var(--glass-edge);
-  border-radius: 12px;
-  background: var(--tile-fill);
+  padding: var(--space-5);
+  border: 0;
+  border-radius: var(--radius-tile);
+  background: var(--fill-3);
   box-shadow: var(--glass-shine);
 }
 
@@ -1112,10 +1160,10 @@ a {
   flex: none;
   width: 2.75rem;
   height: 2.75rem;
-  border: 1px solid rgb(255 255 255 / 0.3);
   border-radius: 50%;
   color: var(--brass-2);
-  background: rgb(20 21 24 / 0.45);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04)), rgb(20 21 24 / 0.4);
+  box-shadow: var(--glass-shine);
 }
 
 .interest-name {
@@ -1146,16 +1194,16 @@ a {
   opacity: 0.16;
 }
 
-/* Team colours for the Raptors card */
+/* Team colours for the Raptors card: a faint red wash from the top edge. */
 .interest[data-interest="raptors"] {
-  border-color: color-mix(in srgb, var(--raptors) 30%, transparent);
-  box-shadow: inset 0 2px 0 var(--raptors), 0 18px 40px -24px rgb(240 80 106 / 0.35);
+  background: linear-gradient(180deg, rgb(255 90 118 / 0.16), transparent 70%), var(--fill-3);
+  box-shadow: var(--glass-shine), 0 18px 40px -24px rgb(240 80 106 / 0.35);
 }
 
 /* The team logo stands on its own: no ring or tint behind it. */
 .interest[data-interest="raptors"] .interest-icon {
-  border: 0;
   background: none;
+  box-shadow: none;
 }
 
 .team-logo {
@@ -1199,10 +1247,17 @@ a {
   min-height: 44px;
 }
 
+/* Text links read as links the Apple way: system blue, underline on hover. */
+.contact-links a,
+.job-links a {
+  color: var(--link);
+  text-decoration: none;
+}
+
 .contact-links a:hover,
 .job-links a:hover {
-  color: var(--filament);
-  text-decoration-color: var(--filament);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
 }
 
 .stage[data-gate] {
