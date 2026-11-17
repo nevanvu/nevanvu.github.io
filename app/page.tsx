@@ -16,19 +16,23 @@ type StageId = (typeof stages)[number]["id"];
 function Stage({ id, gate, children }: { id: StageId; gate?: boolean; children: React.ReactNode }) {
   const label = stages.find((s) => s.id === id)!.label;
   return (
-    <section id={id} className="stage" data-stage data-gate={gate || undefined} aria-labelledby={`${id}-title`}>
-      {/* Sticks under the site header while the stage is on screen, so you can watch it pass. */}
-      <div className="stage-head">
-        <span className="stage-node" aria-hidden="true">
-          <StageIcon />
-        </span>
-        <span className="stage-status" aria-hidden="true" />
-        <h2 id={`${id}-title`} className="stage-title">
-          {label}
-        </h2>
-      </div>
-      <div className="stage-body">{children}</div>
-    </section>
+    // The slot gives each stage a full screen of room; the section inside
+    // stays content-sized so its sticky head lets go once the panel passes.
+    <div className="stage-slot">
+      <section id={id} className="stage" data-stage data-gate={gate || undefined} aria-labelledby={`${id}-title`}>
+        {/* Sticks under the site header while the stage is on screen, so you can watch it pass. */}
+        <div className="stage-head">
+          <span className="stage-node" aria-hidden="true">
+            <StageIcon />
+          </span>
+          <span className="stage-status" aria-hidden="true" />
+          <h2 id={`${id}-title`} className="stage-title">
+            {label}
+          </h2>
+        </div>
+        <div className="stage-body">{children}</div>
+      </section>
+    </div>
   );
 }
 

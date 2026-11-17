@@ -1601,14 +1601,14 @@ a {
 }
 
 /* ---------- Wide screens ---------- */
-/* Past 1200px the page grows to fill the screen instead of sitting in a
-   narrow middle column. Text keeps its readable measure (62ch); the extra
-   width goes to side-by-side layouts, not longer lines. */
+/* Past 1200px the panels widen to 60rem and the whole column, rail
+   included, is centred so the page stays balanced. Text keeps its readable
+   measure (62ch); the extra width goes to side-by-side layouts. */
 @media (min-width: 75rem) {
   :root {
-    --page-max: 100rem;
-    --panel-max: 100rem;
-    --fs-hero: clamp(5rem, 1rem + 5.5vw, 8rem);
+    --panel-max: 60rem;
+    --page-max: calc(var(--panel-max) + var(--meta-col) + var(--node-col) + 2 * var(--space-4) + 2 * var(--gutter));
+    --fs-hero: clamp(4.5rem, 1rem + 4.5vw, 7rem);
   }
 
   .pipeline {
@@ -1627,7 +1627,8 @@ a {
 
   /* Hero: a bigger name and portrait to anchor the first screen. */
   .hero .stage-body {
-    grid-template-columns: minmax(0, 1fr) clamp(14rem, 20vw, 24rem);
+    max-width: var(--panel-max);
+    grid-template-columns: minmax(0, 1fr) clamp(12rem, 16vw, 18rem);
     padding: var(--space-8);
   }
 
@@ -1638,9 +1639,10 @@ a {
   /* About: the story on the left, focus areas as a column on the right. */
   #about > .stage-body {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(14rem, 22rem);
-    column-gap: var(--space-8);
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
+    column-gap: var(--space-7);
     align-items: start;
+    align-content: center;
   }
 
   #about > .stage-body > .focus-list {
@@ -1682,7 +1684,7 @@ a {
   /* Projects: a row of tiles instead of a stacked list. */
   #projects .jobs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     gap: var(--space-4);
   }
 
@@ -1693,6 +1695,7 @@ a {
     padding: var(--space-5);
     border: 0;
     border-radius: var(--radius-tile);
+    min-height: 15rem;
     background: var(--fill-3);
     box-shadow: var(--glass-shine);
   }
@@ -1709,6 +1712,64 @@ a {
   /* Contact: a larger closing line. */
   .contact-lead {
     max-width: 40ch;
+  }
+}
+
+/* ---------- Tall panels ---------- */
+/* On desktop each panel is a tall window, about two thirds of the screen,
+   with its contents centred vertically, so a section reads as one card
+   rather than a thin strip. */
+@media (min-width: 960px) {
+  .stage[data-stage] > .stage-body,
+  .hero > .stage-body {
+    min-height: min(62svh, 42rem);
+  }
+  .stage[data-stage] > .stage-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-7);
+  }
+  .hero > .stage-body {
+    align-content: center;
+  }
+  .interest {
+    min-height: 14rem;
+  }
+}
+
+/* ---------- Section focus ---------- */
+/* One section at a time: each fills the screen below the header, and once
+   the pipeline script is live, every section except the one under the read
+   head fades back. Without JS everything stays fully visible. */
+.pipeline > .hero,
+.stage-slot {
+  min-height: calc(100svh - var(--header-total) - var(--space-7));
+}
+
+/* The last stage leaves room for the pipeline's bottom padding and the
+   footer (about 6.5rem), so at the end of the page it rests under the
+   header instead of scrolling up behind its own title bar. */
+.stage-slot:last-child {
+  min-height: calc(100svh - var(--header-total) - var(--space-7) - var(--space-9) - 7rem);
+}
+
+.pipeline.is-live .stage > * {
+  transition: opacity 600ms var(--ease-out);
+}
+
+.pipeline.is-live .stage:not([data-focused]) > * {
+  opacity: 0.15;
+}
+
+/* On desktop, scrolling settles each section neatly under the header.
+   Proximity, not mandatory, so long sections still scroll freely. */
+@media (min-width: 960px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+  .stage-slot {
+    scroll-snap-align: start;
   }
 }
 

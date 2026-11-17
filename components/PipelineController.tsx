@@ -17,6 +17,7 @@ export function PipelineController() {
 
     const trigger = main.querySelector<HTMLElement>("[data-trigger]");
     const stages = Array.from(main.querySelectorAll<HTMLElement>("[data-stage]"));
+    const sections = trigger ? [trigger, ...stages] : stages;
     const nav = stages.map((s) => document.querySelectorAll<HTMLElement>(`[data-nav-for="${s.id}"]`));
     const pageBar = document.querySelector<HTMLElement>("[data-page-progress]");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -72,11 +73,16 @@ export function PipelineController() {
       }
       if (pageBar) pageBar.style.transform = `scaleX(${Math.min(1, window.scrollY / maxScroll)})`;
 
+      // The section under the read head is the one in focus; before the
+      // first stage that is the hero.
+      let focused: HTMLElement | null = trigger ?? null;
+
       stages.forEach((stage, i) => {
         const start = centers[i];
         const end = i < stages.length - 1 ? centers[i + 1] : Infinity;
         let state: State = head < start ? "queued" : head < end ? "running" : "passed";
         if (stage.hasAttribute("data-gate") && state !== "queued") state = "waiting";
+        if (state === "running" || state === "waiting") focused = stage;
         setState(stage, state);
         nav[i].forEach((link) => {
           setState(link, state);
@@ -84,6 +90,8 @@ export function PipelineController() {
           else link.removeAttribute("aria-current");
         });
       });
+
+      for (const section of sections) section.toggleAttribute("data-focused", section === focused);
     };
 
     const schedule = () => {
