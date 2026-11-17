@@ -706,10 +706,9 @@ a {
   transition: opacity 200ms ease;
 }
 
+/* queued: SF Symbols' circle.dotted, the "not started yet" mark */
 .i-ring {
-  fill: none;
-  stroke: var(--queued);
-  stroke-width: 1.75;
+  fill: rgb(255 255 255 / 0.7);
 }
 
 .i-spin {
