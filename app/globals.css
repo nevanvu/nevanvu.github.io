@@ -1850,11 +1850,15 @@ button {
 
 .project-links {
   display: flex;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
   font-size: var(--fs-sm);
   font-weight: 600;
 }
 
+/* Labels never break: a link wraps to the next line as a whole, so its
+   arrow stays beside its text. */
 .project-link {
   display: inline-flex;
   align-items: center;
@@ -1862,6 +1866,7 @@ button {
   min-height: 44px;
   color: var(--link);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .project-link .line-icon {
@@ -1870,7 +1875,7 @@ button {
 }
 
 @media (hover: hover) {
-  .project-link:hover {
+  .project-link:not(.project-explore):hover {
     text-decoration: underline;
     text-underline-offset: 0.22em;
   }
@@ -1879,10 +1884,41 @@ button {
   }
 }
 
-/* Links dim on press, the way iOS links do. */
-.project-link:active {
+/* Text links dim on press, the way iOS links do. */
+.project-link:not(.project-explore):active {
   opacity: 0.55;
   transition: opacity 80ms ease;
+}
+
+/* "Explore project" is the main action, so it's a small glass button; the
+   code link stays a plain text link beside it. */
+.project-explore {
+  padding: 0 0.875rem 0 1.125rem;
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgb(255 255 255 / 0.14);
+  box-shadow: var(--glass-shine);
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 200ms ease, transform 200ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .project-explore:hover {
+    background: rgb(255 255 255 / 0.22);
+  }
+}
+
+.project-explore:active {
+  background: rgb(255 255 255 / 0.26);
+  transform: scale(0.97);
+  transition-duration: 100ms;
+}
+
+/* Phones: the links get their own row under the tools. */
+@media (max-width: 639px) {
+  .project-links {
+    flex-basis: 100%;
+  }
 }
 
 @media (min-width: 960px) {
@@ -1895,24 +1931,24 @@ button {
     line-height: 1.5;
   }
 
-  /* One project: a featured, full-width card at the Experience tiles' scale. */
-  .projects[data-count="1"] .project {
+  /* The lead project: the Experience tiles' scale, so it reads first. */
+  .project[data-featured] {
     min-height: 16rem;
     gap: var(--space-4);
     padding: var(--space-6) var(--space-7);
   }
-  .projects[data-count="1"] .project-title {
+  .project[data-featured] .project-title {
     font-size: clamp(1.625rem, 1.1rem + 0.9vw, 2.125rem);
     font-weight: 700;
     line-height: 1.12;
     letter-spacing: -0.021em;
   }
-  .projects[data-count="1"] .project-summary {
+  .project[data-featured] .project-summary {
     max-width: 58ch;
   }
 
-  /* Two or more: a row of tiles, at a size each card can hold. */
-  .projects:not([data-count="1"]) .project-title {
+  /* The rest: tiles at a size each card can hold. */
+  .project:not([data-featured]) .project-title {
     font-size: var(--fs-lg);
     font-weight: 700;
     line-height: 1.2;
@@ -1920,11 +1956,16 @@ button {
   }
 }
 
+/* Wide screens: the lead project spans the full width on top, and the rest
+   share a row of tiles beneath it. */
 @media (min-width: 75rem) {
-  .projects:not([data-count="1"]) {
+  .projects {
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   }
-  .projects:not([data-count="1"]) .project-summary {
+  .project[data-featured] {
+    grid-column: 1 / -1;
+  }
+  .project:not([data-featured]) .project-summary {
     font-size: var(--fs-base);
   }
 }

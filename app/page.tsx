@@ -380,11 +380,12 @@ export default function Home() {
 
         <Stage id="projects">
           {/* Placeholders stay out of the page until they're real projects.
-              One project gets a featured, full-width card; two or more share
-              a row. Only the links in each card's footer are clickable. */}
-          <ul className="projects" data-count={shownProjects.length}>
+              The first project is the lead: a featured card, full width on
+              wide screens, with the rest in a row of tiles beneath it. Only
+              the links in each card's footer are clickable. */}
+          <ul className="projects">
             {shownProjects.map((project, i) => (
-              <li key={i} className="project">
+              <li key={i} className="project" data-featured={i === 0 || undefined}>
                 <h3 className="project-title">{project.name}</h3>
                 <p className="project-summary">{project.summary}</p>
                 <div className="project-foot">
@@ -399,7 +400,7 @@ export default function Home() {
                       {project.details && (
                         <a
                           href={`#${project.details.slug}`}
-                          className="project-link"
+                          className="project-link project-explore"
                           data-project-open={project.details.slug}
                           aria-haspopup="dialog"
                         >
