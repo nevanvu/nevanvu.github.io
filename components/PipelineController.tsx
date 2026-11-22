@@ -21,6 +21,19 @@ export function PipelineController() {
     const nav = stages.map((s) => document.querySelectorAll<HTMLElement>(`[data-nav-for="${s.id}"]`));
     const pageBar = document.querySelector<HTMLElement>("[data-page-progress]");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const headerBar = document.querySelector<HTMLElement>(".header-inner");
+    // Each glass surface fades on its own (a mask on a parent would cut its
+    // backdrop blur off from the photo), so the hero's status pill is listed
+    // beside its panel.
+    const edges = [
+      ...sections.map((s) => ({
+        body: s.querySelector<HTMLElement>(":scope > .stage-body"),
+        head: s.querySelector<HTMLElement>(":scope > .stage-head"),
+        cut: NaN,
+      })),
+      { body: trigger?.querySelector<HTMLElement>(".hero-availability") ?? null, head: null, cut: NaN },
+      { body: trigger?.querySelector<HTMLElement>(":scope > .stage-node") ?? null, head: null, cut: NaN },
+    ].filter((e): e is { body: HTMLElement; head: HTMLElement | null; cut: number } => !!e.body);
 
     let railTop = 0;
     let railHeight = 1;
@@ -72,6 +85,21 @@ export function PipelineController() {
         railHead.style.opacity = progress > 0.002 && progress < 0.998 ? "1" : "0";
       }
       if (pageBar) pageBar.style.transform = `scaleX(${Math.min(1, window.scrollY / maxScroll)})`;
+      // Scroll edge: each panel dissolves where it meets the chrome above it
+      // (its own sticky title bar, or the header for the hero). --cut is the
+      // distance from the panel's top to that edge; the CSS mask fades
+      // everything above it. Read every rect first, then write, and clamp
+      // off-screen panels so they don't repaint on every frame.
+      const headerBottom = headerBar?.getBoundingClientRect().bottom ?? 0;
+      const cuts = edges.map(({ body, head }) => {
+        const line = head ? head.getBoundingClientRect().bottom : headerBottom;
+        return Math.round(Math.max(-48, line - body.getBoundingClientRect().top));
+      });
+      edges.forEach((edge, i) => {
+        if (edge.cut === cuts[i]) return;
+        edge.cut = cuts[i];
+        edge.body.style.setProperty("--cut", `${cuts[i]}px`);
+      });
 
       // The section under the read head is the one in focus; before the
       // first stage that is the hero.
