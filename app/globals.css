@@ -973,6 +973,8 @@ button {
   line-height: 1.22;
   letter-spacing: -0.019em;
   max-width: 26ch;
+  /* Even line lengths, so a single word is never left alone on a line. */
+  text-wrap: balance;
 }
 
 .hero-text > .hero-headline {
