@@ -55,6 +55,24 @@ export type Project = {
   repo?: string;
   live?: string;
   placeholder?: boolean; // hidden from the page until you replace it and delete this
+  /** With details, the card opens a pop-up with the full write-up. */
+  details?: ProjectDetails;
+};
+
+export type ProjectDetails = {
+  /** Used in the link, e.g. yoursite.com/#autodrive opens this project. */
+  slug: string;
+  /** The line above the title, e.g. "Java 21 · JavaFX". Defaults to the stack. */
+  tech?: string;
+  intro: string;
+  /** Optional picture or GIF in /public, shown under the intro. */
+  media?: { src: string; alt: string; width: number; height: number };
+  /** A few headline numbers: a short value and what it measures. */
+  results?: { value: string; label: string }[];
+  /** The pipeline, step by step. */
+  steps?: { name: string; text: string }[];
+  /** "Inside the project" bullet points. */
+  highlights?: string[];
 };
 
 // TODO: replace these with real projects, and delete `placeholder: true`.
@@ -64,6 +82,33 @@ export const projects: Project[] = [
     summary: "A 2D simulation where an AI-controlled car drives a three-lane highway, learning to change lanes and steer clear of incoming traffic.",
     stack: ["Java", "JavaFX", "Neural Networks"],
     repo: "https://github.com/nevanvu/autodrive",
+    // From the AutoDrive README.
+    details: {
+      slug: "autodrive",
+      tech: "Java 21 · JavaFX · Maven · JUnit 5",
+      intro:
+        "A self-driving car that teaches itself to drive a busy highway. A population of cars, each run by a small neural network, is evolved by a genetic algorithm until it keeps a safe distance, obeys the speed limit and overtakes slow traffic. Nobody writes any driving rules, and there are no machine-learning libraries: the network, the genetic algorithm and the simulation are all built from scratch.",
+      results: [
+        { value: "0 / 50", label: "crashes on test highways it never saw in training" },
+        { value: "100 km/h", label: "average speed, never over the 120 limit" },
+        { value: "13", label: "overtakes per 60-second highway" },
+        { value: "0.1%", label: "of the time spent too close to the car ahead" },
+      ],
+      steps: [
+        { name: "Sense", text: "11 distance sensors with radar-style closing speed, a blind-spot radar and a turn-signal detector." },
+        { name: "Think", text: "A 27 → 14 → 9 → 2 neural network decides whether to change lanes and picks a target speed." },
+        { name: "Act", text: "A lane-change safety check, adaptive cruise control and lane keeping carry out the plan." },
+        { name: "Score", text: "Rewards distance and overtakes; penalizes crashes, tailgating, harsh braking and jerky steering." },
+        { name: "Evolve", text: "The best brains survive and the next generation is bred from mutated combinations of them." },
+      ],
+      highlights: [
+        "A layered driving stack like real autonomous cars: the network plans, simple hand-built controllers execute.",
+        "Other traffic follows the Intelligent Driver Model, signals before changing lanes and brakes for the AI car.",
+        "Trained for 80 generations (about 3 minutes on a laptop); three random seeds all finished the 50 test highways without a crash.",
+        "Every generation drives a new random highway, and results come from a separate test set never used in training.",
+        "Reproducible and tested: the same seed replays the same drive, and unit tests run on every push.",
+      ],
+    },
   },
   {
     name: "Project name",

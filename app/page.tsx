@@ -1,7 +1,19 @@
 import type { CSSProperties } from "react";
 import { PipelineController } from "@/components/PipelineController";
+import { ProjectDialogController } from "@/components/ProjectDialogController";
 import { StageIcon } from "@/components/StageIcon";
-import { about, contact, experience, focus, offCourt, profile, projects, type Interest } from "@/content";
+import {
+  about,
+  contact,
+  experience,
+  focus,
+  offCourt,
+  profile,
+  projects,
+  type Interest,
+  type Project,
+  type ProjectDetails,
+} from "@/content";
 
 const stages = [
   { id: "about", label: "About" },
@@ -139,6 +151,15 @@ function BuildIcon() {
 
 // Only finished projects are shown; ones marked placeholder wait in content.ts.
 const shownProjects = projects.filter((p) => !p.placeholder);
+
+// A right chevron, the cue that a link opens more here rather than leaving.
+function ChevronIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="line-icon">
+      <path d="m9 6 6 6-6 6" />
+    </svg>
+  );
+}
 
 // An up-right arrow, the cue that a link leaves the site.
 function ArrowIcon() {
@@ -362,18 +383,31 @@ export default function Home() {
               a row. The first link (code, else live site) stretches over the
               whole card, so the card itself is what you press. */}
           <ul className="projects" data-count={shownProjects.length}>
-            {shownProjects.map((project) => (
-              <li key={project.name} className="project">
+            {shownProjects.map((project, i) => (
+              <li key={i} className="project">
                 <h3 className="project-title">{project.name}</h3>
                 <p className="project-summary">{project.summary}</p>
                 <div className="project-foot">
                   <ul className="stack" aria-label="Built with">
-                    {project.stack.map((tool) => (
-                      <li key={tool}>{tool}</li>
+                    {project.stack.map((tool, j) => (
+                      <li key={j}>{tool}</li>
                     ))}
                   </ul>
-                  {(project.repo || project.live) && (
+                  {(project.details || project.repo || project.live) && (
                     <p className="project-links">
+                      {/* With a write-up, the card opens it in a pop-up; the
+                          code link then sits beside it instead of covering the card. */}
+                      {project.details && (
+                        <a
+                          href={`#${project.details.slug}`}
+                          className="project-link"
+                          data-project-open={project.details.slug}
+                          aria-haspopup="dialog"
+                        >
+                          Explore project<span className="sr-only"> {project.name}</span>
+                          <ChevronIcon />
+                        </a>
+                      )}
                       {project.repo && (
                         <ExternalLink href={project.repo} className="project-link">
                           View code<span className="sr-only"> for {project.name}</span>
@@ -452,7 +486,109 @@ export default function Home() {
         </p>
       </footer>
 
+      {shownProjects.map(
+        (project) => project.details && <ProjectDialog key={project.details.slug} project={project} details={project.details} />,
+      )}
+
       <PipelineController />
+      <ProjectDialogController />
     </>
+  );
+}
+
+// The full write-up for one project, in a native <dialog>: the browser traps
+// focus inside it, closes it on Esc and makes the page behind it inert.
+// ProjectDialogController opens it from the card and keeps the URL in step.
+function ProjectDialog({ project, details }: { project: Project; details: ProjectDetails }) {
+  const titleId = `${details.slug}-dialog-title`;
+  return (
+    <dialog className="project-dialog" data-project-dialog={details.slug} aria-labelledby={titleId}>
+      <button type="button" className="dialog-close" data-dialog-close aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" className="line-icon">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+      <div className="dialog-scroll">
+        <p className="dialog-tech">{details.tech ?? project.stack.join(" · ")}</p>
+        <h2 id={titleId} className="dialog-title">
+          {project.name}
+        </h2>
+        <p className="dialog-intro">{details.intro}</p>
+
+        {details.media && (
+          <img
+            className="dialog-media"
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${details.media.src}`}
+            alt={details.media.alt}
+            width={details.media.width}
+            height={details.media.height}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+
+        {details.results && (
+          <section className="dialog-section" aria-labelledby={`${details.slug}-results`}>
+            <h3 id={`${details.slug}-results`} className="dialog-heading">
+              Results
+            </h3>
+            <dl className="dialog-results">
+              {details.results.map((r) => (
+                <div key={r.label}>
+                  <dt>{r.label}</dt>
+                  <dd>{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        {details.steps && (
+          <section className="dialog-section" aria-labelledby={`${details.slug}-how`}>
+            <h3 id={`${details.slug}-how`} className="dialog-heading">
+              How it works
+            </h3>
+            <ol className="dialog-steps">
+              {details.steps.map((step) => (
+                <li key={step.name}>
+                  <span className="dialog-step-name">{step.name}</span>
+                  <span className="dialog-step-text">{step.text}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {details.highlights && (
+          <section className="dialog-section" aria-labelledby={`${details.slug}-inside`}>
+            <h3 id={`${details.slug}-inside`} className="dialog-heading">
+              Inside the project
+            </h3>
+            <ul className="dialog-highlights">
+              {details.highlights.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {(project.repo || project.live) && (
+          <div className="actions dialog-actions">
+            {project.repo && (
+              <ExternalLink href={project.repo} className="button button-primary">
+                View on GitHub
+                <ArrowIcon />
+              </ExternalLink>
+            )}
+            {project.live && (
+              <ExternalLink href={project.live} className="button">
+                Live site
+                <ArrowIcon />
+              </ExternalLink>
+            )}
+          </div>
+        )}
+      </div>
+    </dialog>
   );
 }
