@@ -380,8 +380,7 @@ export default function Home() {
         <Stage id="projects">
           {/* Placeholders stay out of the page until they're real projects.
               One project gets a featured, full-width card; two or more share
-              a row. The first link (code, else live site) stretches over the
-              whole card, so the card itself is what you press. */}
+              a row. Only the links in each card's footer are clickable. */}
           <ul className="projects" data-count={shownProjects.length}>
             {shownProjects.map((project, i) => (
               <li key={i} className="project">
@@ -395,8 +394,7 @@ export default function Home() {
                   </ul>
                   {(project.details || project.repo || project.live) && (
                     <p className="project-links">
-                      {/* With a write-up, the card opens it in a pop-up; the
-                          code link then sits beside it instead of covering the card. */}
+                      {/* With a write-up, "Explore project" opens it in a pop-up. */}
                       {project.details && (
                         <a
                           href={`#${project.details.slug}`}

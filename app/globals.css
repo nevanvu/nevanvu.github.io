@@ -1769,10 +1769,9 @@ button {
 }
 
 /* ---------- Projects ---------- */
-/* Each project is a glass tile you press as a whole: its first link stretches
-   over the card, and the card answers with the same brighten-and-lift on
-   hover and quick press-in as the buttons. Links sit in a footer beside the
-   tools, in the same place on every card. */
+/* Each project is a glass tile. The tile itself isn't clickable: only its
+   links are, and they sit in a footer beside the tools, in the same place on
+   every card. */
 .projects {
   display: grid;
   gap: var(--space-4);
@@ -1787,7 +1786,6 @@ button {
   border-radius: var(--radius-tile);
   background: var(--fill-3);
   box-shadow: var(--glass-shine);
-  transition: background-color 200ms ease, transform 200ms var(--ease-out);
 }
 
 @supports (corner-shape: squircle) {
@@ -1839,51 +1837,25 @@ button {
   transition: transform 200ms var(--ease-out);
 }
 
-/* The first link covers the whole card; any second link sits above it. */
-.project-links > :first-child::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-tile);
-}
-
-.project-links > :nth-child(n + 2) {
-  position: relative;
-  z-index: 1;
-}
-
-/* Keyboard focus rings the card, since the card is what the link covers. */
-.project-links > :first-child:focus-visible {
-  outline: none;
-}
-
-.project:has(.project-links > :first-child:focus-visible) {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
-}
-
 @media (hover: hover) {
-  .project:has(.project-links > :first-child:hover) {
-    background: rgb(118 118 128 / 0.26);
-    transform: scale(1.01);
+  .project-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
   }
   .project-link:hover .line-icon {
     transform: translate(2px, -2px);
   }
 }
 
-.project:has(.project-links > :first-child:active) {
-  background: rgb(118 118 128 / 0.3);
-  transform: scale(0.985);
-  transition-duration: 100ms;
+/* Links dim on press, the way iOS links do. */
+.project-link:active {
+  opacity: 0.55;
+  transition: opacity 80ms ease;
 }
 
 @media (min-width: 960px) {
   .project {
     padding: var(--space-6);
-    border-radius: 22px;
-  }
-  .project-links > :first-child::after {
     border-radius: 22px;
   }
   .project-summary {
