@@ -985,7 +985,7 @@ button {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   column-gap: var(--space-3);
-  row-gap: var(--space-2);
+  row-gap: var(--space-3);
   max-width: 52ch;
   color: var(--ink-2);
 }
@@ -997,27 +997,30 @@ button {
   align-items: center;
 }
 
-.hero-facts li > svg {
-  justify-self: center;
+/* Both facts' icons sit in the same-sized slot, at the same size and in the
+   same ink, so the two rows read as a pair. */
+.fact-icon {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--brass-2);
+}
+
+.fact-icon .line-icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 /* uOttawa emblem, recoloured to white ink by an SVG filter (see page.tsx) */
 .school-mark {
   flex: none;
   width: auto;
-  height: 2.25rem;
+  height: 1.25rem;
 }
 
 .hero-text > .hero-facts {
   margin-top: var(--space-3);
-}
-
-.hero-place {
-  font-size: var(--fs-sm);
-}
-
-.hero-place .line-icon {
-  color: var(--brass);
 }
 
 .line-icon {

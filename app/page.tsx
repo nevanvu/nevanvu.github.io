@@ -296,15 +296,19 @@ export default function Home() {
                 {profile.name}
               </h1>
               <p className="hero-headline reveal">{profile.headline}</p>
-              {/* Two facts, each with its icon in a shared column: the uOttawa
+              {/* Two facts, each with its icon in a matching slot: the uOttawa
                   emblem beside the school line, a pin beside the location. */}
               <ul className="hero-facts reveal">
                 <li>
-                  <UOttawaMark src={`${base}/uottawa-mark.png`} />
+                  <span className="fact-icon" aria-hidden="true">
+                    <UOttawaMark src={`${base}/uottawa-mark.png`} />
+                  </span>
                   <span>{profile.intro}</span>
                 </li>
-                <li className="hero-place">
-                  <PinIcon />
+                <li>
+                  <span className="fact-icon" aria-hidden="true">
+                    <PinIcon />
+                  </span>
                   <span>{profile.location}</span>
                 </li>
               </ul>
