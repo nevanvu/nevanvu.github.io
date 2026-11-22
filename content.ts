@@ -60,11 +60,10 @@ export type Project = {
 // TODO: replace these with real projects, and delete `placeholder: true`.
 export const projects: Project[] = [
   {
-    name: "Project name",
-    summary: "What it does and what changed because of it, in one or two lines.",
-    stack: ["Tool", "Tool", "Tool"],
-    repo: "https://github.com/nevanvu",
-    placeholder: true,
+    name: "AutoDrive",
+    summary: "A self-driving car that teaches itself highway driving. 0 crashes on 50 unseen highways.",
+    stack: ["Java", "JavaFX", "Neural nets"],
+    repo: "https://github.com/nevanvu/autodrive",
   },
   {
     name: "Project name",
