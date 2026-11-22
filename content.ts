@@ -54,7 +54,7 @@ export type Project = {
   stack: string[];
   repo?: string;
   live?: string;
-  placeholder?: boolean; // shows a "Placeholder" tag until you replace it
+  placeholder?: boolean; // hidden from the page until you replace it and delete this
 };
 
 // TODO: replace these with real projects, and delete `placeholder: true`.
@@ -70,13 +70,13 @@ export const projects: Project[] = [
     summary: "The problem it solves, who uses it, and one number that shows it worked.",
     stack: ["Tool", "Tool"],
     repo: "https://github.com/nevanvu",
-    placeholder: true,
+    placeholder: false,
   },
   {
     name: "Project name",
     summary: "A short note on the hardest part and how you solved it.",
     stack: ["Tool", "Tool", "Tool"],
-    placeholder: true,
+    placeholder: false,
   },
 ];
 

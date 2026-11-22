@@ -1289,16 +1289,16 @@ button {
   max-width: 62ch;
 }
 
-/* Apple-style tokens: a soft system fill, no outline. */
+/* Apple-style tokens: a soft system fill, no outline. Small text gets a touch
+   of positive tracking and brighter ink so it holds on the glass. */
 .stack li {
   padding: 0.3125rem var(--space-3);
   border-radius: 999px;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
   font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--ink);
+  letter-spacing: 0.01em;
+  color: var(--brass-2);
   background: var(--fill-2);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
 }
 
 .job {
@@ -1404,8 +1404,7 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
-.job-points li,
-.job-summary {
+.job-points li {
   max-width: 62ch;
   color: var(--ink-2);
 }
@@ -1426,40 +1425,10 @@ button {
   background: var(--brass);
 }
 
-.job-links {
-  display: flex;
-  gap: var(--space-4);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-}
-
-.job-links a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-}
-
 .stack {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-
-.stack li {
-  font-size: var(--fs-xs);
-  color: var(--ink-2);
-  box-shadow: none;
-}
-
-.tag {
-  padding: 0.125rem var(--space-2);
-  border-radius: 999px;
-  background: rgb(255 159 10 / 0.18);
-  font-family: var(--font-sans);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  letter-spacing: 0;
-  color: var(--run);
 }
 
 .interests {
@@ -1628,15 +1597,13 @@ button {
 }
 
 /* Text links read as links the Apple way: system blue, underline on hover. */
-.contact-links a,
-.job-links a {
+.contact-links a {
   color: var(--link);
   text-decoration: none;
 }
 
 @media (hover: hover) {
-  .contact-links a:hover,
-  .job-links a:hover {
+  .contact-links a:hover {
     text-decoration: underline;
     text-decoration-color: currentColor;
   }
@@ -1644,7 +1611,6 @@ button {
 
 /* Text links dim on press, the way iOS links do. */
 .contact-links a:active,
-.job-links a:active,
 .wordmark:active {
   opacity: 0.55;
   transition: opacity 80ms ease;
@@ -1797,33 +1763,162 @@ button {
   .job-points > * + * {
     margin-top: var(--space-2);
   }
+}
 
-  /* Projects: a row of tiles instead of a stacked list. */
-  #projects .jobs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+/* ---------- Projects ---------- */
+/* Each project is a glass tile you press as a whole: its first link stretches
+   over the card, and the card answers with the same brighten-and-lift on
+   hover and quick press-in as the buttons. Links sit in a footer beside the
+   tools, in the same place on every card. */
+.projects {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.project {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-tile);
+  background: var(--fill-3);
+  box-shadow: var(--glass-shine);
+  transition: background-color 200ms ease, transform 200ms var(--ease-out);
+}
+
+@supports (corner-shape: squircle) {
+  .project {
+    corner-shape: squircle;
+  }
+}
+
+.project-title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.project-summary {
+  max-width: 62ch;
+  color: var(--ink-2);
+}
+
+.project-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+.project-links {
+  display: flex;
+  gap: var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  color: var(--link);
+  text-decoration: none;
+}
+
+.project-link .line-icon {
+  stroke-width: 2.25;
+  transition: transform 200ms var(--ease-out);
+}
+
+/* The first link covers the whole card; any second link sits above it. */
+.project-links > :first-child::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-tile);
+}
+
+.project-links > :nth-child(n + 2) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Keyboard focus rings the card, since the card is what the link covers. */
+.project-links > :first-child:focus-visible {
+  outline: none;
+}
+
+.project:has(.project-links > :first-child:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .project:has(.project-links > :first-child:hover) {
+    background: rgb(118 118 128 / 0.26);
+    transform: scale(1.01);
+  }
+  .project-link:hover .line-icon {
+    transform: translate(2px, -2px);
+  }
+}
+
+.project:has(.project-links > :first-child:active) {
+  background: rgb(118 118 128 / 0.3);
+  transform: scale(0.985);
+  transition-duration: 100ms;
+}
+
+@media (min-width: 960px) {
+  .project {
+    padding: var(--space-6);
+    border-radius: 22px;
+  }
+  .project-links > :first-child::after {
+    border-radius: 22px;
+  }
+  .project-summary {
+    font-size: var(--fs-md);
+    line-height: 1.5;
+  }
+
+  /* One project: a featured, full-width card at the Experience tiles' scale. */
+  .projects[data-count="1"] .project {
+    min-height: 16rem;
     gap: var(--space-4);
+    padding: var(--space-6) var(--space-7);
+  }
+  .projects[data-count="1"] .project-title {
+    font-size: clamp(1.625rem, 1.1rem + 0.9vw, 2.125rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.021em;
+  }
+  .projects[data-count="1"] .project-summary {
+    max-width: 58ch;
   }
 
-  #projects .job {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-5);
-    border: 0;
-    border-radius: var(--radius-tile);
-    min-height: 15rem;
-    background: var(--fill-3);
-    box-shadow: var(--glass-shine);
+  /* Two or more: a row of tiles, at a size each card can hold. */
+  .projects:not([data-count="1"]) .project-title {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.019em;
   }
+}
 
-  #projects .job > * + * {
-    margin-top: 0;
+@media (min-width: 75rem) {
+  .projects:not([data-count="1"]) {
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   }
-
-  #projects .job .stack {
-    margin-top: auto;
-    padding-top: var(--space-2);
+  .projects:not([data-count="1"]) .project-summary {
+    font-size: var(--fs-base);
   }
 }
 

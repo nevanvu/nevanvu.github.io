@@ -137,6 +137,18 @@ function BuildIcon() {
   );
 }
 
+// Only finished projects are shown; ones marked placeholder wait in content.ts.
+const shownProjects = projects.filter((p) => !p.placeholder);
+
+// An up-right arrow, the cue that a link leaves the site.
+function ArrowIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="line-icon">
+      <path d="M7 17 17 7M9 7h8v8" />
+    </svg>
+  );
+}
+
 // Links to other sites open in a new tab so the portfolio stays open behind them.
 // Screen readers hear that the link opens a new tab.
 function ExternalLink({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
@@ -345,27 +357,38 @@ export default function Home() {
         </Stage>
 
         <Stage id="projects">
-          <ul className="jobs">
-            {projects.map((project, i) => (
-              <li key={i} className="job" data-placeholder={project.placeholder || undefined}>
-                <div className="job-head">
-                  <h3 className="job-title">
-                    {project.name}
-                    {project.placeholder && <span className="tag">Placeholder</span>}
-                  </h3>
+          {/* Placeholders stay out of the page until they're real projects.
+              One project gets a featured, full-width card; two or more share
+              a row. The first link (code, else live site) stretches over the
+              whole card, so the card itself is what you press. */}
+          <ul className="projects" data-count={shownProjects.length}>
+            {shownProjects.map((project) => (
+              <li key={project.name} className="project">
+                <h3 className="project-title">{project.name}</h3>
+                <p className="project-summary">{project.summary}</p>
+                <div className="project-foot">
+                  <ul className="stack" aria-label="Built with">
+                    {project.stack.map((tool) => (
+                      <li key={tool}>{tool}</li>
+                    ))}
+                  </ul>
                   {(project.repo || project.live) && (
-                    <p className="job-links">
-                      {project.repo && <ExternalLink href={project.repo}>Code</ExternalLink>}
-                      {project.live && <ExternalLink href={project.live}>Live site</ExternalLink>}
+                    <p className="project-links">
+                      {project.repo && (
+                        <ExternalLink href={project.repo} className="project-link">
+                          View code<span className="sr-only"> for {project.name}</span>
+                          <ArrowIcon />
+                        </ExternalLink>
+                      )}
+                      {project.live && (
+                        <ExternalLink href={project.live} className="project-link">
+                          Live site<span className="sr-only"> for {project.name}</span>
+                          <ArrowIcon />
+                        </ExternalLink>
+                      )}
                     </p>
                   )}
                 </div>
-                <p className="job-summary">{project.summary}</p>
-                <ul className="stack" aria-label="Built with">
-                  {project.stack.map((tool, j) => (
-                    <li key={j}>{tool}</li>
-                  ))}
-                </ul>
               </li>
             ))}
           </ul>
