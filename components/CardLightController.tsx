@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-// A soft light that follows the cursor across a project card, like glass
+// A soft light that follows the cursor across a project or Off court card, like glass
 // catching light. Only for real pointers (not touch), and it writes two CSS
 // variables at most once a frame; the CSS draws and fades the light.
 export function CardLightController() {
@@ -24,7 +24,7 @@ export function CardLightController() {
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
-      card = (e.target as Element).closest<HTMLElement>(".project");
+      card = (e.target as Element).closest<HTMLElement>(".project, .interest");
       if (!card) return;
       x = e.clientX;
       y = e.clientY;
