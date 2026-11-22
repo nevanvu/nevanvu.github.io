@@ -61,8 +61,8 @@ export type Project = {
 export const projects: Project[] = [
   {
     name: "AutoDrive",
-    summary: "A self-driving car that teaches itself highway driving. 0 crashes on 50 unseen highways.",
-    stack: ["Java", "JavaFX", "Neural nets"],
+    summary: "A 2D simulation where an AI-controlled car drives a three-lane highway, learning to change lanes and steer clear of incoming traffic.",
+    stack: ["Java", "JavaFX", "Neural Networks"],
     repo: "https://github.com/nevanvu/autodrive",
   },
   {
