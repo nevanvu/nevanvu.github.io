@@ -19,6 +19,10 @@ export function ProjectDialogController() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let current: HTMLDialogElement | null = null;
     let origin: HTMLElement | null = null;
+    // Where the page was when the pop-up opened. Locking the page's scroll,
+    // scroll snapping and the browser putting focus back can all move it, so
+    // it's put back exactly on close rather than left to the browser.
+    let savedY: number | null = null;
     // True when this page added the #slug entry (a click on a card), so
     // closing can step Back instead of leaving a stray entry behind.
     let openedHere = false;
@@ -50,10 +54,32 @@ export function ProjectDialogController() {
       }
     };
 
+    // After the pop-up has closed: focus goes back to the card's link without
+    // scrolling to it, and the page returns to exactly where it was.
+    const settle = () => {
+      origin?.querySelector<HTMLElement>("[data-project-open]")?.focus({ preventScroll: true });
+      if (savedY === null) return;
+      const y = savedY;
+      savedY = null;
+      const restore = () => {
+        if (Math.abs(window.scrollY - y) > 1) window.scrollTo({ top: y, left: 0, behavior: "instant" });
+      };
+      restore();
+      // Once more after the next frame, in case unlocking the page re-snapped it.
+      requestAnimationFrame(restore);
+    };
+
     const open = (slug: string) => {
       const d = dialogs.get(slug);
       if (!d || d === current) return;
-      if (current) close(current, false);
+      if (current) {
+        // Switching straight to another project: no settling in between.
+        stop(current);
+        current.close();
+        current = null;
+      } else {
+        savedY = window.scrollY;
+      }
       origin = cardFor(slug);
       stop(d);
       d.showModal();
@@ -72,13 +98,10 @@ export function ProjectDialogController() {
       }
     };
 
-    const close = (d: HTMLDialogElement, animated = true) => {
+    const close = (d: HTMLDialogElement) => {
       if (current === d) current = null;
       stop(d);
-      if (!animated || !d.open) {
-        if (d.open) d.close();
-        return;
-      }
+      if (!d.open) return;
       const duration = reduced.matches ? 120 : 240;
       const motion = reduced.matches
         ? d.animate({ opacity: [1, 0] }, { duration, fill: "forwards" })
@@ -90,7 +113,10 @@ export function ProjectDialogController() {
       motion.finished
         .then(() => {
           stop(d);
-          if (d !== current && d.open) d.close();
+          if (d !== current && d.open) {
+            d.close();
+            settle();
+          }
         })
         .catch(() => {
           // Cancelled because it was reopened mid-close; nothing to tidy.
@@ -137,7 +163,10 @@ export function ProjectDialogController() {
     // If the browser closes it on its own (a repeated Esc), tidy the URL.
     const onNativeClose = (e: Event) => {
       const d = e.currentTarget as HTMLDialogElement;
-      if (current === d) current = null;
+      if (current === d) {
+        current = null;
+        settle();
+      }
       if (hashSlug() === d.dataset.projectDialog) {
         if (openedHere) {
           openedHere = false;

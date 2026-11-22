@@ -105,6 +105,9 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Keep the scrollbar's space even while scrolling is locked (the project
+     pop-up), so the page never changes width and reflows underneath it. */
+  scrollbar-gutter: stable;
   scroll-padding-top: calc(var(--header-total) + var(--space-7));
   background: var(--espresso);
 }
@@ -1933,8 +1936,12 @@ button {
 /* A glass sheet over the dimmed page: centred on desktop, rising from the
    bottom edge on phones. The page behind can't scroll while it's open; the
    sheet scrolls on its own. ProjectDialogController animates it in and out. */
+/* Snapping pauses too, so unlocking the page on close can't re-snap it to
+   another section. The scrollbar's space stays reserved (scrollbar-gutter on
+   html), so hiding it doesn't widen and reflow the page. */
 html:has(.project-dialog[open]) {
   overflow: hidden;
+  scroll-snap-type: none;
 }
 
 .project-dialog {
