@@ -1771,7 +1771,9 @@ button {
 /* ---------- Projects ---------- */
 /* Each project is a glass tile. The tile itself isn't clickable: only its
    links are, and they sit in a footer beside the tools, in the same place on
-   every card. */
+   every card. On hover the glass catches the light instead of acting like a
+   button: it rises a little, brightens, and a soft highlight follows the
+   cursor (CardLightController). No press effect, since it does nothing. */
 .projects {
   display: grid;
   gap: var(--space-4);
@@ -1786,10 +1788,40 @@ button {
   border-radius: var(--radius-tile);
   background: var(--fill-3);
   box-shadow: var(--glass-shine);
+  transition: transform 350ms var(--ease-out), background-color 300ms ease, box-shadow 350ms var(--ease-out);
+}
+
+/* The light: a soft white glow centred on the cursor, faded in on hover. */
+.project::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(20rem circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.13), transparent 65%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+@media (hover: hover) {
+  .project:hover {
+    background: rgb(118 118 128 / 0.22);
+    box-shadow: var(--glass-shine), 0 20px 40px -22px rgb(0 0 0 / 0.55);
+  }
+  .project:hover::before {
+    opacity: 1;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .project:hover {
+    transform: translateY(-3px);
+  }
 }
 
 @supports (corner-shape: squircle) {
-  .project {
+  .project,
+  .project::before {
     corner-shape: squircle;
   }
 }

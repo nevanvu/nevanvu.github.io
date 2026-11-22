@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { CardLightController } from "@/components/CardLightController";
 import { PipelineController } from "@/components/PipelineController";
 import { ProjectDialogController } from "@/components/ProjectDialogController";
 import { StageIcon } from "@/components/StageIcon";
@@ -490,6 +491,7 @@ export default function Home() {
 
       <PipelineController />
       <ProjectDialogController />
+      <CardLightController />
     </>
   );
 }
