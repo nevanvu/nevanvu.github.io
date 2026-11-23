@@ -1561,6 +1561,31 @@ button {
   height: 100%;
 }
 
+/* Idle, each stage is a plain hollow ring: the spinner's own track, with
+   no arc yet. On run the same ring turns orange and gains its sweeping arc,
+   so the loader visibly starts rather than already looking busy. */
+.welcome-step[data-state="queued"] .i-ring {
+  opacity: 0;
+}
+
+.welcome-step[data-state="queued"] .i-spin {
+  opacity: 1;
+}
+
+.welcome-step[data-state="queued"] .i-track {
+  stroke: currentColor;
+  opacity: 0.6;
+}
+
+.welcome-step[data-state="queued"] .i-arc {
+  opacity: 0;
+}
+
+.welcome-step .i-track,
+.welcome-step .i-arc {
+  transition: stroke 150ms ease, opacity 150ms ease;
+}
+
 /* Each spinner starts part-way through its turn, so the five never spin in
    lockstep. Negative delays keep them all moving from the first frame. */
 .welcome-step .i-spin,
@@ -1620,30 +1645,32 @@ button {
   /* The pane condenses out of the haze: in from below, small and soft, and
      it settles like a critically damped spring. */
   .welcome .welcome-stage {
-    animation: pane-in 1000ms cubic-bezier(0.2, 0.9, 0.25, 1) 120ms both;
+    animation: pane-in 700ms cubic-bezier(0.2, 0.9, 0.25, 1) 60ms both;
   }
 
   .welcome .welcome-card > :is(.welcome-meta, .welcome-hi, .welcome-title, .welcome-sub, .welcome-stages, .welcome-enter) {
-    animation: settle 800ms var(--ease-out) both;
+    animation: settle 450ms var(--ease-out) both;
   }
+  /* Everything is in place in under 0.9s, the button included. */
   .welcome .welcome-meta {
-    animation-delay: 300ms;
+    animation-delay: 140ms;
   }
   .welcome .welcome-hi {
-    animation-delay: 400ms;
+    animation-delay: 200ms;
   }
   .welcome .welcome-title {
-    animation-delay: 500ms;
+    animation-delay: 260ms;
   }
   .welcome .welcome-sub {
-    animation-delay: 600ms;
+    animation-delay: 320ms;
   }
   .welcome .welcome-stages {
-    animation-delay: 680ms;
+    animation-delay: 380ms;
   }
-  /* The button arrives last, then breathes softly: the next step is yours. */
+  /* The button arrives last, then glows once, warmly: the next step is
+     yours. One bloom, not a loop, so it never nags. */
   .welcome .welcome-card > .welcome-enter {
-    animation: settle 800ms var(--ease-out) 760ms both, call 2.4s ease-in-out 1700ms infinite;
+    animation: settle 450ms var(--ease-out) 420ms both, invite 1100ms ease-in-out 900ms;
   }
   .welcome .welcome-screen[data-run] .welcome-card > .welcome-enter {
     animation: none;
@@ -1673,13 +1700,9 @@ button {
   }
 }
 
-@keyframes call {
-  0%,
-  100% {
-    box-shadow: 0 0 0 6px rgb(52 199 89 / 0.18), 0 10px 30px -10px rgb(52 199 89 / 0.5);
-  }
-  50% {
-    box-shadow: 0 0 0 10px rgb(52 199 89 / 0.08), 0 10px 36px -8px rgb(52 199 89 / 0.6);
+@keyframes invite {
+  45% {
+    box-shadow: inset 0 1px 0 #fff, 0 0 0 6px rgb(255 200 140 / 0.16), 0 12px 34px -10px rgb(255 170 90 / 0.55);
   }
 }
 

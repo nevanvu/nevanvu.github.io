@@ -48,7 +48,9 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       (c): c is HTMLElement => c !== el && c instanceof HTMLElement && c.tagName !== "SCRIPT",
     );
     behind.forEach((c) => (c.inert = true));
-    enter.focus({ preventScroll: true });
+    // Focus starts on the button so Enter or Space runs it, but the ring only
+    // shows once the visitor uses the keyboard, not on load for everyone.
+    enter.focus({ preventScroll: true, focusVisible: false });
 
     // The run: every stage starts spinning at once, and after a moment the
     // portfolio opens. Further clicks while it spins do nothing.
