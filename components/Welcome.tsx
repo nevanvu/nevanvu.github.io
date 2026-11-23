@@ -152,6 +152,14 @@ export function Welcome({ style }: { style?: CSSProperties }) {
         <span className="welcome-orb welcome-orb-3" />
       </div>
 
+      {/* The seed: a ▶ inside the glass orb the card grows out of. It sits
+          outside the card so the card's stretch doesn't squash it. */}
+      <span className="welcome-seed" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" focusable="false">
+          <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
+        </svg>
+      </span>
+
       <div className="welcome-stage">
         <div className="welcome-card">
           <span className="welcome-sheen" aria-hidden="true" />
