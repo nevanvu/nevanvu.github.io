@@ -1275,8 +1275,10 @@ button {
   letter-spacing: -0.022em;
   text-decoration: none;
   color: var(--ink);
-  background: rgb(255 255 255 / 0.14);
-  box-shadow: var(--glass-shine);
+  /* A shade darker than the card glass, with its own hairline edge, so the
+     control reads as a separate piece of glass and not part of the card. */
+  background: rgb(40 28 20 / 0.22);
+  box-shadow: var(--glass-shine), inset 0 0 0 0.5px rgb(255 228 198 / 0.28);
   -webkit-backdrop-filter: blur(12px) saturate(1.6);
   backdrop-filter: blur(12px) saturate(1.6);
   cursor: pointer;
@@ -1287,9 +1289,23 @@ button {
    for real pointers, so the lift doesn't stick after a tap on a phone. */
 @media (hover: hover) {
   .button:hover {
-    background-color: rgb(255 255 255 / 0.22);
-    transform: scale(1.02);
+    background-color: rgb(255 240 225 / 0.16);
+    transform: scale(1.015);
   }
+}
+
+/* The focus ring follows the pill instead of the global 6px corner. */
+.button:focus-visible {
+  border-radius: 999px;
+}
+
+/* Icon + label pairs */
+.button {
+  gap: 0.5em;
+}
+.button .line-icon {
+  width: 1.1em;
+  height: 1.1em;
 }
 
 /* The press lands fast (100ms); the release eases back at the base 200ms. */

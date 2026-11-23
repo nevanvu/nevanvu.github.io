@@ -66,6 +66,16 @@ function PinIcon() {
   );
 }
 
+// A page with a folded corner, for the resume link.
+function DocIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" className="line-icon">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 3v5h5M9 13h6M9 17h4" />
+    </svg>
+  );
+}
+
 // Line icons for the Off court interests, drawn to match the pin.
 function InterestIcon({ id }: { id: Interest["id"] }) {
   return (
@@ -320,9 +330,10 @@ export default function Home() {
                 <a className="button button-primary" href={`mailto:${profile.email}`}>
                   Email me
                 </a>
-                <a className="button" href={resumeHref} download>
-                  Download resume
-                </a>
+                <ExternalLink className="button" href={resumeHref}>
+                  <DocIcon />
+                  View resume
+                </ExternalLink>
               </div>
             </div>
           </div>

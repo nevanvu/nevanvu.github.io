@@ -9,7 +9,7 @@ export const profile = {
   location: "Toronto, Canada",
   availability: "Open to DevOps, QA, Platform and Cloud roles",
   email: "nevanvu@gmail.com",
-  resume: "/resume.pdf", // TODO: add resume.pdf to the public/ folder
+  resume: "/resume.pdf", // TODO: replace the empty public/resume.pdf with the real resume
   github: "https://github.com/nevanvu",
   linkedin: "https://www.linkedin.com/in/nevan-vu-95863632b",
 };
