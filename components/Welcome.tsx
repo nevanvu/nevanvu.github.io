@@ -80,42 +80,59 @@ export function Welcome({ style }: { style?: CSSProperties }) {
     };
 
     // A pane you can lean: the glass tilts toward the pointer and a soft
-    // highlight follows it, eased each frame so it moves like it has weight.
+    // highlight follows it. The easing runs on elapsed time, not frames, so
+    // it moves with the same weight on a 60Hz screen as on a 120Hz one: it
+    // closes 63% of the gap every 130ms, like a critically damped follow.
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const tau = 130;
     let tx = 0;
     let ty = 0;
     let x = 0;
     let y = 0;
     let frame = 0;
-    const paint = () => {
-      x += (tx - x) * 0.12;
-      y += (ty - y) * 0.12;
+    let last = 0;
+    const paint = (now: number) => {
+      const k = 1 - Math.exp(-Math.min(64, now - (last || now - 16)) / tau);
+      last = now;
+      x += (tx - x) * k;
+      y += (ty - y) * k;
       card.style.setProperty("--tilt-x", x.toFixed(4));
       card.style.setProperty("--tilt-y", y.toFixed(4));
-      frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.001 ? requestAnimationFrame(paint) : 0;
+      if (Math.abs(tx - x) + Math.abs(ty - y) > 0.001) frame = requestAnimationFrame(paint);
+      else {
+        frame = 0;
+        last = 0;
+      }
+    };
+    const start = () => {
+      if (!frame) frame = requestAnimationFrame(paint);
     };
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
       const r = card.getBoundingClientRect();
       tx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (r.width / 2)));
       ty = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (r.height / 2)));
-      if (!frame) frame = requestAnimationFrame(paint);
+      start();
     };
+    // Level the glass when the pointer leaves the window or the tab loses
+    // focus, so it never stays leaning toward a cursor that isn't there.
     const onLeaveWindow = () => {
       tx = 0;
       ty = 0;
-      if (!frame) frame = requestAnimationFrame(paint);
+      start();
     };
 
     // Only the button lets the visitor in (it also answers Enter and Space).
     const detach = () => {
       el.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerleave", onLeaveWindow);
+      html.removeEventListener("mouseleave", onLeaveWindow);
+      window.removeEventListener("blur", onLeaveWindow);
       enter.removeEventListener("click", run);
     };
     if (fine) {
       el.addEventListener("pointermove", onMove, { passive: true });
-      document.addEventListener("pointerleave", onLeaveWindow);
+      html.addEventListener("mouseleave", onLeaveWindow);
+      window.addEventListener("blur", onLeaveWindow);
     }
     enter.addEventListener("click", run);
 

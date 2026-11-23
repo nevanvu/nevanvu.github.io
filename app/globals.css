@@ -1258,10 +1258,11 @@ button {
 
 /* ---------- Welcome screen ---------- */
 /* First visit only (html.welcome, set by the boot script). A pane of liquid
-   glass floats over the room, blurred and dimmed, while warm light drifts
-   behind it: the time, a greeting, and a three-job run that boots the
-   portfolio. When it lifts, the glass zooms past the viewer and the room
-   pulls into focus with the pipeline intro, which waits, paused, until then. */
+   glass floats over the room, blurred and dimmed, with warm light settling
+   behind it: the time and a greeting, an invitation to run the pipeline, and
+   its five stages. When it lifts, the glass zooms past the viewer and the
+   room pulls into focus with the pipeline intro, which waits, paused, until
+   then. */
 .welcome-screen {
   display: none;
 }
@@ -1377,7 +1378,8 @@ button {
     0 60px 120px -40px rgb(40 20 10 / 0.5);
   -webkit-backdrop-filter: blur(36px) saturate(1.7) brightness(1.06);
   backdrop-filter: blur(36px) saturate(1.7) brightness(1.06);
-  transform: rotateX(calc(var(--tilt-y) * -7deg)) rotateY(calc(var(--tilt-x) * 9deg));
+  /* A gentle lean, a few degrees at most, like a visionOS hover. */
+  transform: rotateX(calc(var(--tilt-y) * -3deg)) rotateY(calc(var(--tilt-x) * 4deg));
   will-change: transform;
 }
 
@@ -1437,7 +1439,8 @@ button {
   gap: var(--space-2);
   font-size: var(--fs-sm);
   font-weight: 500;
-  letter-spacing: -0.008em;
+  /* Small text over glass reads better with a hair of positive tracking. */
+  letter-spacing: 0.005em;
   color: var(--ink-2);
   translate: calc(var(--tilt-x) * 5px) calc(var(--tilt-y) * 4px);
 }
@@ -1533,6 +1536,7 @@ button {
   padding-block: 0.4rem;
   font-size: var(--fs-sm);
   font-weight: 500;
+  letter-spacing: 0.005em;
   line-height: 1.3;
   color: var(--ink-2);
 }
@@ -1623,6 +1627,51 @@ button {
   }
 }
 
+/* Reduce transparency: the glass turns to a near-solid warm surface, and
+   the room and light behind it stay out of view. */
+@media (prefers-reduced-transparency: reduce) {
+  .welcome-card {
+    background: #3d3028;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .welcome-sheen,
+  .welcome-ambient {
+    display: none;
+  }
+  .welcome-stages {
+    background: #2e241e;
+  }
+}
+
+/* Increase contrast: a solid surface, a clear edge, and full-strength ink
+   for the secondary lines. */
+@media (prefers-contrast: more) {
+  .welcome-card {
+    background: #2a201a;
+    border-color: rgb(255 240 225 / 0.7);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .welcome-card::after,
+  .welcome-sheen {
+    display: none;
+  }
+  .welcome-meta,
+  .welcome-hi,
+  .welcome-sub,
+  .welcome-step {
+    color: var(--ink);
+  }
+  .welcome-stages {
+    background: #1d1612;
+    box-shadow: inset 0 0 0 1px rgb(255 240 225 / 0.45);
+  }
+  .welcome-step:not(:last-child)::after {
+    background: rgb(255 240 225 / 0.6);
+  }
+}
+
 /* ---- Motion ---- */
 /* The welcome only appears for visitors who haven't asked for reduced motion
    (see the boot script), but the guard stays in case that ever changes. */
@@ -1631,15 +1680,14 @@ button {
     animation: fade-in 500ms ease both;
   }
 
+  /* The warm light drifts into place once as the card arrives, then rests.
+     A still background also means the card's blur isn't redrawn every
+     frame. */
   .welcome .welcome-orb {
-    animation: fade-in 1200ms ease 200ms both, drift 9s ease-in-out infinite alternate;
+    animation: fade-in 1200ms ease 200ms both, drift 2400ms var(--ease-out) 200ms both;
   }
   .welcome .welcome-orb-2 {
-    animation-duration: 1200ms, 11s;
-    animation-direction: normal, alternate-reverse;
-  }
-  .welcome .welcome-orb-3 {
-    animation-duration: 1200ms, 7s;
+    animation-direction: normal, reverse;
   }
 
   /* The pane condenses out of the haze: in from below, small and soft, and
@@ -1717,7 +1765,7 @@ button {
 @keyframes pane-out {
   to {
     opacity: 0;
-    transform: translateY(-1rem) scale(1.12);
+    transform: scale(1.12);
     filter: blur(10px);
   }
 }
@@ -1729,9 +1777,9 @@ button {
 }
 
 @keyframes drift {
-  to {
-    translate: 3rem -2rem;
-    scale: 1.15;
+  from {
+    translate: -2rem 1.5rem;
+    scale: 0.9;
   }
 }
 

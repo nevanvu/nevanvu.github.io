@@ -31,7 +31,7 @@ export const stages = [
 export const welcome = {
   hello: "Hi, I'm Nevan.",
   headline: "Check out the pipeline.",
-  subline: "Five stages, about ten seconds. The quickest way to get to know me.",
+  subline: "Five stages. The quickest way to get to know me.",
   cta: "Run pipeline",
   running: "Running pipeline…",
 };
