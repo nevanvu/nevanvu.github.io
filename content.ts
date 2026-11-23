@@ -29,9 +29,15 @@ export const stages = [
 // above it. The site's stages (above) are listed as a preview, idle; "Run
 // pipeline" spins them for a moment, then opens the portfolio.
 export const welcome = {
-  hello: "Hi, I'm Nevan.",
+  // Shown in the glass pill before the card opens out.
+  greeting: "Welcome",
+  greetingSub: "to my portfolio",
+  // Follows the greeting for the time of day: "Good afternoon, I'm Nevan."
+  hello: "I'm Nevan.",
   headline: "Check out the pipeline.",
   subline: "Five stages. The quickest way to get to know me.",
+  // The status row of the pipeline display.
+  display: "Pipeline · 5 stages",
   cta: "Run pipeline",
   running: "Running pipeline…",
 };

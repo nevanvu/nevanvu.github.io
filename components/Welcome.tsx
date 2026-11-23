@@ -160,57 +160,87 @@ export function Welcome({ style }: { style?: CSSProperties }) {
         </svg>
       </span>
 
+      {/* The welcome the pill holds before it opens into the card, like a
+          notification. It sits outside the card so the stretch doesn't
+          squash it; the card's own heading is what screen readers get. */}
+      <p className="welcome-intro" aria-hidden="true">
+        <span className="welcome-intro-word">{welcome.greeting}</span>
+        <span className="welcome-intro-sub">{welcome.greetingSub}</span>
+      </p>
+
       <div className="welcome-stage">
         <div className="welcome-card">
           <span className="welcome-sheen" aria-hidden="true" />
 
-          {/* The greeting for the visitor's time of day, then the time. */}
-          <p className="welcome-meta">
-            <span className="welcome-greeting">
-              <span data-daypart="morning">Good morning</span>
-              <span data-daypart="afternoon">Good afternoon</span>
-              <span data-daypart="evening">Good evening</span>
-            </span>
-            <span className="welcome-dot" aria-hidden="true" />
-            <span className="welcome-time" data-welcome-time>
-              {" "}
-            </span>
-          </p>
+          {/* Two lines, like an alarm clock's greeting: a warm hello for the
+              visitor's time of day, then the invitation. */}
+          <header className="welcome-head">
+            <p className="welcome-hi">
+              <span className="welcome-greeting">
+                <span data-daypart="morning">Good morning</span>
+                <span data-daypart="afternoon">Good afternoon</span>
+                <span data-daypart="evening">Good evening</span>
+              </span>
+              , {welcome.hello}
+            </p>
+            <h2 id="welcome-title" className="welcome-title">
+              {welcome.headline}
+            </h2>
+            <p id="welcome-sub" className="welcome-sub">
+              {welcome.subline}
+            </p>
+          </header>
 
-          <p className="welcome-hi">{welcome.hello}</p>
-          <h2 id="welcome-title" className="welcome-title">
-            {welcome.headline}
-          </h2>
-          <p id="welcome-sub" className="welcome-sub">
-            {welcome.subline}
-          </p>
+          {/* The display: an inset pane of glass, like the clock face. A
+              status row with the time, then the five stages, numbered and
+              dimmed like unlit segments until the visitor runs them; then
+              each lights up and spins the pipeline's "running" glyph, a
+              little out of step with the next. */}
+          <div className="welcome-display">
+            <p className="welcome-display-status">
+              <span>{welcome.display}</span>
+              <span className="welcome-time" data-welcome-time>
+                {"\u00a0"}
+              </span>
+            </p>
+            <ol className="welcome-stages" aria-label="Pipeline stages">
+              {stages.map((stage, i) => (
+                <li
+                  key={stage.id}
+                  className="welcome-step"
+                  data-welcome-stage
+                  data-state="queued"
+                  style={{ "--i": i } as CSSProperties}
+                >
+                  <span className="welcome-step-icon" aria-hidden="true">
+                    <StageIcon />
+                  </span>
+                  <span className="welcome-step-num" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {stage.label}
+                </li>
+              ))}
+            </ol>
+          </div>
 
-          {/* What's coming: the five stages, idle with the pipeline's
-              "queued" glyph until the visitor runs them; then each spins the
-              "running" glyph, a little out of step with the next. */}
-          <ol className="welcome-stages" aria-label="Pipeline stages">
-            {stages.map((stage, i) => (
-              <li
-                key={stage.id}
-                className="welcome-step"
-                data-welcome-stage
-                data-state="queued"
-                style={{ "--i": i } as CSSProperties}
-              >
-                <span className="welcome-step-icon" aria-hidden="true">
-                  <StageIcon />
+          {/* The control, like the alarm's Snooze: a wide pill that runs the
+              pipeline. */}
+          <div className="welcome-actions">
+            <button type="button" className="button button-primary welcome-enter" data-welcome-enter>
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="welcome-play">
+                <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
+              </svg>
+              {/* The running label sits invisibly underneath, so the pill is
+                  already wide enough and doesn't jump when the text changes. */}
+              <span className="welcome-label">
+                <span data-welcome-label>{welcome.cta}</span>
+                <span className="welcome-label-ghost" aria-hidden="true">
+                  {welcome.running}
                 </span>
-                {stage.label}
-              </li>
-            ))}
-          </ol>
-
-          <button type="button" className="button button-primary welcome-enter" data-welcome-enter>
-            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="welcome-play">
-              <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
-            </svg>
-            <span data-welcome-label>{welcome.cta}</span>
-          </button>
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
