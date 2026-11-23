@@ -183,11 +183,11 @@ function ExternalLink({ href, className, children }: { href: string; className?:
 }
 
 // Square headshot, cut out of its studio backdrop (Apple's on-device Vision
-// subject lift), warmed slightly, and set over a softened Portrait-mode blur of
-// a white open-plan office with tall, dark-framed windows ("A large room with
-// chairs and tables in it" by JIRAN FAMILY on Unsplash, Unsplash License).
-// AVIF, WebP and JPEG at 320px and 640px; the browser picks the smallest file
-// that stays sharp. Regenerate these when the photo changes.
+// subject lift), warmed slightly, and set over a ribbed metal surface with a
+// soft light gradient, desaturated to read like brushed aluminium ("Ribbed
+// metal surface with light gradient" by Adrien Olichon on Unsplash, Unsplash
+// License). AVIF, WebP and JPEG at 320px and 640px; the browser picks the
+// smallest file that stays sharp. Regenerate these when the photo changes.
 function Headshot() {
   const base = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/headshot`;
   const set = (ext: string) => `${base}-320.${ext} 320w, ${base}-640.${ext} 640w`;

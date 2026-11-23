@@ -954,9 +954,8 @@ button {
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 50%;
-  /* the blurred office's soft whites and window frames, so the slot reads as
-     the photo while it loads */
-  background: linear-gradient(180deg, #d9d4cc, #a9a39b);
+  /* the brushed metal's soft greys, so the slot reads as the photo while it loads */
+  background: linear-gradient(180deg, #cbc8c1, #a8a59e);
   /* no outline, just a soft shadow to lift it off the glass */
   box-shadow: 0 10px 24px -14px rgb(8 8 12 / 0.4), 0 34px 64px -20px rgb(8 8 12 / 0.55);
 }
