@@ -307,6 +307,11 @@ button {
 
 .stage-nav {
   display: none;
+  position: relative;
+  /* A critically damped spring (response 0.35s): the selection glides to
+     the new section and settles without overshoot. */
+  --spring: linear(0, 0.055, 0.173, 0.309, 0.441, 0.558, 0.656, 0.736, 0.8, 0.849, 0.887, 0.916, 0.938, 0.955,
+      0.967, 0.976, 0.982, 0.987, 0.991, 0.993, 0.995, 0.997, 0.998, 0.998, 1);
 }
 
 /* A segmented control: a recessed track with a raised glass pill on the
@@ -331,9 +336,51 @@ button {
   font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: -0.008em;
-  color: var(--ink-2);
+  /* Brighter than --ink-2: small text on glass over a light photo needs
+     the extra contrast to clear 4.5:1. */
+  color: rgb(248 234 218 / 0.88);
   text-decoration: none;
-  transition: color 200ms ease, background-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out);
+  position: relative;
+  z-index: 1;
+  transition: color 200ms ease, background-color 250ms var(--ease-out);
+}
+
+/* Finger-sized targets where the pointer is a finger (an iPad in landscape). */
+@media (pointer: coarse) {
+  .stage-nav a {
+    min-height: 44px;
+  }
+}
+
+/* One raised glass pill that slides to the section you're reading, so the
+   eye can follow the selection instead of watching it blink across. */
+.nav-pill {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 0;
+  width: var(--pill-w, 0px);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgb(255 228 196 / 0.26), rgb(255 200 150 / 0.12));
+  box-shadow: inset 0 1px 0 rgb(255 240 222 / 0.34), 0 2px 12px rgb(60 30 10 / 0.26);
+  transform: translateX(var(--pill-x, 0px));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.nav-pill[data-shown] {
+  opacity: 1;
+}
+
+.nav-pill[data-glide] {
+  transition: opacity 200ms ease, transform 500ms var(--spring), width 500ms var(--spring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-pill[data-glide] {
+    transition: opacity 200ms ease;
+  }
 }
 
 @media (hover: hover) {
@@ -351,8 +398,13 @@ button {
 
 .stage-nav a[aria-current] {
   color: var(--ink);
-  background: linear-gradient(180deg, rgb(255 228 196 / 0.26), rgb(255 200 150 / 0.12));
-  box-shadow: inset 0 1px 0 rgb(255 240 222 / 0.34), 0 2px 12px rgb(60 30 10 / 0.26);
+}
+
+/* The pill carries the selection; don't stack a hover tint on top of it. */
+@media (hover: hover) {
+  .stage-nav a[aria-current]:hover {
+    background: transparent;
+  }
 }
 
 .stage-nav li {
@@ -360,11 +412,14 @@ button {
   align-items: center;
 }
 
+/* Queued is a faint filled dot, a quiet placeholder rather than a row of
+   hollow bullets; it only gains colour once its section runs. */
 .nav-dot {
   width: 0.375rem;
   height: 0.375rem;
   border-radius: 50%;
-  border: 1px solid var(--queued);
+  border: 1px solid transparent;
+  background: rgb(248 234 218 / 0.26);
   transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease,
     transform 200ms var(--ease-out);
 }
@@ -3564,6 +3619,12 @@ html:has(.project-dialog[open]) {
   }
   .button:not(.button-primary) {
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.6);
+  }
+  .nav-dot {
+    background: var(--queued);
+  }
+  .stage-nav a {
+    color: var(--ink);
   }
   .pipeline.is-live .stage:not([data-focused]) > * {
     opacity: 0.7;

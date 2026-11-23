@@ -20,6 +20,33 @@ export function PipelineController() {
     const stages = Array.from(main.querySelectorAll<HTMLElement>("[data-stage]"));
     const sections = trigger ? [trigger, ...stages] : stages;
     const nav = stages.map((s) => document.querySelectorAll<HTMLElement>(`[data-nav-for="${s.id}"]`));
+    const pill = document.querySelector<HTMLElement>("[data-nav-pill]");
+    let pillFor: HTMLElement | null = null;
+    let pillX = NaN;
+    let pillW = NaN;
+
+    // Moves the header's selection pill under the current section's link.
+    // It appears in place (no glide) the first time, then springs between
+    // links; with nothing selected it fades out where it is.
+    const placePill = (link: HTMLElement | null) => {
+      if (!pill) return;
+      if (!link || !link.offsetWidth) {
+        pill.removeAttribute("data-shown");
+        pillFor = null;
+        return;
+      }
+      const x = link.offsetLeft;
+      const w = link.offsetWidth;
+      const glide = pillFor !== null;
+      if (x === pillX && w === pillW && glide) return;
+      pill.toggleAttribute("data-glide", glide);
+      pill.style.setProperty("--pill-x", `${x}px`);
+      pill.style.setProperty("--pill-w", `${w}px`);
+      pillX = x;
+      pillW = w;
+      pillFor = link;
+      pill.setAttribute("data-shown", "");
+    };
     const pageBar = document.querySelector<HTMLElement>("[data-page-progress]");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const headerBar = document.querySelector<HTMLElement>(".header-inner");
@@ -105,6 +132,7 @@ export function PipelineController() {
       // The section under the read head is the one in focus; before the
       // first stage that is the hero.
       let focused: HTMLElement | null = trigger ?? null;
+      let currentLink: HTMLElement | null = null;
 
       stages.forEach((stage, i) => {
         const start = centers[i];
@@ -115,12 +143,15 @@ export function PipelineController() {
         setState(stage, state);
         nav[i].forEach((link) => {
           setState(link, state);
-          if (state === "running" || state === "waiting") link.setAttribute("aria-current", "step");
-          else link.removeAttribute("aria-current");
+          if (state === "running" || state === "waiting") {
+            link.setAttribute("aria-current", "step");
+            currentLink = link;
+          } else link.removeAttribute("aria-current");
         });
       });
 
       for (const section of sections) section.toggleAttribute("data-focused", section === focused);
+      placePill(currentLink);
     };
 
     const schedule = () => {

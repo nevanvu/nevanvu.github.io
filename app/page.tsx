@@ -273,6 +273,7 @@ export default function Home() {
                 </li>
               ))}
             </ol>
+            <span className="nav-pill" data-nav-pill aria-hidden="true" />
           </nav>
           <div className="header-actions">
             <a
