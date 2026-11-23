@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
-import { welcome } from "@/content";
+import { StageIcon } from "@/components/StageIcon";
+import { stages, welcome } from "@/content";
 
 // When the welcome lifts, the boot script's failsafe stops waiting and the
 // pipeline's own intro (paused behind this screen) starts playing.
@@ -9,10 +10,10 @@ export const WELCOME_DONE = "nv:welcome-done";
 
 // The first-visit invitation: a pane of liquid glass with the time and a
 // greeting for the time of day, then an invitation to run the pipeline, with
-// its five stages waiting as pending pills. It stays until the visitor
-// presses "Run pipeline"; the pills then pass one at a time, the glass zooms
-// away and the pipeline intro plays underneath. It only shows when the boot script
-// in layout.tsx flags html.welcome, so without JS, with reduced motion, on
+// its five stages listed as a preview, idle. It stays until the visitor
+// presses "Run pipeline"; the stages then spin for a moment, the glass zooms
+// away and the pipeline intro plays underneath. It only shows when the boot script in layout.tsx flags
+// html.welcome, so without JS, with reduced motion, on
 // reloads and on deep links the page opens straight away.
 export function Welcome({ style }: { style?: CSSProperties }) {
   const root = useRef<HTMLDivElement>(null);
@@ -29,9 +30,8 @@ export function Welcome({ style }: { style?: CSSProperties }) {
     const time = el.querySelector<HTMLElement>("[data-welcome-time]")!;
     const enter = el.querySelector<HTMLButtonElement>("[data-welcome-enter]")!;
     const label = enter.querySelector<HTMLElement>("[data-welcome-label]")!;
-    const pills = Array.from(el.querySelectorAll<HTMLElement>("[data-welcome-stage]"));
-    const timers: number[] = [];
-    const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+    const steps = Array.from(el.querySelectorAll<HTMLElement>("[data-welcome-stage]"));
+    let runTimer = 0;
     let clock = 0;
 
     // The clock: hours and minutes in the visitor's own locale, kept current.
@@ -50,22 +50,17 @@ export function Welcome({ style }: { style?: CSSProperties }) {
     behind.forEach((c) => (c.inert = true));
     enter.focus({ preventScroll: true });
 
-    // The run: each stage goes running, then passed, one after another; a
-    // beat after the last one passes, the portfolio opens.
+    // The run: every stage starts spinning at once, and after a moment the
+    // portfolio opens. Further clicks while it spins do nothing.
     let ran = false;
     const run = () => {
       if (ran) return;
       ran = true;
-      el.dataset.run = "running";
+      el.dataset.run = "";
       enter.setAttribute("aria-disabled", "true");
       label.textContent = welcome.running;
-      const step = 280;
-      pills.forEach((pill, i) => {
-        later(() => (pill.dataset.state = "running"), i * step);
-        later(() => (pill.dataset.state = "passed"), (i + 1) * step - 40);
-      });
-      later(() => (el.dataset.run = "passed"), pills.length * step);
-      later(leave, pills.length * step + 450);
+      steps.forEach((step) => (step.dataset.state = "running"));
+      runTimer = window.setTimeout(leave, 700);
     };
 
     let left = false;
@@ -73,7 +68,6 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       if (left) return;
       left = true;
       clearTimeout(clock);
-      timers.forEach(clearTimeout);
       el.dataset.phase = "leaving";
       html.classList.remove("welcome");
       behind.forEach((c) => (c.inert = false));
@@ -125,7 +119,7 @@ export function Welcome({ style }: { style?: CSSProperties }) {
 
     return () => {
       clearTimeout(clock);
-      timers.forEach(clearTimeout);
+      clearTimeout(runTimer);
       cancelAnimationFrame(frame);
       detach();
     };
@@ -164,12 +158,22 @@ export function Welcome({ style }: { style?: CSSProperties }) {
             {welcome.subline}
           </p>
 
-          {/* What's coming: the stages, pending until the visitor runs them. */}
+          {/* What's coming: the five stages, idle with the pipeline's
+              "queued" glyph until the visitor runs them; then each spins the
+              "running" glyph, a little out of step with the next. */}
           <ol className="welcome-stages" aria-label="Pipeline stages">
-            {welcome.stages.map((stage) => (
-              <li key={stage} className="welcome-pill" data-welcome-stage data-state="queued">
-                <span className="welcome-pill-dot" aria-hidden="true" />
-                {stage}
+            {stages.map((stage, i) => (
+              <li
+                key={stage.id}
+                className="welcome-step"
+                data-welcome-stage
+                data-state="queued"
+                style={{ "--i": i } as CSSProperties}
+              >
+                <span className="welcome-step-icon" aria-hidden="true">
+                  <StageIcon />
+                </span>
+                {stage.label}
               </li>
             ))}
           </ol>

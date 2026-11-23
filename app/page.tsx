@@ -12,18 +12,12 @@ import {
   offCourt,
   profile,
   projects,
+  stages,
   type Interest,
   type Project,
   type ProjectDetails,
 } from "@/content";
 
-const stages = [
-  { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
-  { id: "projects", label: "Projects" },
-  { id: "off-court", label: "Off court" },
-  { id: "contact", label: "Contact" },
-] as const;
 
 type StageId = (typeof stages)[number]["id"];
 
