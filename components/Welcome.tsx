@@ -150,6 +150,16 @@ export function Welcome({ style }: { style?: CSSProperties }) {
 
   return (
     <div ref={root} className="welcome-screen" style={style} role="dialog" aria-modal="true" aria-labelledby="welcome-title" aria-describedby="welcome-sub">
+      {/* The "goo" that makes the button's light behave like liquid: blur
+          the blobs together, then snap their soft edges back to a crisp
+          outline, so where two meet they merge with a smooth neck. */}
+      <svg className="welcome-defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <filter id="welcome-goo" colorInterpolationFilters="sRGB">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
+          <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" />
+        </filter>
+      </svg>
+
       <div className="welcome-ambient" aria-hidden="true">
         <span className="welcome-orb welcome-orb-1" />
         <span className="welcome-orb welcome-orb-2" />
@@ -232,6 +242,13 @@ export function Welcome({ style }: { style?: CSSProperties }) {
               pipeline. */}
           <div className="welcome-actions">
             <button type="button" className="button welcome-enter" data-welcome-enter>
+              {/* Liquid light inside the glass: blobs that drift, meet and
+                  merge, plus one that follows the pointer. */}
+              <span className="welcome-liquid" aria-hidden="true">
+                <i />
+                <i />
+                <i className="welcome-liquid-pointer" />
+              </span>
               <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="welcome-play">
                 <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
               </svg>
