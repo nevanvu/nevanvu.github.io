@@ -109,6 +109,10 @@ export function Welcome({ style }: { style?: CSSProperties }) {
     };
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
+      // The button's glass catches a highlight where the pointer is.
+      const b = enter.getBoundingClientRect();
+      enter.style.setProperty("--bx", `${Math.round(e.clientX - b.left)}px`);
+      enter.style.setProperty("--by", `${Math.round(e.clientY - b.top)}px`);
       const r = card.getBoundingClientRect();
       tx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (r.width / 2)));
       ty = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (r.height / 2)));
@@ -227,7 +231,7 @@ export function Welcome({ style }: { style?: CSSProperties }) {
           {/* The control, like the alarm's Snooze: a wide pill that runs the
               pipeline. */}
           <div className="welcome-actions">
-            <button type="button" className="button button-primary welcome-enter" data-welcome-enter>
+            <button type="button" className="button welcome-enter" data-welcome-enter>
               <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="welcome-play">
                 <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
               </svg>
