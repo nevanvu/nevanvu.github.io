@@ -15,13 +15,14 @@ export const profile = {
 };
 
 // The pipeline's stages, in page order: each is a section of the site, a
-// link in the header, and a step on the welcome screen.
+// link in the header, and a step on the welcome screen, where its note says
+// what's in it.
 export const stages = [
-  { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
-  { id: "projects", label: "Projects" },
-  { id: "off-court", label: "Off court" },
-  { id: "contact", label: "Contact" },
+  { id: "about", label: "About", note: "Who I am" },
+  { id: "experience", label: "Experience", note: "Where I've worked" },
+  { id: "projects", label: "Projects", note: "What I've built" },
+  { id: "off-court", label: "Off court", note: "Food and the Raptors" },
+  { id: "contact", label: "Contact", note: "Say hello" },
 ] as const;
 
 // The first-visit welcome screen: a hello, then an invitation to run the
@@ -37,7 +38,7 @@ export const welcome = {
   headline: "Check out the pipeline.",
   subline: "Five stages. The quickest way to get to know me.",
   // The status row of the pipeline display.
-  display: "Pipeline · 5 stages",
+  display: "Pipeline",
   cta: "Run pipeline",
   running: "Running pipeline…",
 };

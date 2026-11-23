@@ -48,15 +48,29 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       (c): c is HTMLElement => c !== el && c instanceof HTMLElement && c.tagName !== "SCRIPT",
     );
     behind.forEach((c) => (c.inert = true));
-    // Focus starts on the button so Enter or Space runs it, but the ring only
-    // shows once the visitor uses the keyboard, not on load for everyone.
-    enter.focus({ preventScroll: true, focusVisible: false });
+    // The button only answers once it's on screen: while the orb and the
+    // welcome play, it's still invisible, so a stray Enter or click mustn't
+    // start the run. Once it has settled in, it takes focus, so Enter or
+    // Space runs it; the ring only shows once the visitor uses the keyboard.
+    const actions = el.querySelector<HTMLElement>(".welcome-actions")!;
+    let ready = false;
+    const becomeReady = () => {
+      if (ready) return;
+      ready = true;
+      enter.focus({ preventScroll: true, focusVisible: false });
+    };
+    const onSettled = (e: AnimationEvent) => {
+      if (e.target === actions && e.animationName === "settle") becomeReady();
+    };
+    actions.addEventListener("animationend", onSettled);
+    // In case the animation never runs (or never reports), don't wait forever.
+    const readyTimer = window.setTimeout(becomeReady, 2600);
 
     // The run: every stage starts spinning at once, and after a moment the
     // portfolio opens. Further clicks while it spins do nothing.
     let ran = false;
     const run = () => {
-      if (ran) return;
+      if (ran || !ready) return;
       ran = true;
       el.dataset.run = "";
       enter.setAttribute("aria-disabled", "true");
@@ -132,6 +146,8 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       html.removeEventListener("mouseleave", onLeaveWindow);
       window.removeEventListener("blur", onLeaveWindow);
       enter.removeEventListener("click", run);
+      actions.removeEventListener("animationend", onSettled);
+      clearTimeout(readyTimer);
     };
     if (fine) {
       el.addEventListener("pointermove", onMove, { passive: true });
@@ -150,16 +166,6 @@ export function Welcome({ style }: { style?: CSSProperties }) {
 
   return (
     <div ref={root} className="welcome-screen" style={style} role="dialog" aria-modal="true" aria-labelledby="welcome-title" aria-describedby="welcome-sub">
-      {/* The "goo" that makes the button's light behave like liquid: blur
-          the blobs together, then snap their soft edges back to a crisp
-          outline, so where two meet they merge with a smooth neck. */}
-      <svg className="welcome-defs" width="0" height="0" aria-hidden="true" focusable="false">
-        <filter id="welcome-goo" colorInterpolationFilters="sRGB">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
-          <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" />
-        </filter>
-      </svg>
-
       <div className="welcome-ambient" aria-hidden="true">
         <span className="welcome-orb welcome-orb-1" />
         <span className="welcome-orb welcome-orb-2" />
@@ -187,7 +193,8 @@ export function Welcome({ style }: { style?: CSSProperties }) {
           <span className="welcome-sheen" aria-hidden="true" />
 
           {/* Two lines, like an alarm clock's greeting: a warm hello for the
-              visitor's time of day, then the invitation. */}
+              visitor's time of day, then the invitation. Centred, on the
+              same axis as the button below. */}
           <header className="welcome-head">
             <p className="welcome-hi">
               <span className="welcome-greeting">
@@ -206,10 +213,11 @@ export function Welcome({ style }: { style?: CSSProperties }) {
           </header>
 
           {/* The display: an inset pane of glass, like the clock face. A
-              status row with the time, then the five stages, numbered and
-              dimmed like unlit segments until the visitor runs them; then
-              each lights up and spins the pipeline's "running" glyph, a
-              little out of step with the next. */}
+              status row with the time, then the five stages, each with a
+              note on what's in it, dimmed like unlit segments until the
+              visitor runs them; then each lights up and spins the
+              pipeline's "running" glyph, a little out of step with the
+              next. */}
           <div className="welcome-display">
             <p className="welcome-display-status">
               <span>{welcome.display}</span>
@@ -229,10 +237,8 @@ export function Welcome({ style }: { style?: CSSProperties }) {
                   <span className="welcome-step-icon" aria-hidden="true">
                     <StageIcon />
                   </span>
-                  <span className="welcome-step-num" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {stage.label}
+                  <span className="welcome-step-label">{stage.label}</span>
+                  <span className="welcome-step-note">{stage.note}</span>
                 </li>
               ))}
             </ol>
@@ -242,13 +248,6 @@ export function Welcome({ style }: { style?: CSSProperties }) {
               pipeline. */}
           <div className="welcome-actions">
             <button type="button" className="button welcome-enter" data-welcome-enter>
-              {/* Liquid light inside the glass: blobs that drift, meet and
-                  merge, plus one that follows the pointer. */}
-              <span className="welcome-liquid" aria-hidden="true">
-                <i />
-                <i />
-                <i className="welcome-liquid-pointer" />
-              </span>
               <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="welcome-play">
                 <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
               </svg>
