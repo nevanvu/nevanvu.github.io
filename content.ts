@@ -14,6 +14,19 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/nevan-vu-95863632b",
 };
 
+// The first-visit welcome screen: a hello, then an invitation to run the
+// pipeline. A small greeting for the visitor's time of day and the time sit
+// above it. The stages wait as pending pills; "Run pipeline" turns them green
+// one at a time, then opens the portfolio.
+export const welcome = {
+  hello: "Hi, I'm Nevan.",
+  headline: "Check out the pipeline.",
+  subline: "Five stages, about ten seconds. The quickest way to get to know me.",
+  stages: ["Source", "Build", "Test", "Deploy", "Release"],
+  cta: "Run pipeline",
+  running: "Running pipeline…",
+};
+
 export const about = [
   "I enjoy building solutions where thoughtful design leads to functional results.",
   "Right now I'm picking up new tools and technologies by building personal projects, and sharpening the skills I picked up writing automated tests and CI/CD for production applications.",

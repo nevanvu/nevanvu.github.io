@@ -1,20 +1,19 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
-import { StageIcon } from "@/components/StageIcon";
-
-const jobs = ["Say hello", "Build portfolio", "Deploy to you"];
+import { welcome } from "@/content";
 
 // When the welcome lifts, the boot script's failsafe stops waiting and the
 // pipeline's own intro (paused behind this screen) starts playing.
 export const WELCOME_DONE = "nv:welcome-done";
 
-// The first-visit greeting: a pane of liquid glass with the time, a greeting
-// for the time of day, and a tiny CI run that boots the portfolio. When the
-// run passes (or the visitor clicks, scrolls or presses a key) the glass
-// zooms away and the pipeline intro plays underneath. It only shows when the
-// boot script in layout.tsx flags html.welcome, so without JS, with reduced
-// motion, on reloads and on deep links the page opens straight away.
+// The first-visit invitation: a pane of liquid glass with the time and a
+// greeting for the time of day, then an invitation to run the pipeline, with
+// its five stages waiting as pending pills. It stays until the visitor
+// presses "Run pipeline"; the pills then pass one at a time, the glass zooms
+// away and the pipeline intro plays underneath. It only shows when the boot script
+// in layout.tsx flags html.welcome, so without JS, with reduced motion, on
+// reloads and on deep links the page opens straight away.
 export function Welcome({ style }: { style?: CSSProperties }) {
   const root = useRef<HTMLDivElement>(null);
 
@@ -22,22 +21,25 @@ export function Welcome({ style }: { style?: CSSProperties }) {
     const el = root.current;
     const html = document.documentElement;
     if (!el || !html.classList.contains("welcome")) return;
+    // Tells the boot script's failsafe the app is running, so it stops
+    // watching: from here only the button lifts the welcome.
+    html.dataset.welcomeReady = "";
 
     const card = el.querySelector<HTMLElement>(".welcome-card")!;
     const time = el.querySelector<HTMLElement>("[data-welcome-time]")!;
-    const date = el.querySelector<HTMLElement>("[data-welcome-date]")!;
     const enter = el.querySelector<HTMLButtonElement>("[data-welcome-enter]")!;
-    const rows = Array.from(el.querySelectorAll<HTMLElement>("[data-job]"));
+    const label = enter.querySelector<HTMLElement>("[data-welcome-label]")!;
+    const pills = Array.from(el.querySelectorAll<HTMLElement>("[data-welcome-stage]"));
     const timers: number[] = [];
     const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+    let clock = 0;
 
     // The clock: hours and minutes in the visitor's own locale, kept current.
     const tick = () => {
       const now = new Date();
       time.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-      date.textContent = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
       el.dataset.clock = "ready";
-      later(tick, 60_000 - (now.getSeconds() * 1000 + now.getMilliseconds()));
+      clock = window.setTimeout(tick, 60_000 - (now.getSeconds() * 1000 + now.getMilliseconds()));
     };
     tick();
 
@@ -48,10 +50,29 @@ export function Welcome({ style }: { style?: CSSProperties }) {
     behind.forEach((c) => (c.inert = true));
     enter.focus({ preventScroll: true });
 
+    // The run: each stage goes running, then passed, one after another; a
+    // beat after the last one passes, the portfolio opens.
+    let ran = false;
+    const run = () => {
+      if (ran) return;
+      ran = true;
+      el.dataset.run = "running";
+      enter.setAttribute("aria-disabled", "true");
+      label.textContent = welcome.running;
+      const step = 280;
+      pills.forEach((pill, i) => {
+        later(() => (pill.dataset.state = "running"), i * step);
+        later(() => (pill.dataset.state = "passed"), (i + 1) * step - 40);
+      });
+      later(() => (el.dataset.run = "passed"), pills.length * step);
+      later(leave, pills.length * step + 450);
+    };
+
     let left = false;
     const leave = () => {
       if (left) return;
       left = true;
+      clearTimeout(clock);
       timers.forEach(clearTimeout);
       el.dataset.phase = "leaving";
       html.classList.remove("welcome");
@@ -61,16 +82,6 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       window.setTimeout(() => (el.hidden = true), 900);
       detach();
     };
-
-    // The run: each job goes running, then passed, one after another.
-    const start = 500;
-    const step = 520;
-    rows.forEach((row, i) => {
-      later(() => (row.dataset.state = "running"), start + i * step);
-      later(() => (row.dataset.state = "passed"), start + (i + 1) * step - 60);
-    });
-    later(() => (el.dataset.run = "passed"), start + rows.length * step);
-    later(leave, start + rows.length * step + 900);
 
     // A pane you can lean: the glass tilts toward the pointer and a soft
     // highlight follows it, eased each frame so it moves like it has weight.
@@ -100,29 +111,20 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       if (!frame) frame = requestAnimationFrame(paint);
     };
 
-    // Any sign the visitor wants in skips straight to the portfolio.
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Tab" || e.key === "Shift" || e.metaKey || e.ctrlKey || e.altKey) return;
-      leave();
-    };
+    // Only the button lets the visitor in (it also answers Enter and Space).
     const detach = () => {
       el.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeaveWindow);
-      el.removeEventListener("click", leave);
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener("wheel", leave);
-      window.removeEventListener("touchmove", leave);
+      enter.removeEventListener("click", run);
     };
     if (fine) {
       el.addEventListener("pointermove", onMove, { passive: true });
       document.addEventListener("pointerleave", onLeaveWindow);
     }
-    el.addEventListener("click", leave);
-    window.addEventListener("keydown", onKey);
-    window.addEventListener("wheel", leave, { passive: true });
-    window.addEventListener("touchmove", leave, { passive: true });
+    enter.addEventListener("click", run);
 
     return () => {
+      clearTimeout(clock);
       timers.forEach(clearTimeout);
       cancelAnimationFrame(frame);
       detach();
@@ -130,7 +132,7 @@ export function Welcome({ style }: { style?: CSSProperties }) {
   }, []);
 
   return (
-    <div ref={root} className="welcome-screen" style={style} role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div ref={root} className="welcome-screen" style={style} role="dialog" aria-modal="true" aria-labelledby="welcome-title" aria-describedby="welcome-sub">
       <div className="welcome-ambient" aria-hidden="true">
         <span className="welcome-orb welcome-orb-1" />
         <span className="welcome-orb welcome-orb-2" />
@@ -141,38 +143,42 @@ export function Welcome({ style }: { style?: CSSProperties }) {
         <div className="welcome-card">
           <span className="welcome-sheen" aria-hidden="true" />
 
-          <div className="welcome-clock">
-            <p className="welcome-time" data-welcome-time>
+          {/* The greeting for the visitor's time of day, then the time. */}
+          <p className="welcome-meta">
+            <span className="welcome-greeting">
+              <span data-daypart="morning">Good morning</span>
+              <span data-daypart="afternoon">Good afternoon</span>
+              <span data-daypart="evening">Good evening</span>
+            </span>
+            <span className="welcome-dot" aria-hidden="true" />
+            <span className="welcome-time" data-welcome-time>
               {" "}
-            </p>
-            <p className="welcome-date" data-welcome-date>
-              {" "}
-            </p>
-          </div>
-
-          <h2 id="welcome-title" className="welcome-hello">
-            <span data-daypart="morning">Good morning.</span>
-            <span data-daypart="afternoon">Good afternoon.</span>
-            <span data-daypart="evening">Good evening.</span>
-          </h2>
-          <p className="welcome-lead">
-            Welcome in. This portfolio runs like a CI/CD pipeline, so each section is a stage that passes as you
-            scroll.
+            </span>
           </p>
 
-          <ol className="welcome-run" aria-label="Starting the portfolio">
-            {jobs.map((job) => (
-              <li key={job} className="welcome-job" data-job data-state="queued">
-                <span className="welcome-job-icon" aria-hidden="true">
-                  <StageIcon />
-                </span>
-                <span>{job}</span>
+          <p className="welcome-hi">{welcome.hello}</p>
+          <h2 id="welcome-title" className="welcome-title">
+            {welcome.headline}
+          </h2>
+          <p id="welcome-sub" className="welcome-sub">
+            {welcome.subline}
+          </p>
+
+          {/* What's coming: the stages, pending until the visitor runs them. */}
+          <ol className="welcome-stages" aria-label="Pipeline stages">
+            {welcome.stages.map((stage) => (
+              <li key={stage} className="welcome-pill" data-welcome-stage data-state="queued">
+                <span className="welcome-pill-dot" aria-hidden="true" />
+                {stage}
               </li>
             ))}
           </ol>
 
           <button type="button" className="button button-primary welcome-enter" data-welcome-enter>
-            Enter portfolio
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="welcome-play">
+              <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
+            </svg>
+            <span data-welcome-label>{welcome.cta}</span>
           </button>
         </div>
       </div>

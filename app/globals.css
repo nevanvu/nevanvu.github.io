@@ -1349,7 +1349,7 @@ button {
 
 .welcome-stage {
   position: relative;
-  width: min(27rem, 100%);
+  width: min(28rem, 100%);
 }
 
 /* The pane. It leans toward the pointer (--tilt-x/y, -1 to 1, eased in JS)
@@ -1360,7 +1360,7 @@ button {
   position: relative;
   display: grid;
   gap: var(--space-5);
-  padding: var(--space-6) var(--space-6) var(--space-6);
+  padding: var(--space-7) var(--space-6);
   border-radius: 44px;
   background:
     linear-gradient(180deg, rgb(255 246 232 / 0.14), transparent 40%),
@@ -1428,117 +1428,181 @@ button {
   position: relative;
 }
 
-/* The clock floats a little above the glass: it drifts further with the tilt. */
-.welcome-clock {
-  translate: calc(var(--tilt-x) * 5px) calc(var(--tilt-y) * 4px);
-  text-align: center;
-}
-
-.welcome-time {
-  font-family: var(--font-display);
-  font-size: clamp(3.5rem, 2.5rem + 4vw, 4.75rem);
-  font-weight: 250;
-  line-height: 1;
-  letter-spacing: -0.035em;
-  font-variant-numeric: tabular-nums;
-  color: var(--champagne);
-  text-shadow: 0 2px 24px rgb(255 190 120 / 0.35);
-}
-
-.welcome-date {
-  margin-top: var(--space-2);
+/* The greeting and the time: one small line at the top, like a status bar.
+   It floats a little above the glass, drifting further with the tilt. */
+.welcome-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: -0.008em;
   color: var(--ink-2);
+  translate: calc(var(--tilt-x) * 5px) calc(var(--tilt-y) * 4px);
 }
 
-.welcome-time,
-.welcome-date {
+.welcome-greeting {
+  color: var(--ink);
+}
+
+.welcome-greeting > span {
+  display: none;
+}
+
+[data-daypart="morning"] .welcome-greeting > [data-daypart="morning"],
+[data-daypart="afternoon"] .welcome-greeting > [data-daypart="afternoon"],
+[data-daypart="evening"] .welcome-greeting > [data-daypart="evening"] {
+  display: inline;
+}
+
+.welcome-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.welcome-time {
+  font-variant-numeric: tabular-nums;
   opacity: 0;
   transition: opacity 400ms ease;
 }
 
-.welcome-screen[data-clock="ready"] :is(.welcome-time, .welcome-date) {
+.welcome-screen[data-clock="ready"] .welcome-time {
   opacity: 1;
 }
 
-.welcome-hello {
-  font-family: var(--font-display);
-  font-size: var(--fs-xl);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.021em;
+/* The eyebrow: who's speaking, quietly, right above the headline. */
+.welcome-hi {
+  margin-top: var(--space-2);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: -0.016em;
+  color: var(--ink-2);
   text-align: center;
 }
 
-.welcome-hello > span {
-  display: none;
+.welcome-title {
+  margin-top: calc(var(--space-1) - var(--space-5));
+  font-family: var(--font-display);
+  font-size: clamp(2.125rem, 1.6rem + 2.2vw, 2.875rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgb(255 190 120 / 0.25);
 }
 
-[data-daypart="morning"] .welcome-hello > [data-daypart="morning"],
-[data-daypart="afternoon"] .welcome-hello > [data-daypart="afternoon"],
-[data-daypart="evening"] .welcome-hello > [data-daypart="evening"] {
-  display: inline;
-}
-
-.welcome-lead {
+.welcome-sub {
   margin-top: calc(var(--space-3) - var(--space-5));
   color: var(--ink-2);
-  font-size: var(--fs-base);
-  line-height: 1.5;
+  font-size: var(--fs-md);
+  line-height: 1.4;
+  letter-spacing: -0.017em;
   text-align: center;
   text-wrap: balance;
 }
 
-/* The run: three jobs on a frosted tile, each with the pipeline's own glyph. */
-.welcome-run {
+/* The five stages as pills, joined like a pipeline. Pending: muted, with a
+   hollow dot. Running: an orange dot. Passed: a green dot on a green tint. */
+.welcome-stages {
   list-style: none;
-  display: grid;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-tile);
-  background: rgb(30 16 8 / 0.18);
-  box-shadow: inset 0 0 0 0.5px rgb(255 228 198 / 0.14), inset 0 1px 0 rgb(255 240 220 / 0.08);
-}
-
-.welcome-job {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  color: var(--ink-2);
-  transition: color 250ms ease;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.375rem;
+  translate: calc(var(--tilt-x) * 3px) calc(var(--tilt-y) * 2px);
 }
 
-.welcome-job:is([data-state="running"], [data-state="passed"]) {
+.welcome-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.65rem 0.3rem 0.55rem;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
+  color: var(--queued);
+  background: rgb(30 16 8 / 0.18);
+  box-shadow: inset 0 0 0 0.5px rgb(255 228 198 / 0.16), inset 0 1px 0 rgb(255 240 220 / 0.06);
+  transition: color 250ms ease, background-color 300ms ease, box-shadow 300ms ease;
+}
+
+.welcome-pill-dot {
+  flex: none;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+  transition: background-color 250ms ease, box-shadow 250ms ease, transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.welcome-pill[data-state="running"] {
   color: var(--ink);
 }
 
-.welcome-job-icon {
-  display: grid;
-  width: 1.25rem;
-  height: 1.25rem;
-  flex: none;
+.welcome-pill[data-state="running"] .welcome-pill-dot {
+  background: var(--run);
+  box-shadow: 0 0 0 3px rgb(255 159 10 / 0.25);
 }
 
-.welcome-job-icon .stage-icon {
-  width: 100%;
-  height: 100%;
+.welcome-pill[data-state="passed"] {
+  color: var(--ink);
+  background: rgb(52 199 89 / 0.16);
+  box-shadow: inset 0 0 0 0.5px rgb(52 199 89 / 0.45);
+}
+
+.welcome-pill[data-state="passed"] .welcome-pill-dot {
+  background: var(--pass-fill);
+  box-shadow: none;
+  transform: scale(1.15);
+}
+
+/* Phones: all five stay on one line by dropping the dots; the pill itself
+   then carries the state, ringed orange while running, tinted green once
+   passed. */
+@media (max-width: 479px) {
+  .welcome-stages {
+    gap: 0.25rem;
+  }
+  .welcome-pill {
+    padding-inline: 0.5rem;
+  }
+  .welcome-pill-dot {
+    display: none;
+  }
+  .welcome-pill[data-state="running"] {
+    box-shadow: inset 0 0 0 1px rgb(255 159 10 / 0.7);
+  }
 }
 
 .welcome-enter {
   justify-self: center;
   min-height: 44px;
+  margin-top: var(--space-2);
+  padding-inline: var(--space-6);
+  gap: var(--space-2);
   transition: box-shadow 300ms var(--ease-out), transform 200ms var(--ease-out);
 }
 
-.welcome-screen[data-run="passed"] .welcome-enter {
-  box-shadow: 0 0 0 6px rgb(52 199 89 / 0.18), 0 10px 30px -10px rgb(52 199 89 / 0.5);
+.welcome-play {
+  fill: currentColor;
 }
 
-/* Small screens: a little tighter, and the clock a touch smaller. */
+/* While the run plays, the button stays put but stops asking. */
+.welcome-screen[data-run] .welcome-enter {
+  cursor: default;
+}
+
+.welcome-screen[data-run] .welcome-play {
+  opacity: 0.45;
+}
+
+/* Small screens: a little tighter. */
 @media (max-width: 479px) {
   .welcome-card {
     padding: var(--space-5);
@@ -1571,23 +1635,30 @@ button {
     animation: pane-in 1000ms cubic-bezier(0.2, 0.9, 0.25, 1) 120ms both;
   }
 
-  .welcome .welcome-card > :is(.welcome-clock, .welcome-hello, .welcome-lead, .welcome-run, .welcome-enter) {
+  .welcome .welcome-card > :is(.welcome-meta, .welcome-hi, .welcome-title, .welcome-sub, .welcome-stages, .welcome-enter) {
     animation: settle 800ms var(--ease-out) both;
   }
-  .welcome .welcome-clock {
+  .welcome .welcome-meta {
     animation-delay: 300ms;
   }
-  .welcome .welcome-hello {
-    animation-delay: 420ms;
+  .welcome .welcome-hi {
+    animation-delay: 400ms;
   }
-  .welcome .welcome-lead {
-    animation-delay: 520ms;
+  .welcome .welcome-title {
+    animation-delay: 500ms;
   }
-  .welcome .welcome-run {
-    animation-delay: 620ms;
+  .welcome .welcome-sub {
+    animation-delay: 600ms;
   }
+  .welcome .welcome-stages {
+    animation-delay: 680ms;
+  }
+  /* The button arrives last, then breathes softly: the next step is yours. */
   .welcome .welcome-card > .welcome-enter {
-    animation-delay: 720ms;
+    animation: settle 800ms var(--ease-out) 760ms both, call 2.4s ease-in-out 1700ms infinite;
+  }
+  .welcome .welcome-screen[data-run] .welcome-card > .welcome-enter {
+    animation: none;
   }
 
   /* Leaving: the pane rushes past the viewer and the haze clears, while the
@@ -1611,6 +1682,16 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .welcome-screen[data-phase="leaving"] {
     display: none;
+  }
+}
+
+@keyframes call {
+  0%,
+  100% {
+    box-shadow: 0 0 0 6px rgb(52 199 89 / 0.18), 0 10px 30px -10px rgb(52 199 89 / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgb(52 199 89 / 0.08), 0 10px 36px -8px rgb(52 199 89 / 0.6);
   }
 }
 
