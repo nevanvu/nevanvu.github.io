@@ -3,6 +3,7 @@ import { CardLightController } from "@/components/CardLightController";
 import { PipelineController } from "@/components/PipelineController";
 import { ProjectDialogController } from "@/components/ProjectDialogController";
 import { StageIcon } from "@/components/StageIcon";
+import { Welcome } from "@/components/Welcome";
 import {
   about,
   contact,
@@ -255,6 +256,8 @@ export default function Home() {
   return (
     <>
       <div className="room" style={roomStyle} aria-hidden="true" />
+
+      <Welcome style={roomStyle} />
 
       <a className="skip-link" href="#about">
         Skip to content

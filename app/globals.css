@@ -1256,6 +1256,393 @@ button {
   }
 }
 
+/* ---------- Welcome screen ---------- */
+/* First visit only (html.welcome, set by the boot script). A pane of liquid
+   glass floats over the room, blurred and dimmed, while warm light drifts
+   behind it: the time, a greeting, and a three-job run that boots the
+   portfolio. When it lifts, the glass zooms past the viewer and the room
+   pulls into focus with the pipeline intro, which waits, paused, until then. */
+.welcome-screen {
+  display: none;
+}
+
+.welcome .welcome-screen,
+.welcome-screen[data-phase="leaving"] {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: max(var(--space-5), env(safe-area-inset-top)) var(--space-4) max(var(--space-5), env(safe-area-inset-bottom));
+  overflow: hidden;
+  cursor: default;
+  perspective: 1200px;
+}
+
+.welcome-screen[hidden] {
+  display: none;
+}
+
+/* Hold the page still and unplayed behind the glass. */
+.welcome body {
+  overflow: hidden;
+}
+
+.welcome body > :not(.welcome-screen),
+.welcome body > :not(.welcome-screen) *,
+.welcome body > :not(.welcome-screen) *::before,
+.welcome body > :not(.welcome-screen) *::after {
+  animation-play-state: paused !important;
+}
+
+/* The room, as the intro's focus pull starts it: blurred, a touch larger,
+   and dimmed, so the hand-off is one continuous move. */
+.welcome-screen::before {
+  content: "";
+  position: absolute;
+  inset: -4rem;
+  background:
+    linear-gradient(180deg, rgb(28 16 9 / 0.5), rgb(20 12 7 / 0.72)),
+    var(--room, none) center / cover no-repeat,
+    linear-gradient(180deg, #33281f, #17110d);
+  filter: blur(24px) saturate(0.85);
+  transform: scale(1.08);
+}
+
+/* Warm light drifting behind the glass, so it has something to bend. */
+.welcome-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.welcome-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  opacity: 0.75;
+}
+
+.welcome-orb-1 {
+  width: 26rem;
+  height: 26rem;
+  left: calc(50% - 22rem);
+  top: calc(50% - 18rem);
+  background: radial-gradient(circle, rgb(255 178 102 / 0.75), transparent 68%);
+}
+
+.welcome-orb-2 {
+  width: 22rem;
+  height: 22rem;
+  left: calc(50% + 2rem);
+  top: calc(50% + 1rem);
+  background: radial-gradient(circle, rgb(240 120 90 / 0.55), transparent 68%);
+}
+
+.welcome-orb-3 {
+  width: 16rem;
+  height: 16rem;
+  left: calc(50% + 6rem);
+  top: calc(50% - 16rem);
+  background: radial-gradient(circle, rgb(255 236 200 / 0.5), transparent 68%);
+}
+
+.welcome-stage {
+  position: relative;
+  width: min(27rem, 100%);
+}
+
+/* The pane. It leans toward the pointer (--tilt-x/y, -1 to 1, eased in JS)
+   and catches a highlight where the pointer is. */
+.welcome-card {
+  --tilt-x: 0;
+  --tilt-y: 0;
+  position: relative;
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-6) var(--space-6);
+  border-radius: 44px;
+  background:
+    linear-gradient(180deg, rgb(255 246 232 / 0.14), transparent 40%),
+    linear-gradient(150deg, rgb(255 232 205 / 0.14), rgb(255 220 185 / 0.04) 55%, rgb(245 170 110 / 0.1)),
+    rgb(68 52 42 / 0.34);
+  border: 1px solid rgb(255 232 205 / 0.22);
+  box-shadow:
+    inset 0 1px 0 rgb(255 246 232 / 0.45),
+    inset 0 -1px 0 rgb(255 200 150 / 0.12),
+    inset 0 0 0 0.5px rgb(255 228 198 / 0.1),
+    inset 0 -24px 40px -30px rgb(255 180 110 / 0.35),
+    0 2px 4px rgb(30 16 8 / 0.12),
+    0 30px 60px -24px rgb(30 16 8 / 0.55),
+    0 60px 120px -40px rgb(40 20 10 / 0.5);
+  -webkit-backdrop-filter: blur(36px) saturate(1.7) brightness(1.06);
+  backdrop-filter: blur(36px) saturate(1.7) brightness(1.06);
+  transform: rotateX(calc(var(--tilt-y) * -7deg)) rotateY(calc(var(--tilt-x) * 9deg));
+  will-change: transform;
+}
+
+@supports (corner-shape: squircle) {
+  .welcome-card {
+    border-radius: 60px;
+  }
+  .welcome-card,
+  .welcome-card::after,
+  .welcome-sheen {
+    corner-shape: squircle;
+  }
+}
+
+/* A bright rim that's strongest on the edge nearest the light. */
+.welcome-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from calc(200deg + var(--tilt-x) * 40deg),
+    rgb(255 246 232 / 0.7),
+    rgb(255 246 232 / 0.05) 25%,
+    rgb(255 200 150 / 0.35) 50%,
+    rgb(255 246 232 / 0.05) 75%,
+    rgb(255 246 232 / 0.7)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.welcome-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    22rem 16rem at calc(50% + var(--tilt-x) * 45%) calc(30% + var(--tilt-y) * 40%),
+    rgb(255 246 232 / 0.16),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.welcome-card > :not(.welcome-sheen) {
+  position: relative;
+}
+
+/* The clock floats a little above the glass: it drifts further with the tilt. */
+.welcome-clock {
+  translate: calc(var(--tilt-x) * 5px) calc(var(--tilt-y) * 4px);
+  text-align: center;
+}
+
+.welcome-time {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 2.5rem + 4vw, 4.75rem);
+  font-weight: 250;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  color: var(--champagne);
+  text-shadow: 0 2px 24px rgb(255 190 120 / 0.35);
+}
+
+.welcome-date {
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  color: var(--ink-2);
+}
+
+.welcome-time,
+.welcome-date {
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.welcome-screen[data-clock="ready"] :is(.welcome-time, .welcome-date) {
+  opacity: 1;
+}
+
+.welcome-hello {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.021em;
+  text-align: center;
+}
+
+.welcome-hello > span {
+  display: none;
+}
+
+[data-daypart="morning"] .welcome-hello > [data-daypart="morning"],
+[data-daypart="afternoon"] .welcome-hello > [data-daypart="afternoon"],
+[data-daypart="evening"] .welcome-hello > [data-daypart="evening"] {
+  display: inline;
+}
+
+.welcome-lead {
+  margin-top: calc(var(--space-3) - var(--space-5));
+  color: var(--ink-2);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* The run: three jobs on a frosted tile, each with the pipeline's own glyph. */
+.welcome-run {
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-tile);
+  background: rgb(30 16 8 / 0.18);
+  box-shadow: inset 0 0 0 0.5px rgb(255 228 198 / 0.14), inset 0 1px 0 rgb(255 240 220 / 0.08);
+}
+
+.welcome-job {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: color 250ms ease;
+}
+
+.welcome-job:is([data-state="running"], [data-state="passed"]) {
+  color: var(--ink);
+}
+
+.welcome-job-icon {
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+}
+
+.welcome-job-icon .stage-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.welcome-enter {
+  justify-self: center;
+  min-height: 44px;
+  transition: box-shadow 300ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+.welcome-screen[data-run="passed"] .welcome-enter {
+  box-shadow: 0 0 0 6px rgb(52 199 89 / 0.18), 0 10px 30px -10px rgb(52 199 89 / 0.5);
+}
+
+/* Small screens: a little tighter, and the clock a touch smaller. */
+@media (max-width: 479px) {
+  .welcome-card {
+    padding: var(--space-5);
+    border-radius: 36px;
+  }
+}
+
+/* ---- Motion ---- */
+/* The welcome only appears for visitors who haven't asked for reduced motion
+   (see the boot script), but the guard stays in case that ever changes. */
+@media (prefers-reduced-motion: no-preference) {
+  .welcome .welcome-screen::before {
+    animation: fade-in 500ms ease both;
+  }
+
+  .welcome .welcome-orb {
+    animation: fade-in 1200ms ease 200ms both, drift 9s ease-in-out infinite alternate;
+  }
+  .welcome .welcome-orb-2 {
+    animation-duration: 1200ms, 11s;
+    animation-direction: normal, alternate-reverse;
+  }
+  .welcome .welcome-orb-3 {
+    animation-duration: 1200ms, 7s;
+  }
+
+  /* The pane condenses out of the haze: in from below, small and soft, and
+     it settles like a critically damped spring. */
+  .welcome .welcome-stage {
+    animation: pane-in 1000ms cubic-bezier(0.2, 0.9, 0.25, 1) 120ms both;
+  }
+
+  .welcome .welcome-card > :is(.welcome-clock, .welcome-hello, .welcome-lead, .welcome-run, .welcome-enter) {
+    animation: settle 800ms var(--ease-out) both;
+  }
+  .welcome .welcome-clock {
+    animation-delay: 300ms;
+  }
+  .welcome .welcome-hello {
+    animation-delay: 420ms;
+  }
+  .welcome .welcome-lead {
+    animation-delay: 520ms;
+  }
+  .welcome .welcome-run {
+    animation-delay: 620ms;
+  }
+  .welcome .welcome-card > .welcome-enter {
+    animation-delay: 720ms;
+  }
+
+  /* Leaving: the pane rushes past the viewer and the haze clears, while the
+     room's own focus pull plays underneath. Exits run quicker than entries. */
+  .welcome-screen[data-phase="leaving"] {
+    pointer-events: none;
+  }
+  .welcome-screen[data-phase="leaving"] .welcome-stage {
+    animation: pane-out 600ms cubic-bezier(0.5, 0, 0.75, 0.2) both;
+  }
+  .welcome-screen[data-phase="leaving"]::before,
+  .welcome-screen[data-phase="leaving"] .welcome-ambient {
+    animation: fade-out 850ms ease 100ms both;
+  }
+}
+
+.welcome-screen[data-phase="leaving"] {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-screen[data-phase="leaving"] {
+    display: none;
+  }
+}
+
+@keyframes pane-in {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem) scale(0.9);
+    filter: blur(12px);
+  }
+}
+
+@keyframes pane-out {
+  to {
+    opacity: 0;
+    transform: translateY(-1rem) scale(1.12);
+    filter: blur(10px);
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes drift {
+  to {
+    translate: 3rem -2rem;
+    scale: 1.15;
+  }
+}
+
 /* ---------- Buttons ---------- */
 .actions {
   display: flex;

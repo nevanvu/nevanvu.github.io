@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { WELCOME_DONE } from "@/components/Welcome";
 
 type State = "queued" | "running" | "passed" | "waiting";
 
@@ -127,13 +128,18 @@ export function PipelineController() {
     };
 
     // The hero's trigger node is the page-load moment: it runs briefly, then passes.
+    // On a first visit it waits for the welcome screen to lift.
     let triggerTimer = 0;
+    const runTrigger = () => {
+      setState(trigger!, "running");
+      triggerTimer = window.setTimeout(() => setState(trigger!, "passed"), 1100);
+    };
     if (trigger) {
       if (reduced.matches) setState(trigger, "passed");
-      else {
-        setState(trigger, "running");
-        triggerTimer = window.setTimeout(() => setState(trigger, "passed"), 1100);
-      }
+      else if (document.documentElement.classList.contains("welcome")) {
+        setState(trigger, "queued");
+        window.addEventListener(WELCOME_DONE, runTrigger, { once: true });
+      } else runTrigger();
     }
 
     // Panels rise into focus as they scroll in, once. Ones already on screen
@@ -177,6 +183,7 @@ export function PipelineController() {
       window.removeEventListener("resize", schedule);
       cancelAnimationFrame(frame);
       clearTimeout(triggerTimer);
+      window.removeEventListener(WELCOME_DONE, runTrigger);
     };
   }, []);
 
