@@ -1,43 +1,51 @@
 /* ---------- Tokens ---------- */
-/* visionOS: grey frosted glass floating in front of a room photo. */
+/* Frosted glass floating in front of a room photo, warm and cozy: glass
+   tinted like honey in lamplight, cream text, caramel and sand accents, a
+   soft lamp glow, and gentle layered shadows. Clean lines keep it modern. */
 :root {
   color-scheme: dark;
 
-  --espresso: #1c1d21; /* deepest surface, node rings */
-  --walnut: #2c2e33; /* solid fallback for glass */
-  --champagne: #ffffff;
-  --taupe: rgb(235 235 245 / 0.7); /* Apple secondaryLabel (dark) */
-  --brass: rgb(235 235 245 / 0.45); /* tertiaryLabel, a little brighter for glass */
-  --brass-2: rgb(235 235 245 / 0.85);
-  --filament: #ffffff;
+  --espresso: #211b17; /* deepest surface, node rings */
+  --walnut: #3a2f28; /* solid fallback for glass */
+  --champagne: #fff8ee; /* cream, like paper under a lamp */
+  --taupe: rgb(248 234 218 / 0.74);
+  --brass: rgb(248 234 218 / 0.5);
+  --brass-2: rgb(248 234 218 / 0.88);
+  --filament: #ffd9a8;
 
   /* semantic */
   --paper: var(--espresso);
   --ink: var(--champagne);
   --ink-2: var(--taupe);
-  --rule: rgb(84 84 88 / 0.55); /* Apple separator (dark) */
-  --track: rgb(255 255 255 / 0.22);
-  --pass: #30d158;
-  --run: #ff9f0a;
-  --queued: rgb(235 235 245 / 0.5);
-  --focus: #0a84ff;
-  --link: #4da6ff; /* systemBlue, lifted for small text on glass */
-  --raptors: #ff5a76;
-  --fill-2: rgb(118 118 128 / 0.24); /* Apple tertiarySystemFill (dark) */
-  --fill-3: rgb(118 118 128 / 0.16);
+  --rule: rgb(190 156 128 / 0.3);
+  --track: rgb(255 236 214 / 0.22);
+  --pass: #9cc4a2; /* sage */
+  --run: #f0ad6c; /* amber */
+  --queued: rgb(248 234 218 / 0.5);
+  --focus: #f4bf86;
+  --link: #f6cf9e; /* honey, reads on the dark warm glass */
+  --raptors: #e8899a;
+  --fill-2: rgb(176 140 112 / 0.24);
+  --fill-3: rgb(176 140 112 / 0.15);
 
-  /* glass: visionOS window material, with a specular rim that catches light
-     on the top edge and fades down the sides */
-  --glass-fill: linear-gradient(160deg, rgb(255 255 255 / 0.11), rgb(255 255 255 / 0.03));
-  --glass-tint: rgb(50 52 58 / 0.45);
-  --glass-edge: rgb(255 255 255 / 0.1);
-  --glass-shine: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 0 0 0.5px rgb(255 255 255 / 0.06);
-  --glass-drop: 0 1px 2px rgb(0 0 0 / 0.12), 0 30px 60px -24px rgb(0 0 0 / 0.55);
-  --glass-blur: blur(50px) saturate(1.8);
-  --tile-fill: rgb(0 0 0 / 0.16);
-  --radius-panel: 28px;
-  --radius-bar: 20px;
-  --radius-tile: 16px;
+  /* glass: frosted, tinted like honey in lamplight. The fill stacks a soft
+     sheen across the top third over a diagonal glow that warms toward the
+     bottom; the rim catches lamplight on the top edge, and shadows are soft,
+     layered and brown, never hard black. */
+  --glass-fill:
+    linear-gradient(180deg, rgb(255 244 228 / 0.08), transparent 38%),
+    linear-gradient(160deg, rgb(255 232 205 / 0.12), rgb(255 220 185 / 0.03) 55%, rgb(245 170 110 / 0.07));
+  --glass-tint: rgb(68 54 45 / 0.48);
+  --glass-edge: rgb(255 228 198 / 0.15);
+  --glass-shine: inset 0 1px 0 rgb(255 240 220 / 0.3), inset 0 0 0 0.5px rgb(255 228 198 / 0.08),
+    inset 0 -14px 28px -22px rgb(255 180 110 / 0.18);
+  --glass-drop: 0 1px 2px rgb(36 20 10 / 0.08), 0 10px 24px -14px rgb(36 20 10 / 0.26),
+    0 40px 80px -36px rgb(40 22 12 / 0.45);
+  --glass-blur: blur(50px) saturate(1.5);
+  --tile-fill: rgb(30 16 8 / 0.14);
+  --radius-panel: 32px;
+  --radius-bar: 22px;
+  --radius-tile: 20px;
 
   /* SF Pro on Apple devices (the system font); Inter, its closest free
      cousin, everywhere else. SF can't be self-hosted under Apple's licence. */
@@ -132,17 +140,20 @@ body {
 }
 
 /* ---------- The room ---------- */
-/* The photo behind the glass (public/room.jpg), with a light scrim so white
-   text holds; a dark gradient shows if the photo is missing. */
+/* The photo behind the glass (public/room.jpg), lit like an evening room:
+   a lamp glow top left, an ember glow bottom right, over a warm
+   scrim so white text holds; a dark gradient shows if the photo is missing. */
 .room {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.42)),
+    radial-gradient(60rem 42rem at 12% -6%, rgb(255 186 120 / 0.2), transparent 62%),
+    radial-gradient(52rem 40rem at 94% 108%, rgb(230 140 90 / 0.15), transparent 64%),
+    linear-gradient(180deg, rgb(36 20 10 / 0.22), rgb(28 15 8 / 0.44)),
     var(--room, none) center / cover no-repeat,
-    linear-gradient(180deg, #2a2c31, #141518);
+    linear-gradient(180deg, #33281f, #17110d);
 }
 
 /* Shared smoked-glass surface. */
@@ -162,8 +173,8 @@ body {
 @media (max-width: 639px) {
   :root {
     --glass-blur: blur(24px) saturate(1.5);
-    --radius-panel: 24px;
-    --radius-bar: 18px;
+    --radius-panel: 28px;
+    --radius-bar: 20px;
   }
 }
 
@@ -171,9 +182,9 @@ body {
    rounded surface uses one, with a larger radius so the curve reads the same. */
 @supports (corner-shape: squircle) {
   :root {
-    --radius-panel: 40px;
-    --radius-bar: 28px;
-    --radius-tile: 22px;
+    --radius-panel: 44px;
+    --radius-bar: 30px;
+    --radius-tile: 26px;
   }
   .header-inner,
   .stage-head::before,
@@ -221,7 +232,7 @@ button {
 }
 
 ::selection {
-  background: rgb(10 132 255 / 0.45);
+  background: rgb(240 170 110 / 0.4);
   color: var(--champagne);
 }
 
@@ -339,8 +350,8 @@ button {
 
 .stage-nav a[aria-current] {
   color: var(--ink);
-  background: rgb(255 255 255 / 0.16);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 2px 8px rgb(0 0 0 / 0.22);
+  background: linear-gradient(180deg, rgb(255 228 196 / 0.26), rgb(255 200 150 / 0.12));
+  box-shadow: inset 0 1px 0 rgb(255 240 222 / 0.34), 0 2px 12px rgb(60 30 10 / 0.26);
 }
 
 .stage-nav li {
@@ -562,11 +573,11 @@ button {
   height: var(--node);
   justify-self: center;
   border-radius: 50%;
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.06)), rgb(36 37 42 / 0.6);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0.06)), rgb(58 46 38 / 0.6);
   -webkit-backdrop-filter: blur(12px) saturate(1.6);
   backdrop-filter: blur(12px) saturate(1.6);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.25),
-    0 4px 12px rgb(0 0 0 / 0.35);
+    0 4px 14px rgb(8 8 12 / 0.32);
 }
 
 .stage-title {
@@ -955,7 +966,7 @@ button {
   /* matches the studio backdrop so the slot reads as the photo while it loads */
   background: #74777b;
   /* no outline, just a soft shadow to lift it off the glass */
-  box-shadow: 0 30px 60px -16px rgb(0 0 0 / 0.6);
+  box-shadow: 0 10px 24px -14px rgb(8 8 12 / 0.4), 0 34px 64px -20px rgb(8 8 12 / 0.55);
 }
 
 @media (min-width: 960px) {
@@ -1298,21 +1309,22 @@ button {
 
 .button-primary {
   border-color: transparent;
-  color: #1c1c1e;
+  color: #3a281c;
   font-weight: 600;
-  background: #fff;
-  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6);
+  /* warm cream: bright at the top, settling into a soft caramel */
+  background: linear-gradient(180deg, #fff8ee, #f2d9bc);
+  box-shadow: inset 0 1px 0 #fff, 0 10px 28px -12px rgb(120 60 20 / 0.45);
 }
 
 @media (hover: hover) {
   .button-primary:hover {
-    background: #fff;
-    box-shadow: 0 14px 34px -12px rgb(0 0 0 / 0.65);
+    background: linear-gradient(180deg, #fffbf5, #f6e1c8);
+    box-shadow: inset 0 1px 0 #fff, 0 14px 32px -12px rgb(140 70 20 / 0.5);
   }
 }
 
 .button-primary:active {
-  background: #e8e8ed;
+  background: #ead0b2;
 }
 
 /* ---------- Content ---------- */
@@ -1407,7 +1419,7 @@ button {
   height: var(--mark);
   border-radius: 23%; /* the iOS app-icon ratio */
   color: var(--brass-2);
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04)), rgb(20 21 24 / 0.4);
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04)), rgb(30 22 16 / 0.4);
   box-shadow: var(--glass-shine), 0 4px 12px rgb(0 0 0 / 0.25);
 }
 
@@ -1850,15 +1862,15 @@ button {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: radial-gradient(20rem circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.13), transparent 65%);
+  background: radial-gradient(20rem circle at var(--mx, 50%) var(--my, 0%), rgb(255 210 160 / 0.15), transparent 65%);
   opacity: 0;
   transition: opacity 300ms ease;
 }
 
 @media (hover: hover) {
   .project:hover {
-    background: rgb(118 118 128 / 0.22);
-    box-shadow: var(--glass-shine), 0 20px 40px -22px rgb(0 0 0 / 0.55);
+    background: rgb(176 140 112 / 0.22);
+    box-shadow: var(--glass-shine), 0 20px 40px -22px rgb(60 30 10 / 0.45);
   }
   .project:hover::before,
   .interest:hover::before {
@@ -2053,8 +2065,8 @@ html:has(.project-dialog[open]) {
   color: var(--ink);
   border: 1px solid var(--glass-edge);
   border-radius: var(--radius-panel);
-  background: var(--glass-fill), rgb(40 42 47 / 0.8);
-  box-shadow: var(--glass-shine), 0 40px 90px -20px rgb(0 0 0 / 0.65);
+  background: var(--glass-fill), rgb(54 43 36 / 0.85);
+  box-shadow: var(--glass-shine), 0 12px 30px -16px rgb(36 20 10 / 0.36), 0 48px 100px -24px rgb(40 22 12 / 0.55);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
 }
@@ -2065,7 +2077,7 @@ html:has(.project-dialog[open]) {
 }
 
 .project-dialog::backdrop {
-  background: rgb(10 11 13 / 0.5);
+  background: rgb(24 16 10 / 0.48);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
@@ -2625,7 +2637,7 @@ html:has(.project-dialog[open]) {
     backdrop-filter: none;
   }
   .button:not(.button-primary) {
-    background-color: #45474d;
+    background-color: #52443a;
   }
   .stage-node {
     background: var(--walnut);
@@ -2636,13 +2648,13 @@ html:has(.project-dialog[open]) {
 /* Near-solid surfaces with defined edges, and brighter secondary text. */
 @media (prefers-contrast: more) {
   :root {
-    --glass-tint: rgb(36 37 42 / 0.92);
+    --glass-tint: rgb(44 35 29 / 0.92);
     --glass-edge: rgb(255 255 255 / 0.5);
-    --taupe: rgb(235 235 245 / 0.9);
-    --brass: rgb(235 235 245 / 0.8);
-    --queued: rgb(235 235 245 / 0.85);
-    --rule: rgb(235 235 245 / 0.45);
-    --fill-3: rgb(118 118 128 / 0.32);
+    --taupe: rgb(248 234 218 / 0.9);
+    --brass: rgb(248 234 218 / 0.8);
+    --queued: rgb(248 234 218 / 0.85);
+    --rule: rgb(248 234 218 / 0.45);
+    --fill-3: rgb(176 140 112 / 0.32);
   }
   .button:not(.button-primary) {
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.6);
