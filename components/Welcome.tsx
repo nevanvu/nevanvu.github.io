@@ -66,12 +66,49 @@ export function Welcome({ style }: { style?: CSSProperties }) {
     // In case the animation never runs (or never reports), don't wait forever.
     const readyTimer = window.setTimeout(becomeReady, 2600);
 
+    // The ring's light quickens under the pointer and races once the run
+    // starts. It changes the spin's playback rate, never its duration, so
+    // the sparks carry on from where they are, and the rate eases toward
+    // its target (63% of the way every 160ms) so they speed up like
+    // something with mass instead of switching gears.
+    const ring = enter.querySelector<HTMLElement>(".welcome-ring")!;
+    const spin = () =>
+      ring.getAnimations().find((a) => (a as CSSAnimation).animationName === "ring-spin");
+    let rate = 1;
+    let rateTarget = 1;
+    let rateFrame = 0;
+    let rateLast = 0;
+    const easeRate = (now: number) => {
+      const anim = spin();
+      const k = 1 - Math.exp(-Math.min(64, now - (rateLast || now - 16)) / 160);
+      rateLast = now;
+      rate += (rateTarget - rate) * k;
+      if (Math.abs(rateTarget - rate) < 0.01) rate = rateTarget;
+      if (anim) anim.playbackRate = rate;
+      if (rate !== rateTarget && anim) rateFrame = requestAnimationFrame(easeRate);
+      else {
+        rateFrame = 0;
+        rateLast = 0;
+      }
+    };
+    const setRate = (target: number) => {
+      rateTarget = target;
+      if (!rateFrame) rateFrame = requestAnimationFrame(easeRate);
+    };
+    const quicken = (e: PointerEvent) => {
+      if (e.pointerType !== "touch") setRate(2);
+    };
+    const settle = () => {
+      if (!ran) setRate(1);
+    };
+
     // The run: every stage starts spinning at once, and after a moment the
     // portfolio opens. Further clicks while it spins do nothing.
     let ran = false;
     const run = () => {
       if (ran || !ready) return;
       ran = true;
+      setRate(6.5);
       el.dataset.run = "";
       enter.setAttribute("aria-disabled", "true");
       label.textContent = welcome.running;
@@ -146,6 +183,8 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       html.removeEventListener("mouseleave", onLeaveWindow);
       window.removeEventListener("blur", onLeaveWindow);
       enter.removeEventListener("click", run);
+      enter.removeEventListener("pointerenter", quicken);
+      enter.removeEventListener("pointerleave", settle);
       actions.removeEventListener("animationend", onSettled);
       clearTimeout(readyTimer);
     };
@@ -155,11 +194,14 @@ export function Welcome({ style }: { style?: CSSProperties }) {
       window.addEventListener("blur", onLeaveWindow);
     }
     enter.addEventListener("click", run);
+    enter.addEventListener("pointerenter", quicken);
+    enter.addEventListener("pointerleave", settle);
 
     return () => {
       clearTimeout(clock);
       clearTimeout(runTimer);
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(rateFrame);
       detach();
     };
   }, []);
@@ -248,6 +290,7 @@ export function Welcome({ style }: { style?: CSSProperties }) {
               pipeline. */}
           <div className="welcome-actions">
             <button type="button" className="button welcome-enter" data-welcome-enter>
+              <span className="welcome-ring" aria-hidden="true" />
               <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false" className="welcome-play">
                 <path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" />
               </svg>

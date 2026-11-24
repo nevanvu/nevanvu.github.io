@@ -1781,19 +1781,14 @@ button {
    shadow on the glass behind. One moving light: a highlight that follows
    the pointer. */
 .welcome-actions > .welcome-enter {
+  /* No rim of its own: the moving silver ring outside is its edge. */
   --glass-btn:
-    inset 0 1px 0 rgb(255 255 255 / 0.85),
-    inset 0 -1px 0 rgb(255 255 255 / 0.4),
-    inset 0 0 0 1px rgb(255 255 255 / 0.32),
-    inset 2px 0 2px -1px rgb(150 205 255 / 0.35),
-    inset -2px 0 2px -1px rgb(255 150 90 / 0.35),
     inset 0 0 14px rgb(255 255 255 / 0.14),
     inset 0 -12px 16px -12px rgb(255 255 255 / 0.3),
     0 1px 1px rgb(20 10 4 / 0.2),
     0 12px 26px -12px rgb(20 10 4 / 0.55);
   position: relative;
   isolation: isolate;
-  overflow: hidden;
   justify-content: center;
   gap: 0.5rem;
   min-height: 52px;
@@ -1832,6 +1827,7 @@ button {
   position: absolute;
   z-index: -1;
   inset: 0;
+  border-radius: inherit;
   background: radial-gradient(5rem 3rem at var(--bx, 50%) var(--by, 30%), rgb(255 255 255 / 0.55), transparent 70%);
   opacity: 0;
   transition: opacity 250ms ease;
@@ -1854,6 +1850,175 @@ button {
   transform: scale(1.05, 0.9);
   transition-duration: 120ms;
   transition-timing-function: var(--ease-out);
+}
+
+/* The outer ring: a thin rim of polished white gold around the glass, like
+   a bezel, and the glass's only edge. The long straight runs catch the
+   light and read a bright, warm white; the round ends turn away from it
+   and fall to a deeper champagne gold, the lower one deepest.
+
+   Set into the rim, like stones in a band, six diamond facets stay put
+   and twinkle: each a hard white point between two faint darker facets,
+   in two groups that flash out of step so the rim never pulses as one.
+   Over all of it, tiny diamond sparks slide along the rim: a dip of
+   darker silver, a warm white-gold edge, a white-hot centre and a cool,
+   icy diamond-white edge, then silver again. No colour, only the whites of
+   precious metal and stone. */
+@property --ring-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --ring-tw-a {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --ring-tw-b {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+.welcome-ring {
+  --ring-spark:
+    transparent 0deg,
+    transparent 45deg,
+    rgb(120 116 110 / 0.65) 51deg,
+    #e9dcbc 54.5deg,
+    #fff 57deg,
+    #fff 60deg,
+    #e8f2ff 62.5deg,
+    rgb(120 116 110 / 0.65) 66deg,
+    transparent 72deg,
+    transparent 180deg;
+  position: absolute;
+  inset: -2px;
+  z-index: -2;
+  padding: 2px;
+  border-radius: 999px;
+  pointer-events: none;
+  background:
+    conic-gradient(from var(--ring-a), var(--ring-spark)),
+    conic-gradient(from calc(var(--ring-a) + 180deg), var(--ring-spark)),
+    conic-gradient(from calc(var(--ring-a) + 100deg), var(--ring-spark)),
+    /* the fixed diamond facets, two groups twinkling out of step */
+    conic-gradient(
+      transparent 0deg,
+      transparent 18deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-a))) 20deg,
+      rgb(255 255 255 / var(--ring-tw-a)) 21.4deg,
+      rgb(255 255 255 / var(--ring-tw-a)) 22.6deg,
+      rgb(232 242 255 / calc(0.9 * var(--ring-tw-a))) 23.4deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-a))) 24.4deg,
+      transparent 26.5deg,
+      transparent 126deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-a))) 128deg,
+      rgb(255 255 255 / var(--ring-tw-a)) 129.4deg,
+      rgb(255 255 255 / var(--ring-tw-a)) 130.6deg,
+      rgb(232 242 255 / calc(0.9 * var(--ring-tw-a))) 131.4deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-a))) 132.4deg,
+      transparent 134.5deg,
+      transparent 234deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-a))) 236deg,
+      rgb(255 255 255 / var(--ring-tw-a)) 237.4deg,
+      rgb(255 255 255 / var(--ring-tw-a)) 238.6deg,
+      rgb(232 242 255 / calc(0.9 * var(--ring-tw-a))) 239.4deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-a))) 240.4deg,
+      transparent 242.5deg,
+      transparent 360deg
+    ),
+    conic-gradient(
+      transparent 0deg,
+      transparent 72deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-b))) 74deg,
+      rgb(255 255 255 / var(--ring-tw-b)) 75.4deg,
+      rgb(255 255 255 / var(--ring-tw-b)) 76.6deg,
+      rgb(232 242 255 / calc(0.9 * var(--ring-tw-b))) 77.4deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-b))) 78.4deg,
+      transparent 80.5deg,
+      transparent 190deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-b))) 192deg,
+      rgb(255 255 255 / var(--ring-tw-b)) 193.4deg,
+      rgb(255 255 255 / var(--ring-tw-b)) 194.6deg,
+      rgb(232 242 255 / calc(0.9 * var(--ring-tw-b))) 195.4deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-b))) 196.4deg,
+      transparent 198.5deg,
+      transparent 298deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-b))) 300deg,
+      rgb(255 255 255 / var(--ring-tw-b)) 301.4deg,
+      rgb(255 255 255 / var(--ring-tw-b)) 302.6deg,
+      rgb(232 242 255 / calc(0.9 * var(--ring-tw-b))) 303.4deg,
+      rgb(120 100 68 / calc(0.45 * var(--ring-tw-b))) 304.4deg,
+      transparent 306.5deg,
+      transparent 360deg
+    ),
+    linear-gradient(180deg, rgb(255 255 255 / 0.4), transparent 45%, rgb(110 88 50 / 0.3)),
+    linear-gradient(
+      90deg,
+      #857655 0%,
+      #b3a27c 4%,
+      #e2d5b6 12%,
+      #f5eedc 30%,
+      #fffcf3 50%,
+      #f5eedc 70%,
+      #e2d5b6 88%,
+      #b3a27c 96%,
+      #8a7a58 100%
+    );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .welcome-ring {
+    animation:
+      ring-spin 8s linear infinite,
+      ring-twinkle-a 2.6s linear infinite,
+      ring-twinkle-b 3.1s linear -1.3s infinite;
+  }
+  /* Under the pointer the light quickens, and once the run starts it
+     races. Welcome.tsx eases the spin's playback rate for that: changing
+     animation-duration here would make the sparks jump to a new spot. */
+}
+
+@keyframes ring-spin {
+  to {
+    --ring-a: 360deg;
+  }
+}
+
+/* Uneven flashes, so the facets glint rather than pulse. */
+@keyframes ring-twinkle-a {
+  0%, 100% { --ring-tw-a: 0.35; }
+  10% { --ring-tw-a: 1; }
+  20% { --ring-tw-a: 0.3; }
+  52% { --ring-tw-a: 0.55; }
+  60% { --ring-tw-a: 1; }
+  70% { --ring-tw-a: 0.35; }
+}
+
+@keyframes ring-twinkle-b {
+  0%, 100% { --ring-tw-b: 0.4; }
+  18% { --ring-tw-b: 0.3; }
+  28% { --ring-tw-b: 1; }
+  38% { --ring-tw-b: 0.35; }
+  78% { --ring-tw-b: 1; }
+  86% { --ring-tw-b: 0.4; }
+}
+
+@media (prefers-contrast: more), (prefers-reduced-transparency: reduce) {
+  .welcome-ring {
+    display: none;
+  }
+}
+
+/* The focus ring sits just clear of the silver rim, not on top of it. */
+.welcome-actions > .welcome-enter:focus-visible {
+  outline-offset: 7px;
 }
 
 /* The label sits above the gloss and highlight. The running label sits
@@ -2013,22 +2178,14 @@ button {
   .welcome .welcome-card > .welcome-actions {
     animation-delay: 1940ms;
   }
-  /* The button arrives last, then glows once, warmly: the next step is
-     yours. One bloom, not a loop, so it never nags. */
-  /* Once the card is in, the button glows once, then bounces: every 2s it
-     pops out toward the viewer, rebounds in, wobbles once and settles, like
-     a drop of glass jelly, so it reads as alive and asks to be pressed. It
-     rests between bounces, holds still under the pointer, so it's a steady
-     target, and stops when the run starts. It moves with the scale
-     property, leaving transform free for the hover swell and the press
-     squish. */
+  /* Once the card is in, the button bounces once: it pops out toward the
+     viewer, rebounds in, wobbles and settles, like a drop of glass jelly,
+     so the next step reads as yours. One bounce, not a loop, so it never
+     nags; the ring's travelling light keeps it alive after that. It moves
+     with the scale property, leaving transform free for the hover swell
+     and the press squish. */
   .welcome .welcome-actions > .welcome-enter {
-    animation:
-      invite 1100ms ease-in-out 2450ms,
-      bounce-in-out 2000ms 2450ms infinite;
-  }
-  .welcome .welcome-actions > .welcome-enter:is(:hover, :focus-visible) {
-    animation-play-state: running, paused;
+    animation: bounce-in-out 2000ms 2450ms;
   }
   .welcome .welcome-screen[data-run] .welcome-actions > .welcome-enter {
     animation: none;
@@ -2059,7 +2216,7 @@ button {
 }
 
 /* A jelly bounce, then a rest: out (a touch wider than tall), back in
-   past rest, out again a little, and settled by 0.8s of each 2s. */
+   past rest, out again a little, and settled by 0.9s. */
 @keyframes bounce-in-out {
   0% {
     scale: 1;
@@ -2084,12 +2241,6 @@ button {
   44%,
   100% {
     scale: 1;
-  }
-}
-
-@keyframes invite {
-  45% {
-    box-shadow: var(--glass-btn), 0 0 0 6px rgb(255 200 140 / 0.16), 0 12px 34px -10px rgb(255 170 90 / 0.55);
   }
 }
 
